@@ -53,6 +53,21 @@ class SantriController extends Controller
             ], 404);
         }
 
+        $kamar = DB::table('ref_kamar')
+        ->where('id', $santri->kamar_id)
+        ->first();
+
+    // Jika kamar ditemukan, ambil employee_id untuk mendapatkan nama murroby
+    $murroby = 'Tidak Diketahui';
+    if ($kamar && $kamar->employee_id) {
+        $murrobyData = DB::table('employee_new')
+            ->where('id', $kamar->employee_id)
+            ->first();
+
+        $murroby = $murrobyData ? $murrobyData->nama : 'Tidak Diketahui';
+    }
+
+
         // Gabungkan data santri, kelas, dan employee
         return response()->json([
             'success' => true,
@@ -60,6 +75,7 @@ class SantriController extends Controller
                 'id' => $santri->id,
                 'nama' => $santri->nama,
                 'kelas' => $kelasData->name,
+                'murroby' => $murroby,
                 'employee' => [
                     'id' => $employee->id,
                     'nama' => $employee->nama,
