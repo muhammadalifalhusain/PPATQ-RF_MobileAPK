@@ -68,4 +68,15 @@ class SantriController extends Controller
             ]
         ]);
     }
+
+    public function getKelas()
+{
+    $kelas = DB::table('ref_kelas')->select('code', 'name')->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $kelas
+    ]);
+}
+
 }
