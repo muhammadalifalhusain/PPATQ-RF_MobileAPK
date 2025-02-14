@@ -4,7 +4,7 @@ import '../models/santri_model.dart';
 import '../models/kelas_model.dart';
 
 class ApiService {
-  static const String baseUrl = "http://127.0.0.1:8000"; // Ganti dengan URL API-mu
+  static const String baseUrl = "http://127.0.0.1:8000"; 
 
   // Ambil daftar kelas dari database
   Future<List<Kelas>> fetchKelas() async {
