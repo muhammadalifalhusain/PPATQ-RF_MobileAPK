@@ -126,30 +126,37 @@ class _SantriScreenState extends State<SantriScreen> {
                           Text("Kelas: ${santriData!.kelas}", style: GoogleFonts.poppins(fontSize: 16, color: Colors.teal)),
                           SizedBox(height: 10),
 
-                          // Foto dan Nama Employee
-                          Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  santriData!.employee.photoUrl,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Icon(Icons.person, size: 80, color: Colors.grey);
-                                  },
-                                ),
+                          // Foto Santri
+                          Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(
+                                santriData!.photo,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(Icons.person, size: 100, color: Colors.grey);
+                                },
                               ),
-                              SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Wali Kelas:", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
-                                  Text(santriData!.employee.nama, style: GoogleFonts.poppins(fontSize: 16)),
-                                ],
-                              )
-                            ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+
+                          // Foto dan Nama Employee
+                          _buildProfileSection(
+                            title: "Wali Kelas",
+                            name: santriData!.employee.nama,
+                            photoUrl: santriData!.employee.photoUrl,
+                          ),
+
+                          SizedBox(height: 10),
+
+                          // Foto dan Nama Murroby
+                          _buildProfileSection(
+                            title: "Murroby",
+                            name: santriData!.murroby.nama,
+                            photoUrl: santriData!.murroby.photoUrl,
                           ),
                         ],
                       ),
@@ -159,6 +166,33 @@ class _SantriScreenState extends State<SantriScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProfileSection({required String title, required String name, required String photoUrl}) {
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(50),
+          child: Image.network(
+            photoUrl,
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(Icons.person, size: 60, color: Colors.grey);
+            },
+          ),
+        ),
+        SizedBox(width: 10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("$title:", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(name, style: GoogleFonts.poppins(fontSize: 16)),
+          ],
+        )
+      ],
     );
   }
 }
