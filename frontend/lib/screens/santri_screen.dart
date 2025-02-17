@@ -49,9 +49,36 @@ class _SantriScreenState extends State<SantriScreen> {
       santriData = result;
       isLoading = false;
     });
+    if (santriData == null) {
+    showSantriNotFound(); // Menampilkan pesan jika santri tidak ditemukan
+  }
   }
 
-  @override
+   void showSantriNotFound() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Santri Tidak Ditemukan', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+          content: Text('Tidak ada data santri yang sesuai dengan pencarian Anda. Silakan coba lagi.', style: GoogleFonts.poppins()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);  // Menutup dialog
+                setState(() {
+                  santriData = null;  // Reset data santri
+                });
+              },
+              child: Text('Kembali ke Pencarian', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -63,7 +90,6 @@ class _SantriScreenState extends State<SantriScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Input Nama
             TextField(
               controller: namaController,
               decoration: InputDecoration(
@@ -73,8 +99,6 @@ class _SantriScreenState extends State<SantriScreen> {
               ),
             ),
             SizedBox(height: 10),
-
-            // Dropdown Kelas
             DropdownButtonFormField<Kelas>(
               value: selectedKelas,
               items: kelasList.map((kelas) {
@@ -95,8 +119,6 @@ class _SantriScreenState extends State<SantriScreen> {
               ),
             ),
             SizedBox(height: 15),
-
-            // Tombol Cari
             ElevatedButton.icon(
               onPressed: searchSantri,
               icon: isLoading
@@ -104,15 +126,12 @@ class _SantriScreenState extends State<SantriScreen> {
                   : Icon(Icons.search),
               label: Text("Cari", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
+                backgroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-
             SizedBox(height: 20),
-
-            // Tampilkan Hasil Pencarian
             santriData != null
                 ? Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -125,8 +144,6 @@ class _SantriScreenState extends State<SantriScreen> {
                           Text("Nama: ${santriData!.nama}", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
                           Text("Kelas: ${santriData!.kelas}", style: GoogleFonts.poppins(fontSize: 16, color: Colors.teal)),
                           SizedBox(height: 10),
-
-                          // Foto Santri
                           Center(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
@@ -142,17 +159,12 @@ class _SantriScreenState extends State<SantriScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-
-                          // Foto dan Nama Employee
                           _buildProfileSection(
                             title: "Wali Kelas",
                             name: santriData!.employee.nama,
                             photoUrl: santriData!.employee.photoUrl,
                           ),
-
                           SizedBox(height: 10),
-
-                          // Foto dan Nama Murroby
                           _buildProfileSection(
                             title: "Murroby",
                             name: santriData!.murroby.nama,
@@ -191,7 +203,7 @@ class _SantriScreenState extends State<SantriScreen> {
             Text("$title:", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
             Text(name, style: GoogleFonts.poppins(fontSize: 16)),
           ],
-        )
+        ),
       ],
     );
   }
