@@ -36,45 +36,40 @@ class ApiService {
     }
   }
 
-  // Ambil data kesehatan santri dari endpoint /kesehatan
+  // Ambil semua data kesehatan
   Future<List<Kesehatan>> fetchKesehatanSantri() async {
-    final response = await http.get(Uri.parse("$baseUrl/kesehatan"));
+    final response = await http.get(Uri.parse("$baseUrl/kesehatan")); // Perbaikan endpoint
 
     if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
-      List<dynamic> data = jsonData['data'];
-
-      // Mengelompokkan data berdasarkan no_induk
-      Map<String, List<Pemeriksaan>> groupedData = {};
-
-      for (var item in data) {
-        String noInduk = item['no_induk'];
-        Pemeriksaan pemeriksaan = Pemeriksaan.fromJson(item);
-
-        if (!groupedData.containsKey(noInduk)) {
-          groupedData[noInduk] = [];
-        }
-        groupedData[noInduk]!.add(pemeriksaan);
-      }
-
-      // Membuat daftar Kesehatan berdasarkan no_induk
-      List<Kesehatan> kesehatanList = groupedData.entries.map((entry) {
-        // Ambil nama santri dari data pertama yang memiliki no_induk yang sama
-        String namaSantri = data.firstWhere(
-          (e) => e['no_induk'] == entry.key,
-          orElse: () => {'nama_santri': 'Tidak Diketahui'}, // Mencegah error jika data tidak ditemukan
-        )['nama_santri'];
-
-        return Kesehatan(
-          noInduk: entry.key,
-          namaSantri: namaSantri,
-          pemeriksaan: entry.value,
-        );
-      }).toList();
-
-      return kesehatanList;
+      final Map<String, dynamic> data = json.decode(response.body);
+      List<dynamic> list = data['data'];
+      return list.map((json) => Kesehatan.fromJson(json)).toList();
     } else {
       throw Exception("Gagal mengambil data kesehatan");
     }
   }
+
+  // Ambil data kesehatan berdasarkan No Induk
+ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
+  final response = await http.get(Uri.parse("$baseUrl/kesehatan?no_induk=$noInduk"));
+
+  print("Response dari API: ${response.body}"); // Debug respons API
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    // Debug format data
+    print("Isi data['data']: ${data['data']}");
+
+    if (data.containsKey('data') && data['data'] is List) {
+      List<dynamic> list = data['data'];
+      return list.map((json) => Kesehatan.fromJson(json)).toList();
+    } else {
+      return []; // Jika tidak ada data, kembalikan list kosong
+    }
+  } else {
+    throw Exception("Gagal mencari data kesehatan");
+  }
+}
+
 }

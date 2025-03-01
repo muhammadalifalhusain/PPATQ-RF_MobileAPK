@@ -10,14 +10,12 @@ class Kesehatan {
   });
 
   factory Kesehatan.fromJson(Map<String, dynamic> json) {
-    List<Pemeriksaan> pemeriksaanList = (json['pemeriksaan'] as List)
-        .map((item) => Pemeriksaan.fromJson(item))
-        .toList();
-
     return Kesehatan(
       noInduk: json['no_induk'],
       namaSantri: json['nama_santri'],
-      pemeriksaan: pemeriksaanList,
+      pemeriksaan: (json['data'] as List<dynamic>?)
+          ?.map((e) => Pemeriksaan.fromJson(e))
+          .toList() ?? [],
     );
   }
 }
@@ -44,8 +42,8 @@ class Pemeriksaan {
       tanggalPemeriksaan: json['tanggal_pemeriksaan'],
       tinggiBadan: json['tinggi_badan'],
       beratBadan: json['berat_badan'],
-      lingkarPinggul: json['lingkar_pinggul'] as int?, // Perbaikan untuk data yang bisa null
-      lingkarDada: json['lingkar_dada'] as int?, // Perbaikan untuk data yang bisa null
+      lingkarPinggul: json['lingkar_pinggul'],
+      lingkarDada: json['lingkar_dada'],
       kondisiGigi: json['kondisi_gigi'],
     );
   }
