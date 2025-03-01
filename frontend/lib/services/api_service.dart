@@ -49,27 +49,42 @@ class ApiService {
     }
   }
 
-  // Ambil data kesehatan berdasarkan No Induk
- Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
-  final response = await http.get(Uri.parse("$baseUrl/kesehatan?no_induk=$noInduk"));
+Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:8000/kesehatan?no_induk=$noInduk'));
 
-  print("Response dari API: ${response.body}"); // Debug respons API
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List<dynamic> rawData = data['data'];
 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> data = json.decode(response.body);
+      // Mengelompokkan data berdasarkan no_induk
+      Map<String, Kesehatan> groupedData = {};
 
-    // Debug format data
-    print("Isi data['data']: ${data['data']}");
+      for (var item in rawData) {
+        String noInduk = item['no_induk'];
+        String namaSantri = item['nama_santri'];
 
-    if (data.containsKey('data') && data['data'] is List) {
-      List<dynamic> list = data['data'];
-      return list.map((json) => Kesehatan.fromJson(json)).toList();
+        if (!groupedData.containsKey(noInduk)) {
+          groupedData[noInduk] = Kesehatan(
+            noInduk: noInduk,
+            namaSantri: namaSantri,
+            pemeriksaan: [],
+          );
+        }
+
+        // Menambahkan data pemeriksaan ke dalam list
+        groupedData[noInduk]!.pemeriksaan.add({
+          "tanggal_pemeriksaan": item['tanggal_pemeriksaan'],
+          "tinggi_badan": item['tinggi_badan'],
+          "berat_badan": item['berat_badan'],
+          "lingkar_pinggul": item['lingkar_pinggul'],
+          "lingkar_dada": item['lingkar_dada'],
+          "kondisi_gigi": item['kondisi_gigi'],
+        });
+      }
+
+      return groupedData.values.toList();
     } else {
-      return []; // Jika tidak ada data, kembalikan list kosong
+      throw Exception('Gagal mengambil data kesehatan');
     }
-  } else {
-    throw Exception("Gagal mencari data kesehatan");
   }
-}
-
 }

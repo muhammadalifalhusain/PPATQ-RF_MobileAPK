@@ -11,43 +11,27 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   final ApiService apiService = ApiService();
   late Future<List<Kesehatan>> futureKesehatan;
   final TextEditingController _searchController = TextEditingController();
-  bool _isDisposed = false;
 
   @override
   void initState() {
     super.initState();
-    futureKesehatan = apiService.fetchKesehatanSantri();
+    futureKesehatan = apiService.searchKesehatanByNoInduk("");
   }
 
   void _searchData() {
     String noInduk = _searchController.text.trim();
     if (noInduk.isNotEmpty) {
-      Future<List<Kesehatan>> newFuture = apiService.searchKesehatanByNoInduk(noInduk);
-      
-      if (!mounted) return;
-
       setState(() {
-        futureKesehatan = newFuture;
+        futureKesehatan = apiService.searchKesehatanByNoInduk(noInduk);
       });
     }
   }
 
   void _resetSearch() {
     _searchController.clear();
-    Future<List<Kesehatan>> newFuture = apiService.fetchKesehatanSantri();
-
-    if (!mounted) return;
-
     setState(() {
-      futureKesehatan = newFuture;
+      futureKesehatan = apiService.searchKesehatanByNoInduk("");
     });
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    _searchController.dispose();
-    super.dispose();
   }
 
   @override
@@ -112,24 +96,23 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text("No Induk: ${kesehatan.noInduk}"),
-                        children: kesehatan.pemeriksaan.map((pemeriksaan) {
-                          return ListTile(
-                            title: Text("Tanggal: ${pemeriksaan.tanggalPemeriksaan}"),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Tinggi Badan: ${pemeriksaan.tinggiBadan} cm"),
-                                Text("Berat Badan: ${pemeriksaan.beratBadan} kg"),
-                                if (pemeriksaan.lingkarPinggul != null)
-                                  Text("Lingkar Pinggul: ${pemeriksaan.lingkarPinggul} cm"),
-                                if (pemeriksaan.lingkarDada != null)
-                                  Text("Lingkar Dada: ${pemeriksaan.lingkarDada} cm"),
-                                if (pemeriksaan.kondisiGigi != null)
-                                  Text("Kondisi Gigi: ${pemeriksaan.kondisiGigi}"),
-                              ],
-                            ),
-                          );
-                        }).toList(),
+                        children: kesehatan.pemeriksaan.isNotEmpty
+                            ? kesehatan.pemeriksaan.map((pemeriksaan) {
+                                return ListTile(
+                                  title: Text("Tanggal: ${DateTime.fromMillisecondsSinceEpoch(pemeriksaan["tanggal_pemeriksaan"] * 1000)}"),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Tinggi Badan: ${pemeriksaan["tinggi_badan"]} cm"),
+                                      Text("Berat Badan: ${pemeriksaan["berat_badan"]} kg"),
+                                      Text("Lingkar Pinggul: ${pemeriksaan["lingkar_pinggul"]} cm"),
+                                      Text("Lingkar Dada: ${pemeriksaan["lingkar_dada"]} cm"),
+                                      Text("Kondisi Gigi: ${pemeriksaan["kondisi_gigi"]}"),
+                                    ],
+                                  ),
+                                );
+                              }).toList()
+                            : [const ListTile(title: Text("Tidak ada riwayat pemeriksaan"))],
                       ),
                     );
                   },
