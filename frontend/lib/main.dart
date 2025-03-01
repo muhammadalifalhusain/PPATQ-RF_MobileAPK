@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/santri_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/kesehatan_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // Daftar screen yang akan ditampilkan
   final List<Widget> _screens = [
-    HomeScreen(),  // Index 0
+    KesehatanScreen(),  // Index 0
     SantriScreen(), // Index 1
   ];
 
