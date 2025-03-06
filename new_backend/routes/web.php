@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BeritaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SantriController;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ Route::get('/kelas', [SantriController::class, 'getKelas']);
 Route::get('/data-santri', [SantriController::class, 'getSantri']);
 Route::get('/kesehatan', [KesehatanController::class, 'getDataKesehatan']); // Menggunakan query parameter
 Route::post('/kesehatan', [KesehatanController::class, 'getDataKesehatan']); // Menggunakan request body JSON
+Route::get('/berita', [BeritaController::class, 'getBerita']); // Menggunakan query parameter
 
 // Route::get('/kesehatan', [KesehatanController::class, 'getAllDataKesehatan']);
 

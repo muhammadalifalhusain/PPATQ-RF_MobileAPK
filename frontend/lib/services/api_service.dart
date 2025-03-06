@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/santri_model.dart';
 import '../models/kelas_model.dart';
 import '../models/kesehatan_model.dart';
+import '../models/berita_model.dart';
 
 class ApiService {
   static const String baseUrl = "http://127.0.0.1:8000"; 
@@ -85,6 +86,17 @@ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
       return groupedData.values.toList();
     } else {
       throw Exception('Gagal mengambil data kesehatan');
+    }
+  }
+
+  Future<List<Berita>> fetchBerita() async {
+    final response = await http.get(Uri.parse("$baseUrl/berita"));
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body)['data'];
+      return jsonData.map((item) => Berita.fromJson(item)).toList();
+    } else {
+      throw Exception("Gagal mengambil data berita");
     }
   }
 }

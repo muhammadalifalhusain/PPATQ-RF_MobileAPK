@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'screens/santri_screen.dart';
 import 'screens/kesehatan_screen.dart';
+import 'screens/dashboard/index.dart';
+
 
 void main() {
   runApp(const MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,8 +22,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainScreen(), // Ubah ke MainScreen yang berisi BottomNavigationBar
-    );
+      home: LandingPage(),
+      );
   }
 }
 
@@ -30,8 +34,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-
-  // Daftar screen yang akan ditampilkan
   final List<Widget> _screens = [
     KesehatanScreen(),  // Index 0
     SantriScreen(), // Index 1
