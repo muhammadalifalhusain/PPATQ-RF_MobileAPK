@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
-import '../../services/api_service.dart';
-import '../../models/berita_model.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'PPATQ RAUDLATUL FALAH',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: LandingPage(),
-    );
-  }
-}
+import '../services/api_service.dart';
+import '../models/berita_model.dart';
+import '../screens/detail_berita.dart';
+import '../screens/login_screen.dart';
+import '../screens/register_screen.dart';
+import '../widgets/berita_card.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -44,11 +27,7 @@ class _LandingPageState extends State<LandingPage> {
             SizedBox(width: 10),
             Text(
               'PPATQ RAUDLATUL FALAH',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ],
         ),
@@ -69,16 +48,8 @@ class _LandingPageState extends State<LandingPage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
+              decoration: BoxDecoration(color: Colors.teal),
+              child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
             ),
             ListTile(
               leading: Icon(Icons.login),
@@ -91,7 +62,7 @@ class _LandingPageState extends State<LandingPage> {
               leading: Icon(Icons.person_add),
               title: Text('Register'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
               },
             ),
           ],
@@ -120,14 +91,13 @@ class _LandingPageState extends State<LandingPage> {
                   child: ListView.builder(
                     itemCount: displayedBerita.length,
                     itemBuilder: (context, index) {
-                      Berita berita = displayedBerita[index];
                       return BeritaCard(
-                        berita: berita,
+                        berita: displayedBerita[index],
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailBeritaPage(berita: berita),
+                              builder: (context) => DetailBeritaPage(berita: displayedBerita[index]),
                             ),
                           );
                         },
@@ -166,108 +136,6 @@ class _LandingPageState extends State<LandingPage> {
           }
         },
       ),
-    );
-  }
-}
-
-class LoginScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Login")),
-      body: Center(child: Text("Halaman Login")),
-    );
-  }
-}
-
-class DetailBeritaPage extends StatelessWidget {
-  final Berita berita;
-
-  const DetailBeritaPage({required this.berita});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(berita.judul),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
-              berita.thumbnail,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              berita.judul,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              berita.isiBerita,
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BeritaCard extends StatelessWidget {
-  final Berita berita;
-  final VoidCallback onTap;
-
-  const BeritaCard({required this.berita, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
-              berita.thumbnail,
-              width: double.infinity,
-              height: 150,
-              fit: BoxFit.cover,
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                berita.judul,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class RegisterScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Register")),
-      body: Center(child: Text("Halaman Register")),
     );
   }
 }

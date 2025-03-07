@@ -11,9 +11,9 @@ class Berita {
 
   factory Berita.fromJson(Map<String, dynamic> json) {
     return Berita(
-      judul: json['judul'],
-      thumbnail: json['thumbnail'],
-      isiBerita: json['isi_berita'],
+      judul: json['judul'] ?? '', 
+      thumbnail: "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/${json['thumbnail'] ?? ''}", 
+      isiBerita: json['isi_berita'] ?? '',
     );
   }
 }
