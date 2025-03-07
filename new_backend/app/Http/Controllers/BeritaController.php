@@ -7,21 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class BeritaController extends Controller
-{
-    // public function getBerita()
-    // {
-    //     // Hanya ambil data yang thumbnail-nya tidak null
-    //     $berita = DB::table('berita')
-    //         ->select('judul', 'thumbnail', 'isi_berita')
-    //         ->whereNotNull('thumbnail') // Filter data yang thumbnail-nya tidak null
-    //         ->get();
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'data' => $berita
-    //     ]);
-    // }
-    
+{   
     public function getBerita(Request $request)
     {
         // Ambil data dari API hosting
