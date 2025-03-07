@@ -10,9 +10,16 @@ class Berita {
   });
 
   factory Berita.fromJson(Map<String, dynamic> json) {
+    String rawThumbnail = json['thumbnail'] ?? '';
+
+    // Cek apakah thumbnail sudah berupa URL lengkap atau masih nama file saja
+    String formattedThumbnail = rawThumbnail.startsWith('http')
+        ? rawThumbnail
+        : "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/$rawThumbnail";
+
     return Berita(
-      judul: json['judul'] ?? '', 
-      thumbnail: "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/${json['thumbnail'] ?? ''}", 
+      judul: json['judul'] ?? '',
+      thumbnail: formattedThumbnail,
       isiBerita: json['isi_berita'] ?? '',
     );
   }

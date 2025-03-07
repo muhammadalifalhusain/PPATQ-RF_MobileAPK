@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/main.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import '../services/api_service.dart';
 import '../models/berita_model.dart';
 import '../screens/detail_berita.dart';
@@ -14,35 +14,10 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final ApiService apiService = ApiService();
-  int currentPage = 0;
-  final int itemsPerPage = 5;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset('assets/images/logo.png', height: 30),
-            SizedBox(width: 10),
-            Text(
-              'PPATQ RAUDLATUL FALAH',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.teal,
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            ),
-          ),
-        ],
-      ),
       endDrawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -68,73 +43,163 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
-      body: FutureBuilder<List<Berita>>(
-        future: apiService.fetchBerita(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Tidak ada berita tersedia.'));
-          } else {
-            final startIndex = currentPage * itemsPerPage;
-            final endIndex = startIndex + itemsPerPage;
-            final displayedBerita = snapshot.data!.sublist(
-              startIndex,
-              endIndex < snapshot.data!.length ? endIndex : snapshot.data!.length,
-            );
-
-            return Column(
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
               children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: displayedBerita.length,
-                    itemBuilder: (context, index) {
-                      return BeritaCard(
-                        berita: displayedBerita[index],
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailBeritaPage(berita: displayedBerita[index]),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                Center(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 80,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: currentPage > 0
-                          ? () {
-                              setState(() {
-                                currentPage--;
-                              });
-                            }
-                          : null,
-                    ),
-                    Text('Halaman ${currentPage + 1}'),
-                    IconButton(
-                      icon: Icon(Icons.arrow_forward),
-                      onPressed: (currentPage + 1) * itemsPerPage < snapshot.data!.length
-                          ? () {
-                              setState(() {
-                                currentPage++;
-                              });
-                            }
-                          : null,
-                    ),
-                  ],
+                SizedBox(height: 10),
+                Text(
+                  'PPATQ RAUDLATUL FALAH',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 5),
+                Text(
+                  'Pondok Pesantren Anak-anak Tahfidzul Qur\'an Raudlatul Falah – Pati',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.teal,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Builder(
+                        builder: (context) => IconButton(
+                          icon: Icon(Icons.menu, size: 30, color: Colors.white),
+                          onPressed: () {
+                            Scaffold.of(context).openEndDrawer();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            );
-          }
-        },
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Berita>>(
+              future: apiService.fetchBerita(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('Tidak ada berita tersedia.'));
+                } else {
+                  final beritaList = snapshot.data!;
+                  final beritaUtama = beritaList.first;
+                  final beritaLainnya = beritaList.sublist(1);
+
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            beritaUtama.judul,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailBeritaPage(berita: beritaUtama),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: NetworkImage(beritaUtama.thumbnail),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            height: 350,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                            style: TextStyle(fontSize: 16, color: Colors.black54),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
+                        CarouselSlider.builder(
+                          itemCount: beritaLainnya.length,
+                          itemBuilder: (context, index, realIndex) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  image: NetworkImage(beritaLainnya[index].thumbnail),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              height: 180,
+                              child: BeritaCard(
+                                berita: beritaLainnya[index],
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailBeritaPage(berita: beritaLainnya[index]),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          options: CarouselOptions(
+                            height: 200,
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 0.8,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
