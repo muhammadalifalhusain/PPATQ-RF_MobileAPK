@@ -203,7 +203,7 @@ class _LandingPageState extends State<LandingPage> {
                           },
                           options: CarouselOptions(
                             height: MediaQuery.of(context).size.height * 0.35,
-                            autoPlay: true,
+                            autoPlay: false,
                             enlargeCenterPage: true,
                             aspectRatio: 16 / 9,
                             viewportFraction: 0.9,

@@ -6,10 +6,11 @@ use App\Http\Controllers\SantriController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\KesehatanController;
+use App\Http\Controllers\AuthController;
 
 
 
-
+Route::post('/login', [AuthController::class, 'index']);
 Route::get('/santri', [SantriController::class, 'searchSantri']);
 Route::get('/kelas', [SantriController::class, 'getKelas']);
 Route::get('/data-santri', [SantriController::class, 'getSantri']);

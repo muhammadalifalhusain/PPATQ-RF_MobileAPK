@@ -23,7 +23,6 @@ class BeritaController extends Controller
             ], 500);
         }
 
-        // Jika tidak ada parameter, kembalikan semua data
         return response()->json([
             'status' => 200,
             'message' => 'Berhasil mengambil semua data berita',
