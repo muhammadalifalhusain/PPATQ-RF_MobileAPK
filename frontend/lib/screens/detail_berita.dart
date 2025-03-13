@@ -17,21 +17,34 @@ class DetailBeritaPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              berita.thumbnail,
+            // Thumbnail gambar dengan BoxFit.contain
+            Container(
               width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 200),
+              height: 200, // Tinggi bisa disesuaikan
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[200], // Warna latar belakang jika gambar tidak memenuhi container
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  berita.thumbnail,
+                  fit: BoxFit.contain, // Gambar tidak terpotong
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.broken_image, size: 200),
+                ),
+              ),
             ),
             const SizedBox(height: 16.0),
 
+            // Judul berita
             Text(
               berita.judul,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
 
+            // Isi berita
             Html(
               data: berita.isiBerita,
               onLinkTap: (url, attributes, element) async {

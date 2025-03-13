@@ -38,29 +38,22 @@ class BeritaUtama extends StatelessWidget {
             width: double.infinity, // Full width
             height: 200, // Tinggi sesuai yang ada di DetailBeritaPage
             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), // Jika mau tetap rounded
+              color: Colors.grey[200], // Warna latar belakang jika gambar tidak memenuhi container
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10), // Jika mau tetap rounded
               child: Image.network(
                 berita.thumbnail,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain, // Menggunakan BoxFit.contain agar gambar tidak terpotong
                 errorBuilder: (context, error, stackTrace) =>
                     Icon(Icons.broken_image, size: 200),
               ),
             ),
           ),
         ),
-
-        // Isi ringkasan atau dummy teks
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            "Lorem ipsum dolor sit amet...",
-            style: TextStyle(color: Colors.black54),
-            textAlign: TextAlign.justify,
-          ),
-        ),
-
-        SizedBox(height: 16), // Jarak bawah
+        SizedBox(height: 10), // Jarak bawah
       ],
     );
   }

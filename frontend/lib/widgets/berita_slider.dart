@@ -14,38 +14,60 @@ class BeritaSlider extends StatelessWidget {
       itemCount: beritaList.length,
       itemBuilder: (context, index, realIndex) {
         final berita = beritaList[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              height: MediaQuery.of(context).size.height * 0.25,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(image: NetworkImage(berita.thumbnail), fit: BoxFit.cover),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Text(berita.judul, style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => DetailBeritaPage(berita: berita)),
+          ),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Baca selengkapnya...', style: TextStyle(color: Colors.black54)),
-                IconButton(
-                  icon: Icon(Icons.arrow_forward, color: Colors.teal),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailBeritaPage(berita: berita))),
+                // Gambar dengan AspectRatio untuk memastikan rasio konsisten
+                AspectRatio(
+                  aspectRatio: 4 / 3, // Rasio 4:3
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        berita.thumbnail,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+                // Tombol "Selengkapnya" dengan padding yang disesuaikan
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: ElevatedButton.icon(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => DetailBeritaPage(berita: berita)),
+                    ),
+                    icon: Icon(Icons.arrow_forward, color: Colors.black),
+                    label: Text(
+                      'Selengkapnya',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
                 ),
               ],
             ),
-          ],
+          ),
         );
       },
       options: CarouselOptions(
-        height: MediaQuery.of(context).size.height * 0.35,
+        height: MediaQuery.of(context).size.height * 0.4, // Tinggi carousel disesuaikan
         autoPlay: false,
         enlargeCenterPage: true,
+        viewportFraction: 0.8,
       ),
     );
   }
