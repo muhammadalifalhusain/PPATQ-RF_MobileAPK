@@ -18,10 +18,3 @@ Route::get('/kesehatan', [KesehatanController::class, 'getDataKesehatan']); // M
 Route::post('/kesehatan', [KesehatanController::class, 'getDataKesehatan']); // Menggunakan request body JSON
 Route::get('/berita', [BeritaController::class, 'getBerita']); // Menggunakan query parameter
 
-// Route::get('/kesehatan', [KesehatanController::class, 'getAllDataKesehatan']);
-
-// Route::get('/kesehatan', function () {
-//     $response = Http::get("http://api.ppatq-rf.id/api/kesehatan-santri");
-//     return $response->json();
-// });
-

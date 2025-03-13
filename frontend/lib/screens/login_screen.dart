@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
+import 'landing_page.dart'; 
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -23,7 +24,27 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Column(
           children: [
-            // Isi konten login fleksibel (scrollable)
+            // AppBar custom berisi icon beranda
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.home, color: Colors.black, size: 30),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LandingPage()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
@@ -33,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       // Logo dan Nama Pondok
                       Image.asset(
-                        'assets/images/logo.png', 
+                        'assets/images/logo.png',
                         height: 120,
                       ),
                       SizedBox(height: 10),
@@ -101,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: () {
-                                  // Tambahkan fungsi login di sini
+                                  // Fungsi login disini
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black,
@@ -115,13 +136,52 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(fontSize: 16, color: Colors.white),
                                 ),
                               ),
+                              SizedBox(height: 20),
+                              Text(
+                                'or login with',
+                                style: TextStyle(fontSize: 14, color: Colors.black54),
+                              ),
                               SizedBox(height: 10),
-
+                              GestureDetector(
+                                onTap: () {
+                                  // Fungsi login dengan Google
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/google.png',
+                                        height: 24,
+                                        width: 24,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        'Google',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20), // Jarak sebelum Divider
                               Divider(
                                 color: Colors.grey.shade500,
                                 thickness: 1,
                                 height: 1,
                               ),
+                              SizedBox(height: 10), // Jarak sebelum teks register
+
+                              // Link ke register
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -152,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -162,6 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+
             // Footer di bawah
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0), // Jarak dari bawah layar
@@ -174,13 +235,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
+// Footer widget diperbaiki
 class FooterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('PPATQ RAUDLATUL FALAH', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text('Copyright © 2025 All Rights Reserved', style: TextStyle(fontSize: 14, color: Colors.black54)),
+        Text(
+          'PPATQ RAUDLATUL FALAH',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Copyright © 2025 All Rights Reserved',
+          style: TextStyle(fontSize: 14, color: Colors.black54),
+        ),
         SizedBox(height: 5),
       ],
     );
