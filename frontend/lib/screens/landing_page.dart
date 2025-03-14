@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../services/api_service.dart';
 import '../models/berita_model.dart';
-import '../widgets/menu_drawer.dart';
 import '../widgets/app_header.dart';
 import '../widgets/berita_utama.dart';
 import '../widgets/berita_slider.dart';
@@ -15,7 +14,6 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: MenuDrawer(),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -49,6 +47,7 @@ class LandingPage extends StatelessWidget {
                               'Berita Lainnya',
                               style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                             ),
+                            SizedBox(height: 15),
                             BeritaSlider(beritaList: beritaList.sublist(1)),
                             FooterWidget(),
                           ],
@@ -66,8 +65,11 @@ class LandingPage extends StatelessWidget {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Efek blur
                       child: Container(
-                        color: Colors.white.withOpacity(0.5), // Warna latar belakang header dengan opacity
-                        child: AppHeader(), // Header tetap sama
+                        color: Colors.white.withOpacity(0.7), // Warna latar belakang header dengan opacity
+                        child: AppHeader(
+                          showAuthButtons: true,
+                          showBackButton: false,
+                        ), // Header tetap sama
                       ),
                     ),
                   ),

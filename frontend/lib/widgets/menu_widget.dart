@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/about_screen.dart';
 
 class MenuIkonWidget extends StatelessWidget {
   @override
@@ -16,8 +17,10 @@ class MenuIkonWidget extends StatelessWidget {
             childAspectRatio: 1, // Rasio lebar dan tinggi ikon
             children: [
               _buildMenuIkon(Icons.info, 'About', () {
-                // Aksi ketika About ditekan
-                print('About diklik');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => AboutPage()),
+                );
               }),
               _buildMenuIkon(Icons.calendar_today, 'Agenda', () {
                 // Aksi ketika Agenda ditekan
@@ -53,7 +56,7 @@ class MenuIkonWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(ikon, size: 40, color: Colors.teal),
+          Icon(ikon, size: 35, color: Colors.green),
           SizedBox(height: 8),
           Text(
             label,

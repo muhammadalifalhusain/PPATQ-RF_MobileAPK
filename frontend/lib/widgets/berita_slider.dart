@@ -43,7 +43,7 @@ class BeritaSlider extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Tombol "Selengkapnya" dengan padding yang disesuaikan
+                SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: ElevatedButton.icon(
