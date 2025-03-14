@@ -42,6 +42,15 @@ class LandingPage extends StatelessWidget {
                         return Column(
                           children: [
                             BeritaUtama(berita: beritaList.first),
+                              Divider(
+                                color: Colors.teal,                                thickness: 2,    
+                                height: 20,      
+                              ),
+                            Text(
+                              'Menu',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                            ),
+                            SizedBox(height: 5), 
                             MenuIkonWidget(),
                             Text(
                               'Berita Lainnya',

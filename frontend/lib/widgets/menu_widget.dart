@@ -9,12 +9,12 @@ class MenuIkonWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 13),
       child: Column(
         children: [
-          SizedBox(height: 10),
+          SizedBox(height: 5),
           GridView.count(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(), // Non-scrollable grid
-            crossAxisCount: 3, // 3 ikon per baris
-            childAspectRatio: 1, // Rasio lebar dan tinggi ikon
+            physics: NeverScrollableScrollPhysics(), 
+            crossAxisCount: 3, 
+            childAspectRatio: 1, 
             children: [
               _buildMenuIkon(Icons.info, 'About', () {
                 Navigator.push(
@@ -49,7 +49,6 @@ class MenuIkonWidget extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk membangun ikon menu
   Widget _buildMenuIkon(IconData ikon, String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -57,7 +56,7 @@ class MenuIkonWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(ikon, size: 35, color: Colors.green),
-          SizedBox(height: 8),
+          SizedBox(height: 5),
           Text(
             label,
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

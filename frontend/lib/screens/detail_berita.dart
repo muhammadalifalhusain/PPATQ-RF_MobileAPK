@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/berita_model.dart';
+import '../widgets/footer_widget.dart';
 
 class DetailBeritaPage extends StatelessWidget {
   final Berita berita;
@@ -61,14 +62,14 @@ class DetailBeritaPage extends StatelessWidget {
                   Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                   const SizedBox(width: 5),
                   Text(
-                    '12 Oktober 2023', // Ganti dengan tanggal dari berita
+                    '12 Oktober 2023', 
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(width: 10),
                   Icon(Icons.person, size: 16, color: Colors.grey),
                   const SizedBox(width: 5),
                   Text(
-                    'Admin', // Ganti dengan penulis dari berita
+                    'Admin', 
                     style: TextStyle(color: Colors.grey),
                   ),
                 ],
