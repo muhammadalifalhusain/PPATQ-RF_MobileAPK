@@ -23,7 +23,7 @@ class LandingPage extends StatelessWidget {
                 SingleChildScrollView(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: constraints.maxHeight * 0.35, // Padding dinamis (dikurangi sedikit)
+                      top: constraints.maxHeight * 0.35, 
                     ),
                     child: FutureBuilder<List<Berita>>(
                       future: apiService.fetchBerita(),
@@ -52,12 +52,12 @@ class LandingPage extends StatelessWidget {
                             ),
                             SizedBox(height: 5), 
                             MenuIkonWidget(),
-                            Text(
-                              'Berita Lainnya',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                            ),
-                            SizedBox(height: 15),
-                            BeritaSlider(beritaList: beritaList.sublist(1)),
+                            // Text(
+                            //   'Berita Lainnya',
+                            //   style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                            // ),
+                            // SizedBox(height: 15),
+                            // BeritaSlider(beritaList: beritaList.sublist(1)),
                             FooterWidget(),
                           ],
                         );
@@ -65,20 +65,19 @@ class LandingPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Header fixed dengan efek blur
                 Positioned(
                   top: 0,
                   left: 0,
                   right: 0,
                   child: ClipRect(
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Efek blur
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), 
                       child: Container(
-                        color: Colors.white.withOpacity(0.7), // Warna latar belakang header dengan opacity
+                        color: Colors.white.withOpacity(0.7), 
                         child: AppHeader(
                           showAuthButtons: true,
                           showBackButton: false,
-                        ), // Header tetap sama
+                        ),
                       ),
                     ),
                   ),

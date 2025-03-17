@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/about_screen.dart';
+import '../screens/agenda_screen.dart';
 
 class MenuIkonWidget extends StatelessWidget {
   @override
@@ -19,12 +20,14 @@ class MenuIkonWidget extends StatelessWidget {
               _buildMenuIkon(Icons.info, 'About', () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => AboutPage()),
+                  MaterialPageRoute(builder: (_) => AboutScreen()),
                 );
               }),
               _buildMenuIkon(Icons.calendar_today, 'Agenda', () {
-                // Aksi ketika Agenda ditekan
-                print('Agenda diklik');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => AgendaScreen()),
+                );
               }),
               _buildMenuIkon(Icons.photo_library, 'Galeri', () {
                 // Aksi ketika Galeri ditekan

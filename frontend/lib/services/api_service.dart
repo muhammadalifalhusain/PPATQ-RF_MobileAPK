@@ -4,6 +4,7 @@ import '../models/santri_model.dart';
 import '../models/kelas_model.dart';
 import '../models/kesehatan_model.dart';
 import '../models/berita_model.dart';
+import '../models/agenda_model.dart';
 
 class ApiService {
   static const String baseUrl = "http://127.0.0.1:8000"; 
@@ -95,4 +96,23 @@ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
       throw Exception("Gagal mengambil data berita");
     }
   }
+
+  Future<List<Agenda>> fetchAgenda({int perPage = 5, int page = 1}) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/agenda?per_page=$perPage&page=$page"),
+      headers: {
+        "Accept": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+
+      List<dynamic> agendaList = jsonData['data']['data']; 
+      return agendaList.map((item) => Agenda.fromJson(item)).toList();
+    } else {
+      throw Exception("Gagal mengambil data agenda");
+    }
+  }
+
 }

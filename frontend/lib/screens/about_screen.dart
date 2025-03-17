@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:ui';
-import '../widgets/app_header.dart'; // Import header
-import '../widgets/footer_widget.dart'; // Import footer
+import '../widgets/app_header.dart'; 
+import '../widgets/footer_widget.dart'; 
 
-class AboutPage extends StatelessWidget {
+class AboutScreen extends StatelessWidget {
   // Function untuk buka URL
   void _launchYoutubeVideo(String url) async {
     final Uri uri = Uri.parse(url);
@@ -27,17 +27,15 @@ class AboutPage extends StatelessWidget {
           builder: (context, constraints) {
             return Stack(
               children: [
-                // Konten scrollable
                 SingleChildScrollView(
                   child: Padding(
                     padding: EdgeInsets.only(
                       top: constraints.maxHeight * 0.31,
                       left: 16,
                       right: 16, 
-                    ), // Padding agar tidak ketimpa header
+                    ), 
                     child: Column(
                       children: [
-                        // Konten About
                         Container(
                           width: double.infinity,
                           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -63,8 +61,6 @@ class AboutPage extends StatelessWidget {
                             ],
                           ),
                         ),
-
-                        // Deskripsi
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
@@ -415,11 +411,11 @@ class AboutPage extends StatelessWidget {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                       child: Container(
-                        color: Colors.white.withOpacity(0.5), // Transparan dan blur
+                        color: Colors.white.withOpacity(0.5), 
                         child: AppHeader(
                           showBackButton: true,
                           showAuthButtons: true,
-                        ), // Tetap menggunakan widget header yang sama
+                        ), 
                       ),
                     ),
                   ),

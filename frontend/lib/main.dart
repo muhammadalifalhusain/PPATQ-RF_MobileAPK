@@ -6,8 +6,11 @@ void main() {
 }
 
 final ThemeData appTheme = ThemeData(
-  scaffoldBackgroundColor: const Color(0xFFF8F5F2), // Cream White
-  primaryColor: const Color(0xFFB6CDBD), // Sage Green
+  scaffoldBackgroundColor: const Color(0xFFF8F5F2), 
+  colorScheme: ColorScheme.fromSwatch().copyWith(
+    primary: Colors.green, 
+    secondary: Colors.black54, // Secondary color
+  ),
   cardColor: const Color(0xFFDDE0E4), 
   textTheme: const TextTheme(
     bodyLarge: TextStyle(color: Color(0xFF4A635D)), 
@@ -18,7 +21,7 @@ final ThemeData appTheme = ThemeData(
     ),
   ),
   iconTheme: const IconThemeData(color: Color(0xFF4A635D)), 
-  );
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
