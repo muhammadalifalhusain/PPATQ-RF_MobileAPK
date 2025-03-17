@@ -20,7 +20,6 @@ class ApiService {
     }
   }
 
-  // Cari santri berdasarkan nama dan kelas
   Future<Santri?> fetchSantri(String nama, String kelas) async {
     final response = await http.get(
       Uri.parse("$baseUrl/santri?nama=$nama&kelas=$kelas"),
@@ -37,9 +36,8 @@ class ApiService {
     }
   }
 
-  // Ambil semua data kesehatan
   Future<List<Kesehatan>> fetchKesehatanSantri() async {
-    final response = await http.get(Uri.parse("$baseUrl/kesehatan")); // Perbaikan endpoint
+    final response = await http.get(Uri.parse("$baseUrl/kesehatan")); 
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -71,8 +69,6 @@ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
             pemeriksaan: [],
           );
         }
-
-        // Menambahkan data pemeriksaan ke dalam list
         groupedData[noInduk]!.pemeriksaan.add({
           "tanggal_pemeriksaan": item['tanggal_pemeriksaan'],
           "tinggi_badan": item['tinggi_badan'],

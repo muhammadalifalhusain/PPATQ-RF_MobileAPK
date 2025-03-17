@@ -30,7 +30,11 @@ class AboutPage extends StatelessWidget {
                 // Konten scrollable
                 SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.only(top: constraints.maxHeight * 0.31), // Padding agar tidak ketimpa header
+                    padding: EdgeInsets.only(
+                      top: constraints.maxHeight * 0.31,
+                      left: 16,
+                      right: 16, 
+                    ), // Padding agar tidak ketimpa header
                     child: Column(
                       children: [
                         // Konten About
@@ -318,16 +322,41 @@ class AboutPage extends StatelessWidget {
                                   color: Colors.black87,
                                 ),
                               ),
+                              SizedBox(height: 10),
+                              Text(
+                                  'السلام عليكم ورحمة الله وبركاته الحمد لله رب العالمين والصلاة والسلام علي اشرف الانبياء والمر سلين وعلي اله وصحبه اجمعين . اما بعد',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 15,
+                                  height: 1.5,
+                                  color: Colors.black87,
+                                ),
+                              ),
                               SizedBox(height: 20),
                               Text(
-                                  'Misi kami adalah menghasilkan generasi yang hafal Al-Qur\'an dengan mutu yang unggul, '
-                                  'bukan hanya sekedar dalam hafalan, tetapi juga dalam pemahaman dan aplikasi nilai-nilai Al-Qur\'an dalam kehidupan sehari-hari. '
-                                  'Kami berkomitmen untuk mencetak generasi yang tidak hanya cemerlang dalam akademik, tetapi juga memiliki karakter yang terkait erat dengan ajaran Al-Qur\'an. '
-                                  'Kami bertekad untuk meningkatkan mutu imtaq (keimanan) dan iptek (ilmu pengetahuan dan teknologi) dalam pendidikan, '
-                                  'serta menegakkan ahlakul karimah sebagai landasan moral dan etika dalam bermasyarakat.',
+                                'Seorang seniman terkenal mengatakan bahwa anak adalah harta yang berharga, '
+                                'begitu juga dalam puisi Khalil Gibran, anak merupakan putra putri yang hidup yang rindu pada diri sendiri, '
+                                'yang jiwanya adalah penghuni rumah masa depan, yang kehidupannya terus berlangsung tiada henti. '
+                                'Pohon yang baik dikenal lewat buahnya yang baik. Anak yang sholeh melambangkan sosok orang tua yang sholeh.\n\n'
+                                'Oleh karena itu mempersiapkan kehidupan anak dengan sebaik-baiknya merupakan tugas mulia bagi orang tua dan Yayasan Raudlatul Falah '
+                                'lewat Pondok Pesantren Anak-Anak Tahfidzul Qur’an siap mewujudkan, ikut mempersiapkan, mendorong dan menjadikan generasi-generasi yang sholeh, '
+                                'generasi qur’ani, santun, maju dan kreatif. Akhir kata selaku Ketua Dewan Pembina kami ucapkan banyak terima kasih pada semua pihak yang terlibat '
+                                'dan membantu kemajuan pondok ini.',
                                 textAlign: TextAlign.justify,
                                 style: TextStyle(
                                   fontSize: 16,
+                                  height: 1.5,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                  'والسلام عليكم ورحمة الله وبركاته',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 15,
                                   height: 1.5,
                                   color: Colors.black87,
                                 ),
