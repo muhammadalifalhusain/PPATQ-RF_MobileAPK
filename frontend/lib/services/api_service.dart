@@ -50,8 +50,8 @@ class ApiService {
   }
 
 Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/kesehatan?no_induk=$noInduk'));
-
+    final response = await http.get(Uri.parse("$baseUrl/kesehatan?no_induk=$noInduk"));
+    //http://127.0.0.1:8000/kesehatan?no_induk=$noInduk
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> rawData = data['data'];
