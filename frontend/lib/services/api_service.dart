@@ -5,6 +5,8 @@ import '../models/kelas_model.dart';
 import '../models/kesehatan_model.dart';
 import '../models/berita_model.dart';
 import '../models/agenda_model.dart';
+import '../models/about_model.dart';
+
 
 class ApiService {
   static const String baseUrlLocal = "http://127.0.0.1:8000";
@@ -113,6 +115,16 @@ class ApiService {
           )).toList();
     } else {
       throw Exception("Gagal mengambil data berita dari hosting");
+    }
+  }
+
+  Future<About> fetchAbout() async {
+    final response = await http.get(Uri.parse("$baseUrlHosting/about"));
+
+    if (response.statusCode == 200) {
+      return About.fromJson(response.body);
+  } else {
+      throw Exception("Gagal mengambil data About");
     }
   }
 
