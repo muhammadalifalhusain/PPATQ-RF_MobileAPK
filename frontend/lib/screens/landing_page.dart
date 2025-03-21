@@ -26,7 +26,7 @@ class LandingPage extends StatelessWidget {
                       top: constraints.maxHeight * 0.35, 
                     ),
                     child: FutureBuilder<List<Berita>>(
-                      future: apiService.fetchBerita(),
+                      future: apiService.fetchBeritaFromHosting(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
@@ -52,12 +52,12 @@ class LandingPage extends StatelessWidget {
                             ),
                             SizedBox(height: 5), 
                             MenuIkonWidget(),
-                            // Text(
-                            //   'Berita Lainnya',
-                            //   style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                            // ),
-                            // SizedBox(height: 15),
-                            // BeritaSlider(beritaList: beritaList.sublist(1)),
+                            Text(
+                              'Berita Lainnya',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                            ),
+                            SizedBox(height: 15),
+                            BeritaSlider(beritaList: beritaList.sublist(1)),
                             FooterWidget(),
                           ],
                         );

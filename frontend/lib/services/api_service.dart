@@ -7,11 +7,12 @@ import '../models/berita_model.dart';
 import '../models/agenda_model.dart';
 
 class ApiService {
-  static const String baseUrl = "http://127.0.0.1:8000"; 
+  static const String baseUrlLocal = "http://127.0.0.1:8000";
+  static const String baseUrlHosting = "http://api.ppatq-rf.id/api";
 
-  // Ambil daftar kelas dari database
+  // Ambil daftar kelas dari database lokal
   Future<List<Kelas>> fetchKelas() async {
-    final response = await http.get(Uri.parse("$baseUrl/kelas"));
+    final response = await http.get(Uri.parse("$baseUrlLocal/kelas"));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body)['data'];
@@ -23,7 +24,7 @@ class ApiService {
 
   Future<Santri?> fetchSantri(String nama, String kelas) async {
     final response = await http.get(
-      Uri.parse("$baseUrl/santri?nama=$nama&kelas=$kelas"),
+      Uri.parse("$baseUrlLocal/santri?nama=$nama&kelas=$kelas"),
       headers: {
         "Accept": "application/json",
       },
@@ -38,7 +39,7 @@ class ApiService {
   }
 
   Future<List<Kesehatan>> fetchKesehatanSantri() async {
-    final response = await http.get(Uri.parse("$baseUrl/kesehatan")); 
+    final response = await http.get(Uri.parse("$baseUrlLocal/kesehatan"));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -49,14 +50,13 @@ class ApiService {
     }
   }
 
-Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
-    final response = await http.get(Uri.parse("$baseUrl/kesehatan?no_induk=$noInduk"));
-    //http://127.0.0.1:8000/kesehatan?no_induk=$noInduk
+  Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
+    final response = await http.get(Uri.parse("$baseUrlLocal/kesehatan?no_induk=$noInduk"));
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> rawData = data['data'];
 
-      // Mengelompokkan data berdasarkan no_induk
       Map<String, Kesehatan> groupedData = {};
 
       for (var item in rawData) {
@@ -87,7 +87,7 @@ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
   }
 
   Future<List<Berita>> fetchBerita() async {
-    final response = await http.get(Uri.parse("$baseUrl/berita"));
+    final response = await http.get(Uri.parse("$baseUrlLocal/berita"));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body)['data'];
@@ -97,9 +97,28 @@ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
     }
   }
 
+  // Ambil berita dari endpoint hosting
+  Future<List<Berita>> fetchBeritaFromHosting() async {
+    final response = await http.get(Uri.parse("$baseUrlHosting/berita"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      List<dynamic> beritaList = jsonData['data']['data'];
+
+      return beritaList.map((item) => Berita(
+            judul: item['judul'],
+            thumbnail: item['thumbnail'],
+            // gambarDalam: item['gambar_dalam'],
+            isiBerita: item['isi_berita'],
+          )).toList();
+    } else {
+      throw Exception("Gagal mengambil data berita dari hosting");
+    }
+  }
+
   Future<List<Agenda>> fetchAgenda({int perPage = 5, int page = 1}) async {
     final response = await http.get(
-      Uri.parse("$baseUrl/agenda?per_page=$perPage&page=$page"),
+      Uri.parse("$baseUrlLocal/agenda?per_page=$perPage&page=$page"),
       headers: {
         "Accept": "application/json",
       },
@@ -108,11 +127,10 @@ Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
 
-      List<dynamic> agendaList = jsonData['data']['data']; 
+      List<dynamic> agendaList = jsonData['data']['data'];
       return agendaList.map((item) => Agenda.fromJson(item)).toList();
     } else {
       throw Exception("Gagal mengambil data agenda");
     }
   }
-
 }
