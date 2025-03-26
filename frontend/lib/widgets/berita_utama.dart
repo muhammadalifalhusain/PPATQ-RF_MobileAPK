@@ -14,19 +14,19 @@ class BeritaUtama extends StatelessWidget {
       children: [
         // Judul berita
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Text(
-            berita.judul,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  child: Text(
+    berita.judul,
+    style: TextStyle(
+      fontSize: MediaQuery.of(context).size.width * 0.03, // Ukuran font dinamis
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+    textAlign: TextAlign.center,
+    maxLines: 2,
+    overflow: TextOverflow.ellipsis,
+  ),
+),
 
         // Thumbnail gambar
         GestureDetector(
