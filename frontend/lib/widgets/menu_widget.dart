@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/about_screen.dart';
 import '../screens/agenda_screen.dart';
+import '../screens/galeri_screen.dart';
 
 class MenuIkonWidget extends StatelessWidget {
   @override
@@ -30,8 +31,10 @@ class MenuIkonWidget extends StatelessWidget {
                 );
               }),
               _buildMenuIkon(Icons.photo_library, 'Galeri', () {
-                // Aksi ketika Galeri ditekan
-                print('Galeri diklik');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => GaleriScreen()),
+                );
               }),
               _buildMenuIkon(Icons.people, 'Staff', () {
                 // Aksi ketika Staff ditekan

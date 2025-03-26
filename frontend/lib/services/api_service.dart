@@ -6,13 +6,15 @@ import '../models/kesehatan_model.dart';
 import '../models/berita_model.dart';
 import '../models/agenda_model.dart';
 import '../models/about_model.dart';
+import '../models/galeri_model.dart';
 
 
 class ApiService {
   static const String baseUrlLocal = "http://127.0.0.1:8000";
   static const String baseUrlHosting = "http://api.ppatq-rf.id/api";
-
-  // Ambil daftar kelas dari database lokal
+  static const String fotoGaleriBaseUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/foto_galeri";
+  
+  
   Future<List<Kelas>> fetchKelas() async {
     final response = await http.get(Uri.parse("$baseUrlLocal/kelas"));
 
@@ -122,11 +124,11 @@ class ApiService {
     final response = await http.get(Uri.parse("$baseUrlHosting/about"));
 
     if (response.statusCode == 200) {
-      return About.fromJson(response.body);
-  } else {
-      throw Exception("Gagal mengambil data About");
+        return About.fromJson(response.body);
+    } else {
+        throw Exception("Gagal mengambil data About");
+      }
     }
-  }
 
   Future<List<Agenda>> fetchAgenda({int perPage = 5, int page = 1}) async {
     final response = await http.get(
@@ -145,4 +147,61 @@ class ApiService {
       throw Exception("Gagal mengambil data agenda");
     }
   }
+
+    Future<List<Galeri>> fetchGaleri() async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrlHosting/galeri"),
+        headers: {"Accept": "application/json"},
+      ).timeout(Duration(seconds: 10));
+
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+
+        // Debugging Struktur JSON
+        if (jsonData is Map<String, dynamic>) {
+          print("JSON Structure: ${jsonData.keys}");
+        }
+
+        // Cek beberapa kemungkinan struktur response
+        if (jsonData is Map<String, dynamic>) {
+          if (jsonData.containsKey('data') && jsonData['data'] is Map<String, dynamic>) {
+            if (jsonData['data'].containsKey('galeri')) {
+              return _parseGaleri(jsonData['data']['galeri']);
+            }
+          } else if (jsonData.containsKey('galeri')) {
+            return _parseGaleri(jsonData['galeri']);
+          }
+        }
+
+        throw Exception("Struktur response tidak dikenali");
+      } else {
+        throw Exception("Request gagal dengan status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching galeri: $e");
+      rethrow;
+    }
+  }
+
+  List<Galeri> _parseGaleri(dynamic galeriData) {
+    try {
+      if (galeriData is List) {
+        return galeriData
+            .where((item) => item is Map<String, dynamic> && item['published'] == 1)
+            .map((item) => Galeri.fromJson(item))
+            .toList();
+      } else {
+        throw Exception("Format data galeri tidak valid");
+      }
+    } catch (e) {
+      print("Error parsing galeri: $e");
+      throw Exception("Gagal memparsing data galeri");
+    }
+  }
 }
+
+
