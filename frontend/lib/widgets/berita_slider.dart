@@ -24,7 +24,6 @@ class BeritaSlider extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Gambar dengan AspectRatio untuk memastikan rasio konsisten
                 AspectRatio(
                   aspectRatio: 4 / 3, // Rasio 4:3
                   child: Container(
@@ -44,27 +43,13 @@ class BeritaSlider extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: ElevatedButton.icon(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => DetailBeritaPage(berita: berita)),
-                    ),
-                    icon: Icon(Icons.arrow_forward, color: Colors.black),
-                    label: Text(
-                      'Selengkapnya',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
         );
       },
       options: CarouselOptions(
-        height: MediaQuery.of(context).size.height * 0.4, 
+        height: MediaQuery.of(context).size.height * 0.4, // Tinggi carousel disesuaikan
         autoPlay: false,
         enlargeCenterPage: true,
         viewportFraction: 0.8,
