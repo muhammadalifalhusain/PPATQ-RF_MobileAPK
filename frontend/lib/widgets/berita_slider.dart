@@ -64,7 +64,7 @@ class BeritaSlider extends StatelessWidget {
         );
       },
       options: CarouselOptions(
-        height: MediaQuery.of(context).size.height * 0.4, // Tinggi carousel disesuaikan
+        height: MediaQuery.of(context).size.height * 0.4, 
         autoPlay: false,
         enlargeCenterPage: true,
         viewportFraction: 0.8,

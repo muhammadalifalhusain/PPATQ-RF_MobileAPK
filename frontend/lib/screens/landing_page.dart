@@ -8,8 +8,38 @@ import '../widgets/berita_slider.dart';
 import '../widgets/footer_widget.dart';
 import '../widgets/menu_widget.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
   final ApiService apiService = ApiService();
+  int _selectedIndex = 1;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Menu Akademik dipilih')),
+        );
+        break;
+      case 1:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Menu Profil dipilih')),
+        );
+        break;
+      case 2:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Menu Keuangan dipilih')),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +47,6 @@ class LandingPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header tetap di atas
             ClipRect(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -30,7 +59,6 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
             ),
-            // Konten yang bisa di-scroll
             Expanded(
               child: SingleChildScrollView(
                 child: FutureBuilder<List<Berita>>(
@@ -50,11 +78,7 @@ class LandingPage extends StatelessWidget {
                     return Column(
                       children: [
                         BeritaUtama(berita: beritaList.first),
-                        Divider(
-                          color: Colors.teal,
-                          thickness: 2,
-                          height: 20,
-                        ),
+                        Divider(color: Colors.teal, thickness: 2, height: 20),
                         Text(
                           'Menu',
                           style: TextStyle(
@@ -80,6 +104,25 @@ class LandingPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.teal,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Akademik',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet),
+            label: 'Keuangan',
+          ),
+        ],
       ),
     );
   }
