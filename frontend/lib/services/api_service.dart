@@ -13,7 +13,7 @@ import '../models/login_model.dart';
 class ApiService {
   static const String baseUrlLocal = "http://127.0.0.1:8000";
   static const String baseUrlHosting = "https://api.ppatq-rf.id/api";
-  static const String fotoGaleriBaseUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/foto_galeri";
+  static const String fotoGaleriBaseUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/";
 
 
   // Di dalam class ApiService
@@ -130,25 +130,31 @@ class ApiService {
     }
   }
 
-  // Ambil berita dari endpoint hosting
   Future<List<Berita>> fetchBeritaFromHosting() async {
-    final response = await http.get(Uri.parse("$baseUrlHosting/berita"));
-
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
-      List<dynamic> beritaList = jsonData['data']['data'];
-
-      return beritaList.map((item) => Berita(
-            judul: item['judul'],
-            thumbnail: item['thumbnail'],
-            // gambarDalam: item['gambar_dalam'],
-            isiBerita: item['isi_berita'],
-          )).toList();
-    } else {
-      throw Exception("Gagal mengambil data berita dari hosting");
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrlHosting/berita"),
+        headers: {"Accept": "application/json"},
+      );
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        
+        // Cek struktur response yang sebenarnya
+        final beritaList = jsonData['data'] is List 
+            ? jsonData['data'] 
+            : jsonData['data']['data'] ?? [];
+        
+        return List<Berita>.from(
+          beritaList.map((item) => Berita.fromJson(item))
+        );
+      } else {
+        throw Exception("Gagal mengambil data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("ERROR fetchBeritaFromHosting: $e");
+      rethrow;
     }
   }
-
   Future<About> fetchAbout() async {
     final response = await http.get(Uri.parse("$baseUrlHosting/about"));
 

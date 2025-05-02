@@ -10,50 +10,48 @@ class BeritaUtama extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // agar rata kiri untuk paragraf bawah
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Judul berita
-        Padding(
-  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-  child: Text(
-    berita.judul,
-    style: TextStyle(
-      fontSize: MediaQuery.of(context).size.width * 0.03, // Ukuran font dinamis
-      fontWeight: FontWeight.bold,
-      color: Colors.black,
-    ),
-    textAlign: TextAlign.center,
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-  ),
-),
-
-        // Thumbnail gambar
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Text(
+            berita.judul,
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.04,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         GestureDetector(
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => DetailBeritaPage(berita: berita)),
           ),
           child: Container(
-            width: double.infinity, // Full width
-            height: 200, // Tinggi sesuai yang ada di DetailBeritaPage
+            width: double.infinity,
+            height: 200,
             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), // Jika mau tetap rounded
-              color: Colors.grey[200], // Warna latar belakang jika gambar tidak memenuhi container
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey[200],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10), // Jika mau tetap rounded
+              borderRadius: BorderRadius.circular(10),
               child: Image.network(
                 berita.thumbnail,
-                fit: BoxFit.contain, // Menggunakan BoxFit.contain agar gambar tidak terpotong
+                fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) =>
                     Icon(Icons.broken_image, size: 200),
               ),
             ),
           ),
         ),
-        SizedBox(height: 10), // Jarak bawah
+        SizedBox(height: 10),
       ],
     );
   }

@@ -55,7 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
       );
 
-      // Simpan token & data user menggunakan SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', response.token);
       await prefs.setInt('user_id', response.id);
@@ -63,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setInt('no_induk', response.noInduk);
       await prefs.setString('kode', response.kode);
 
-      // Navigasi ke KesehatanScreen setelah login sukses
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainScreen()),

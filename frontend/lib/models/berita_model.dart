@@ -1,26 +1,28 @@
-class Berita {
-final String judul;
-final String thumbnail;
-final String isiBerita;
+import '../services/api_service.dart';
 
-Berita({
-  required this.judul,
-  required this.thumbnail,
-  required this.isiBerita,
-});
+class Berita {
+  final String judul;
+  final String thumbnail;
+  final String isiBerita;
+
+  Berita({
+    required this.judul,
+    required this.thumbnail,
+    required this.isiBerita,
+  });
 
   factory Berita.fromJson(Map<String, dynamic> json) {
-    String rawThumbnail = json['thumbnail'] ?? '';
-
-    // Cek apakah thumbnail sudah berupa URL lengkap atau masih nama file saja
-    String formattedThumbnail = rawThumbnail.startsWith('http')
+    final rawThumbnail = json['thumbnail']?.toString() ?? '';
+    
+    // Gunakan baseUrl yang sudah didefinisikan di ApiService
+    final formattedThumbnail = rawThumbnail.startsWith('http')
         ? rawThumbnail
-        : "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/$rawThumbnail";
+        : "${ApiService.fotoGaleriBaseUrl}${rawThumbnail.trim()}";
 
     return Berita(
-      judul: json['judul'] ?? '',
+      judul: json['judul']?.toString() ?? 'Judul tidak tersedia',
       thumbnail: formattedThumbnail,
-      isiBerita: json['isi_berita'] ?? '',
+      isiBerita: json['isi_berita']?.toString() ?? '',
     );
   }
 }
