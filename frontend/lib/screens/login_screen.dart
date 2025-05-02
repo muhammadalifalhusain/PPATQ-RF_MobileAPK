@@ -4,6 +4,8 @@ import 'register_screen.dart';
 import 'landing_page.dart';
 import 'kesehatan_screen.dart'; // Pastikan Anda sudah membuat KesehatanScreen
 import '../services/api_service.dart';
+import './dashboard/main.dart'; 
+
 // import '../models/login_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -64,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Navigasi ke KesehatanScreen setelah login sukses
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => KesehatanScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
 
     } catch (e) {
