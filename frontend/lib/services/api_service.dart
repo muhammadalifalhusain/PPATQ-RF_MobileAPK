@@ -7,14 +7,43 @@ import '../models/berita_model.dart';
 import '../models/agenda_model.dart';
 import '../models/about_model.dart';
 import '../models/galeri_model.dart';
+import '../models/login_model.dart';
 
 
 class ApiService {
   static const String baseUrlLocal = "http://127.0.0.1:8000";
-  static const String baseUrlHosting = "http://api.ppatq-rf.id/api";
+  static const String baseUrlHosting = "https://api.ppatq-rf.id/api";
   static const String fotoGaleriBaseUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/foto_galeri";
-  
-  
+
+
+  // Di dalam class ApiService
+  Future<LoginResponse> loginSiswa({
+    required int noInduk,
+    required String kode,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse("$baseUrlHosting/siswa/login"),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: jsonEncode({
+        "no_induk": noInduk,
+        "kode": kode,
+        "password": password,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      final jsonData = jsonDecode(response.body);
+      return LoginResponse.fromJson(jsonData['data']);
+    } else {
+      final errorData = jsonDecode(response.body);
+      throw Exception(errorData['message'] ?? 'Login failed');
+    }
+  }
+
   Future<List<Kelas>> fetchKelas() async {
     final response = await http.get(Uri.parse("$baseUrlLocal/kelas"));
 

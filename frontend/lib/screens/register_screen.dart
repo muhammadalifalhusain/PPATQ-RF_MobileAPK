@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './dashboard/main.dart'; // Pastikan path sesuai dengan struktur proyek kamu
+import './dashboard/main.dart'; 
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {

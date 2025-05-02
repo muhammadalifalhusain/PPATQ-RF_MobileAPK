@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'register_screen.dart';
-import 'landing_page.dart'; 
+import 'landing_page.dart';
+import 'kesehatan_screen.dart'; // Pastikan Anda sudah membuat KesehatanScreen
+import '../services/api_service.dart';
+// import '../models/login_model.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,8 +12,71 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController noIndukController = TextEditingController();
+  final TextEditingController kodeController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final ApiService apiService = ApiService();
+  bool isLoading = false;
+
+  Future<void> _login() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final noIndukText = noIndukController.text.trim();
+      final kode = kodeController.text.trim();
+      final password = passwordController.text.trim();
+
+      // Validasi input
+      if (noIndukText.isEmpty) {
+        throw Exception('Nomor induk harus diisi');
+      }
+
+      final noInduk = int.tryParse(noIndukText);
+      if (noInduk == null) {
+        throw Exception('Nomor induk harus berupa angka');
+      }
+
+      if (kode.isEmpty) {
+        throw Exception('Kode harus diisi');
+      }
+
+      if (password.isEmpty) {
+        throw Exception('Password harus diisi');
+      }
+
+      // Panggil API Login
+      final response = await apiService.loginSiswa(
+        noInduk: noInduk,
+        kode: kode,
+        password: password,
+      );
+
+      // Simpan token & data user menggunakan SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', response.token);
+      await prefs.setInt('user_id', response.id);
+      await prefs.setString('user_name', response.nama);
+      await prefs.setInt('no_induk', response.noInduk);
+      await prefs.setString('kode', response.kode);
+
+      // Navigasi ke KesehatanScreen setelah login sukses
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => KesehatanScreen()),
+      );
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +165,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: 20),
                               TextField(
-                                controller: emailController,
+                                controller: noIndukController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.email, color: Colors.black),
+                                  labelText: 'No Induk',
+                                  prefixIcon: Icon(Icons.numbers, color: Colors.black),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: kodeController,
+                                decoration: InputDecoration(
+                                  labelText: 'Kode',
+                                  prefixIcon: Icon(Icons.code, color: Colors.black),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -110,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               SizedBox(height: 15),
                               TextField(
                                 controller: passwordController,
+                                obscureText: true,
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   prefixIcon: Icon(Icons.lock, color: Colors.black),
@@ -117,71 +197,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
-                                obscureText: true,
                               ),
                               SizedBox(height: 20),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Fungsi login disini
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black,
-                                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(fontSize: 16, color: Colors.white),
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                'or login with',
-                                style: TextStyle(fontSize: 14, color: Colors.black54),
-                              ),
-                              SizedBox(height: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  // Fungsi login dengan Google
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black54),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/google.png',
-                                        height: 24,
-                                        width: 24,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        'Google',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black,
+                              isLoading
+                                  ? CircularProgressIndicator()
+                                  : ElevatedButton(
+                                      onPressed: _login,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 40, vertical: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20), // Jarak sebelum Divider
+                                      child: Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.white),
+                                      ),
+                                    ),
+                              SizedBox(height: 20),
                               Divider(
                                 color: Colors.grey.shade500,
                                 thickness: 1,
                                 height: 1,
                               ),
-                              SizedBox(height: 10), // Jarak sebelum teks register
-
-                              // Link ke register
+                              SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -196,11 +238,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onTap: () {
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => RegisterScreen()),
+                                        MaterialPageRoute(
+                                            builder: (context) => RegisterScreen()),
                                       );
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 3, vertical: 4),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 3, vertical: 4),
                                       child: Text(
                                         'Register here',
                                         style: TextStyle(
@@ -222,10 +266,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-
-            // Footer di bawah
             Padding(
-              padding: const EdgeInsets.only(bottom: 12.0), // Jarak dari bawah layar
+              padding: const EdgeInsets.only(bottom: 12.0),
               child: FooterWidget(),
             ),
           ],
@@ -235,7 +277,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// Footer widget diperbaiki
 class FooterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
