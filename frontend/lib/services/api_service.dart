@@ -8,6 +8,7 @@ import '../models/agenda_model.dart';
 import '../models/about_model.dart';
 import '../models/galeri_model.dart';
 import '../models/login_model.dart';
+import '../models/pembayaran_model.dart';
 
 
 class ApiService {
@@ -196,12 +197,10 @@ class ApiService {
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
 
-        // Debugging Struktur JSON
         if (jsonData is Map<String, dynamic>) {
           print("JSON Structure: ${jsonData.keys}");
         }
 
-        // Cek beberapa kemungkinan struktur response
         if (jsonData is Map<String, dynamic>) {
           if (jsonData.containsKey('data') && jsonData['data'] is Map<String, dynamic>) {
             if (jsonData['data'].containsKey('galeri')) {
@@ -237,6 +236,47 @@ class ApiService {
       throw Exception("Gagal memparsing data galeri");
     }
   }
+
+  Future<bool> postPembayaran(PembayaranRequest data, String token) async {
+    var uri = Uri.parse("$baseUrlHosting/pembayaran");
+
+    var request = http.MultipartRequest("POST", uri);
+    request.headers['Authorization'] = 'Bearer ${data.namaSantri}-$token';
+
+    request.fields['nama_santri'] = data.namaSantri;
+    request.fields['jumlah'] = data.jumlah.toString();
+    request.fields['tanggal_bayar'] = data.tanggalBayar;
+    request.fields['periode'] = data.periode.toString();
+    request.fields['tahun'] = data.tahun.toString();
+    request.fields['bank_pengirim'] = data.bankPengirim;
+    request.fields['atas_nama'] = data.atasNama;
+    request.fields['no_wa'] = data.noWa;
+    request.fields['catatan'] = data.catatan;
+
+    for (var i = 0; i < data.jenisPembayaran.length; i++) {
+      request.fields['jenis_pembayaran[$i]'] = data.jenisPembayaran[i].toString();
+      request.fields['id_jenis_pembayaran[$i]'] = data.idJenisPembayaran[i].toString();
+    }
+
+    request.files.add(await http.MultipartFile.fromPath('bukti', data.filePath));
+
+    try {
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 201) {
+        print("Pembayaran berhasil: ${response.body}");
+        return true;
+      } else {
+        print("Gagal mengirim pembayaran: ${response.statusCode} - ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("Error: $e");
+      return false;
+    }
+  }
+
 }
 
 
