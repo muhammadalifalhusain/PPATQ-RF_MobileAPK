@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../kesehatan_screen.dart';
 import '../santri_screen.dart';
 import '../pembayaran_screen.dart';
+import '../validasi_pembayaran.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    PembayaranScreen(),  // Index 0
+    ValidasiSantriScreen(),  // Index 0
     KesehatanScreen(),  // Index 0
     SantriScreen(), // Index 1
   ];

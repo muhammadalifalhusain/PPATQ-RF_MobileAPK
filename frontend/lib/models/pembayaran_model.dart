@@ -1,10 +1,11 @@
+// models/pembayaran_model.dart
 class Pembayaran {
-  final int id;
   final String namaSantri;
-  final int jumlah;
+  final int noInduk;
+  final double jumlah;
   final String tanggalBayar;
-  final String periode;
-  final String tahun;
+  final int periode;
+  final int tahun;
   final String bankPengirim;
   final String atasNama;
   final String noWa;
@@ -12,8 +13,8 @@ class Pembayaran {
   final String? bukti;
 
   Pembayaran({
-    required this.id,
     required this.namaSantri,
+    required this.noInduk,
     required this.jumlah,
     required this.tanggalBayar,
     required this.periode,
@@ -25,19 +26,18 @@ class Pembayaran {
     this.bukti,
   });
 
-  factory Pembayaran.fromJson(Map<String, dynamic> json) {
-    return Pembayaran(
-      id: json['id'],
-      namaSantri: json['nama_santri'],
-      jumlah: json['jumlah'],
-      tanggalBayar: json['tanggal_bayar'],
-      periode: json['periode'].toString(),
-      tahun: json['tahun'].toString(),
-      bankPengirim: json['bank_pengirim'],
-      atasNama: json['atas_nama'],
-      noWa: json['no_wa'],
-      catatan: json['catatan'],
-      bukti: json['bukti'],
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      'nama_santri': namaSantri,
+      'no_induk': noInduk,
+      'jumlah': jumlah,
+      'tanggal_bayar': tanggalBayar,
+      'periode': periode,
+      'tahun': tahun,
+      'bank_pengirim': bankPengirim,
+      'atas_nama': atasNama,
+      'no_wa': noWa,
+      'catatan': catatan,
+    };
   }
 }
