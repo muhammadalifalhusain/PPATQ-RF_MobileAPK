@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../kesehatan_screen.dart';
 import '../santri_screen.dart';
+import '../pembayaran_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
+    PembayaranScreen(),  // Index 0
     KesehatanScreen(),  // Index 0
     SantriScreen(), // Index 1
   ];
@@ -31,6 +33,10 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: Colors.teal, // Warna item yang dipilih
         unselectedItemColor: Colors.grey, // Warna item yang tidak dipilih
         items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.payment),
+            label: 'Payment',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',

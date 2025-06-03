@@ -10,6 +10,11 @@ import '../models/galeri_model.dart';
 import '../models/login_model.dart';
 import '../models/pembayaran_model.dart';
 
+import 'package:http_parser/http_parser.dart';
+import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 class ApiService {
   static const String baseUrlLocal = "http://127.0.0.1:8000";
@@ -17,86 +22,153 @@ class ApiService {
   static const String fotoGaleriBaseUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/";
 
 
-  // Di dalam class ApiService
-  Future<LoginResponse> loginSiswa({
-    required int noInduk,
-    required String kode,
-    required String password,
-  }) async {
+  Future<List<Pembayaran>> getPembayaran({required int periode, required int tahun}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final noInduk = prefs.getInt('no_induk');
+    final token = prefs.getString('auth_token');
+
     final response = await http.post(
-      Uri.parse("$baseUrlHosting/siswa/login"),
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: jsonEncode({
-        "no_induk": noInduk,
-        "kode": kode,
-        "password": password,
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      final jsonData = jsonDecode(response.body);
-      return LoginResponse.fromJson(jsonData['data']);
-    } else {
-      final errorData = jsonDecode(response.body);
-      throw Exception(errorData['message'] ?? 'Login failed');
-    }
-  }
-
-  Future<List<Kelas>> fetchKelas() async {
-    final response = await http.get(Uri.parse("$baseUrlLocal/kelas"));
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body)['data'];
-      return jsonData.map((item) => Kelas.fromJson(item)).toList();
-    } else {
-      throw Exception("Gagal mengambil data kelas");
-    }
-  }
-
-  Future<Santri?> fetchSantri(String nama, String kelas) async {
-    final response = await http.get(
-      Uri.parse("$baseUrlLocal/santri?nama=$nama&kelas=$kelas"),
-      headers: {
-        "Accept": "application/json",
+      Uri.parse('$baseUrlHosting/pembayaran'),
+      body: {
+        'no_induk': noInduk.toString(),
+        'token': token,
+        'periode': periode.toString(),
+        'tahun': tahun.toString(),
       },
     );
 
     if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
-      return Santri.fromJson(jsonData['data']);
+      final data = json.decode(response.body);
+      final List<dynamic> items = data['data'];
+      return items.map((json) => Pembayaran.fromJson(json)).toList();
     } else {
-      return null;
+      throw Exception("Gagal memuat data pembayaran");
     }
   }
 
-  Future<List<Kesehatan>> fetchKesehatanSantri() async {
-    final response = await http.get(Uri.parse("$baseUrlLocal/kesehatan"));
+  Future<void> postPembayaran({
+    required String namaSantri,
+    required String kodeKelas,
+    required int jumlah,
+    required String tanggalBayar,
+    required int periode,
+    required int tahun,
+    required String bankPengirim,
+    required String atasNama,
+    required String noWa,
+    required String catatan,
+    required File bukti,
+    required List<int> jenisPembayaran,
+    required List<int> idJenisPembayaran,
+    }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token')!;
+    final noInduk = prefs.getInt('no_induk')!;
+
+    final uri = Uri.parse('$baseUrlHosting/pembayaran');
+    final request = http.MultipartRequest('POST', uri)
+    ..headers['Authorization'] = 'Bearer $noInduk-$token'
+    ..fields['nama_santri'] = namaSantri
+    ..fields['kode_kelas'] = kodeKelas
+    ..fields['jumlah'] = jumlah.toString()
+    ..fields['tanggal_bayar'] = tanggalBayar
+    ..fields['periode'] = periode.toString()
+    ..fields['tahun'] = tahun.toString()
+    ..fields['bank_pengirim'] = bankPengirim
+    ..fields['atas_nama'] = atasNama
+    ..fields['no_wa'] = noWa
+    ..fields['catatan'] = catatan;
+
+    for (int i = 0; i < jenisPembayaran.length; i++) {
+    request.fields['jenis_pembayaran[$i]'] = jenisPembayaran[i].toString();
+    request.fields['id_jenis_pembayaran[$i]'] = idJenisPembayaran[i].toString();
+    }
+
+    final mimeType = bukti.path.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg';
+    final fileStream = await http.MultipartFile.fromPath(
+    'bukti',
+    bukti.path,
+    contentType: MediaType.parse(mimeType),
+    );
+
+    request.files.add(fileStream);
+
+    final response = await request.send();
+    if (response.statusCode != 201) {
+    final responseBody = await response.stream.bytesToString();
+    throw Exception('Gagal mengunggah: ${jsonDecode(responseBody)}');
+    }
+    }
+
+
+  Future<LoginResponse> loginSiswa({
+      required int noInduk,
+      required String kode,
+      required String password,
+    }) async {
+      final response = await http.post(
+        Uri.parse("$baseUrlHosting/siswa/login"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode({
+          "no_induk": noInduk,
+          "kode": kode,
+          "password": password,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body);
+        return LoginResponse.fromJson(jsonData['data']);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Login failed');
+      }
+    }
+
+    Future<List<Kelas>> fetchKelas() async {
+      final response = await http.get(Uri.parse("$baseUrlHosting/kelas"));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = jsonDecode(response.body)['data'];
+        return jsonData.map((item) => Kelas.fromJson(item)).toList();
+      } else {
+        throw Exception("Gagal mengambil data kelas");
+      }
+    }
+
+    Future<Santri?> fetchSantri(String nama, String kelas) async {
+      final response = await http.get(
+        Uri.parse("$baseUrlLocal/santri?nama=$nama&kelas=$kelas"),
+        headers: {
+          "Accept": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        return Santri.fromJson(jsonData['data']);
+      } else {
+        return null;
+      }
+    }
+
+    Future<List<Kesehatan>> fetchKesehatanSantri() async {
+    final response = await http.get(Uri.parse("$baseUrlHosting/kesehatan-santri"));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> list = data['data'];
-      return list.map((json) => Kesehatan.fromJson(json)).toList();
-    } else {
-      throw Exception("Gagal mengambil data kesehatan");
-    }
-  }
-
-  Future<List<Kesehatan>> searchKesehatanByNoInduk(String noInduk) async {
-    final response = await http.get(Uri.parse("$baseUrlLocal/kesehatan?no_induk=$noInduk"));
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final List<dynamic> rawData = data['data'];
-
+      
+      // Group data by no_induk
       Map<String, Kesehatan> groupedData = {};
-
-      for (var item in rawData) {
-        String noInduk = item['no_induk'];
-        String namaSantri = item['nama_santri'];
-
+      
+      for (var item in list) {
+        String noInduk = item['no_induk']?.toString() ?? '';
+        String namaSantri = item['nama_santri']?.toString() ?? 'Tidak diketahui';
+        
         if (!groupedData.containsKey(noInduk)) {
           groupedData[noInduk] = Kesehatan(
             noInduk: noInduk,
@@ -104,19 +176,20 @@ class ApiService {
             pemeriksaan: [],
           );
         }
+        
         groupedData[noInduk]!.pemeriksaan.add({
-          "tanggal_pemeriksaan": item['tanggal_pemeriksaan'],
-          "tinggi_badan": item['tinggi_badan'],
-          "berat_badan": item['berat_badan'],
-          "lingkar_pinggul": item['lingkar_pinggul'],
-          "lingkar_dada": item['lingkar_dada'],
-          "kondisi_gigi": item['kondisi_gigi'],
+          "tanggal_pemeriksaan": item['tanggal_pemeriksaan']?.toString() ?? '-',
+          "tinggi_badan": item['tinggi_badan']?.toString() ?? '-',
+          "berat_badan": item['berat_badan']?.toString() ?? '-',
+          "lingkar_pinggul": item['lingkar_pinggul']?.toString() ?? '-',
+          "lingkar_dada": item['lingkar_dada']?.toString() ?? '-',
+          "kondisi_gigi": item['kondisi_gigi']?.toString() ?? '-',
         });
       }
-
+      
       return groupedData.values.toList();
     } else {
-      throw Exception('Gagal mengambil data kesehatan');
+      throw Exception("Gagal mengambil data kesehatan: ${response.statusCode}");
     }
   }
 
@@ -168,7 +241,7 @@ class ApiService {
 
   Future<List<Agenda>> fetchAgenda({int perPage = 5, int page = 1}) async {
     final response = await http.get(
-      Uri.parse("$baseUrlLocal/agenda?per_page=$perPage&page=$page"),
+      Uri.parse("$baseUrlHosting/agenda?per_page=$perPage&page=$page"),
       headers: {
         "Accept": "application/json",
       },
@@ -237,45 +310,7 @@ class ApiService {
     }
   }
 
-  Future<bool> postPembayaran(PembayaranRequest data, String token) async {
-    var uri = Uri.parse("$baseUrlHosting/pembayaran");
-
-    var request = http.MultipartRequest("POST", uri);
-    request.headers['Authorization'] = 'Bearer ${data.namaSantri}-$token';
-
-    request.fields['nama_santri'] = data.namaSantri;
-    request.fields['jumlah'] = data.jumlah.toString();
-    request.fields['tanggal_bayar'] = data.tanggalBayar;
-    request.fields['periode'] = data.periode.toString();
-    request.fields['tahun'] = data.tahun.toString();
-    request.fields['bank_pengirim'] = data.bankPengirim;
-    request.fields['atas_nama'] = data.atasNama;
-    request.fields['no_wa'] = data.noWa;
-    request.fields['catatan'] = data.catatan;
-
-    for (var i = 0; i < data.jenisPembayaran.length; i++) {
-      request.fields['jenis_pembayaran[$i]'] = data.jenisPembayaran[i].toString();
-      request.fields['id_jenis_pembayaran[$i]'] = data.idJenisPembayaran[i].toString();
-    }
-
-    request.files.add(await http.MultipartFile.fromPath('bukti', data.filePath));
-
-    try {
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 201) {
-        print("Pembayaran berhasil: ${response.body}");
-        return true;
-      } else {
-        print("Gagal mengirim pembayaran: ${response.statusCode} - ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      print("Error: $e");
-      return false;
-    }
-  }
+  
 
 }
 
