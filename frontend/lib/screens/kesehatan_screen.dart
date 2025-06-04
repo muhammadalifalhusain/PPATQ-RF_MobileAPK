@@ -21,8 +21,20 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Data Kesehatan Santri"),
         backgroundColor: Colors.teal,
+        elevation: 1,
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Kesehatan',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: FutureBuilder<List<Kesehatan>>(
         future: futureKesehatan,

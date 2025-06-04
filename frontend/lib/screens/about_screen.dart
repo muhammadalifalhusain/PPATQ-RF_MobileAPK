@@ -47,7 +47,7 @@ class _AboutScreenState extends State<AboutScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Berita',
+          'Tentang',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

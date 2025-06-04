@@ -75,6 +75,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/icon_google.png
     - assets/images/google.png
+    - assets/images/default-image.png
   #   - images/a_dot_ham.jpeg
 
 flutter_launcher_icons:

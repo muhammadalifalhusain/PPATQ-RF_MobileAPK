@@ -62,7 +62,7 @@ class KonfirmasiLoginScreen extends StatelessWidget {
                         Image.asset('assets/images/logo.png', height: 80),
                         SizedBox(height: 24),
                         Text(
-                          'Opsi Login Role',
+                          'Login',
                           style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                         Text(
@@ -80,7 +80,7 @@ class KonfirmasiLoginScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                           ),
-                          child: Text('Login sebagai Wali Santri', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          child: Text('Wali Santri', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                         SizedBox(height: 20),
 
@@ -93,7 +93,7 @@ class KonfirmasiLoginScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                           ),
-                          child: Text('Login sebagai Murroby', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          child: Text('Murroby', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
