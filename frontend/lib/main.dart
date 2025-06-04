@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/landing_page.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,7 +9,7 @@ final ThemeData appTheme = ThemeData(
   scaffoldBackgroundColor: const Color(0xFFF8F5F2), 
   colorScheme: ColorScheme.fromSwatch().copyWith(
     primary: Colors.green, 
-    secondary: Colors.black54, // Secondary color
+    secondary: Colors.black54, 
   ),
   cardColor: const Color(0xFFDDE0E4), 
   textTheme: const TextTheme(
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PPATQ RAUDLATUL FALAH',
       theme: appTheme,
-      home: LandingPage(),
+      home: SplashScreen(),
     );
   }
 }

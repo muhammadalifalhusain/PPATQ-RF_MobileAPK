@@ -1,4 +1,3 @@
-// screens/form_pembayaran_screen.dart
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -32,7 +31,7 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
   final TextEditingController _noWaController = TextEditingController();
   final TextEditingController _catatanController = TextEditingController();
   File? _buktiPembayaran;
-  List<double> _nominalPembayaran = [0.0, 0.0, 0.0]; // Contoh: SPP, Daftar Ulang, Saku
+  List<double> _nominalPembayaran = [0.0, 0.0, 0.0];
   double _total = 0.0;
 
   @override
@@ -49,7 +48,6 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
         widget.tahun,
       );
       // Proses data yang diterima dari backend
-      // ...
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal memuat data pembayaran: $e')),
@@ -91,7 +89,7 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
       try {
         final success = await _pembayaranService.submitPembayaran(
           pembayaran,
-          [1, 2, 3], // ID jenis pembayaran (sesuaikan dengan backend)
+          [1, 2, 3],
           _nominalPembayaran,
         );
 
@@ -117,119 +115,190 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Pembayaran'),
+        title: Text(
+          'Form Pembayaran',
+          style: TextStyle(
+            color: Colors.white, // Ubah warna teks menjadi putih
+          ),
+        ),
         backgroundColor: Colors.teal,
+        elevation: 0,
+        centerTitle: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
       ),
+
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInfoRow('Nama Santri', widget.namaSantri),
-              _buildInfoRow('Kelas', widget.kelas),
-              _buildInfoRow('No. Induk', widget.noInduk.toString()),
-              _buildInfoRow('Periode Pembayaran', '${widget.bulan}/${widget.tahun}'),
-              Divider(thickness: 2),
+              // Header Card
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                color: Colors.teal[50],
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildInfoRow('Nama Santri', widget.namaSantri, Icons.person),
+                      _buildInfoRow('Kelas', widget.kelas, Icons.school),
+                      _buildInfoRow('No. Induk', widget.noInduk.toString(), Icons.confirmation_number),
+                      _buildInfoRow('Periode', '${_getNamaBulan(widget.bulan)} ${widget.tahun}', Icons.calendar_today),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
               
-              // Form Jenis Pembayaran
-              Text('Jenis Pembayaran', style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              _buildJenisPembayaran('SPP', 0),
-              _buildJenisPembayaran('Daftar Ulang', 1),
-              _buildJenisPembayaran('Saku', 2),
+              // Jenis Pembayaran Section
+              _buildSectionHeader('Jenis Pembayaran', Icons.payment),
+              SizedBox(height: 12),
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildJenisPembayaran('SPP', 0, Icons.money),
+                      Divider(height: 24),
+                      _buildJenisPembayaran('Daftar Ulang', 1, Icons.edit),
+                      Divider(height: 24),
+                      _buildJenisPembayaran('Saku', 2, Icons.wallet),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(height: 16),
               
               // Total Pembayaran
-              Text('Total Pembayaran: Rp ${_total.toStringAsFixed(2)}', 
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Divider(thickness: 2),
-              
-              // Form Data Transfer
-              TextFormField(
-                controller: _bankController,
-                decoration: InputDecoration(
-                  labelText: 'Bank Pengirim',
-                  border: OutlineInputBorder(),
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.teal.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Harap masukkan bank pengirim';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _atasNamaController,
-                decoration: InputDecoration(
-                  labelText: 'Atas Nama',
-                  border: OutlineInputBorder(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total Pembayaran:', 
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Rp ${_total.toStringAsFixed(2)}', 
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal)),
+                  ],
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Harap masukkan nama pemilik rekening';
-                  }
-                  return null;
-                },
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _noWaController,
-                decoration: InputDecoration(
-                  labelText: 'No. WhatsApp (untuk konfirmasi)',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Harap masukkan nomor WhatsApp';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _catatanController,
-                decoration: InputDecoration(
-                  labelText: 'Catatan (opsional)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 16),
-              
-              // Upload Bukti Pembayaran
-              Text('Bukti Pembayaran', style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
-              _buktiPembayaran == null
-                  ? OutlinedButton(
-                      onPressed: _pickImage,
-                      child: Text('Unggah Bukti Transfer'),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 48),
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.file(_buktiPembayaran!, height: 200),
-                        TextButton(
-                          onPressed: _pickImage,
-                          child: Text('Ganti Gambar'),
-                        ),
-                      ],
-                    ),
               SizedBox(height: 24),
               
-              // Tombol Submit
+              // Data Transfer Section
+              _buildSectionHeader('Data Transfer', Icons.account_balance),
+              SizedBox(height: 12),
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildTextField(_bankController, 'Bank Pengirim', Icons.account_balance),
+                      SizedBox(height: 16),
+                      _buildTextField(_atasNamaController, 'Atas Nama', Icons.person_outline),
+                      SizedBox(height: 16),
+                      _buildTextField(_noWaController, 'No. WhatsApp', Icons.phone, 
+                          keyboardType: TextInputType.phone),
+                      SizedBox(height: 16),
+                      _buildTextField(_catatanController, 'Catatan (opsional)', Icons.note, 
+                          maxLines: 3),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
+              
+              // Upload Bukti Section
+              _buildSectionHeader('Bukti Pembayaran', Icons.photo_camera),
+              SizedBox(height: 12),
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Unggah foto bukti transfer',
+                          style: TextStyle(color: Colors.grey[600])),
+                      SizedBox(height: 12),
+                      _buktiPembayaran == null
+                          ? ElevatedButton.icon(
+                              onPressed: _pickImage,
+                              icon: Icon(Icons.upload_file),
+                              label: Text('Pilih File'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.teal[100],
+                                foregroundColor: Colors.teal[800],
+                                minimumSize: Size(double.infinity, 48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.file(_buktiPembayaran!, 
+                                      height: 200,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover),
+                                ),
+                                SizedBox(height: 12),
+                                OutlinedButton.icon(
+                                  onPressed: _pickImage,
+                                  icon: Icon(Icons.change_circle),
+                                  label: Text('Ganti Gambar'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.teal,
+                                    minimumSize: Size(double.infinity, 48),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 32),
+              
+              // Submit Button
               ElevatedButton(
                 onPressed: _submitPembayaran,
-                child: Text('Simpan Pembayaran'),
+                child: Text('KONFIRMASI PEMBAYARAN',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
-                  minimumSize: Size(double.infinity, 50),
+                  foregroundColor: Colors.white,
+                  minimumSize: Size(double.infinity, 56),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 3,
+                  padding: EdgeInsets.symmetric(vertical: 16),
                 ),
               ),
             ],
@@ -239,47 +308,99 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildSectionHeader(String title, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.teal),
+        SizedBox(width: 8),
+        Text(title,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal)),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          SizedBox(
-            width: 120,
+          Icon(icon, size: 20, color: Colors.teal),
+          SizedBox(width: 12),
+          Expanded(
+            flex: 2,
             child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          Text(value),
+          Expanded(
+            flex: 3,
+            child: Text(value, style: TextStyle(fontSize: 15)),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildJenisPembayaran(String label, int index) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(label),
-          ),
-          Expanded(
-            flex: 3,
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                prefixText: 'Rp ',
-                border: OutlineInputBorder(),
+  Widget _buildJenisPembayaran(String label, int index, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, size: 24, color: Colors.teal),
+        SizedBox(width: 12),
+        Expanded(
+          flex: 2,
+          child: Text(label, style: TextStyle(fontSize: 15)),
+        ),
+        Expanded(
+          flex: 3,
+          child: TextFormField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              prefixText: 'Rp ',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey),
               ),
-              onChanged: (value) {
-                _nominalPembayaran[index] = double.tryParse(value) ?? 0.0;
-                _hitungTotal();
-              },
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             ),
+            onChanged: (value) {
+              _nominalPembayaran[index] = double.tryParse(value) ?? 0.0;
+              _hitungTotal();
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon,
+      {int maxLines = 1, TextInputType keyboardType = TextInputType.text}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Colors.teal),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      validator: (value) {
+        if ((label != 'Catatan (opsional)') && (value == null || value.isEmpty)) {
+          return 'Harap isi $label';
+        }
+        return null;
+      },
+    );
+  }
+
+  String _getNamaBulan(int bulan) {
+    final bulanList = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return bulanList[bulan - 1];
   }
 
   @override

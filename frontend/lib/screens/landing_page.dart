@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import '../services/api_service.dart';
 import '../models/berita_model.dart';
 import '../widgets/app_header.dart';
@@ -47,16 +46,11 @@ class _LandingPageState extends State<LandingPage> {
       body: SafeArea(
         child: Column(
           children: [
-            ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  color: Colors.white.withOpacity(0.7),
-                  child: AppHeader(
-                    showAuthButtons: true,
-                    showBackButton: false,
-                  ),
-                ),
+            Container(
+              color: Colors.white, // Background solid
+              child: AppHeader(
+                showAuthButtons: true,
+                showBackButton: false,
               ),
             ),
             Expanded(
