@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/pegawai_model.dart';
 import '../screens/about_screen.dart';
 import '../screens/agenda_screen.dart';
 import '../screens/galeri_screen.dart';
+import '../screens/pegawai_screen.dart';
 
 class MenuIkonWidget extends StatelessWidget {
   @override
@@ -37,8 +39,10 @@ class MenuIkonWidget extends StatelessWidget {
                 );
               }),
               _buildMenuIkon(Icons.people, 'Staff', () {
-                // Aksi ketika Staff ditekan
-                print('Staff diklik');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PegawaiDataScreen()),
+                );
               }),
               _buildMenuIkon(Icons.emoji_events, 'Prestasi', () {
                 // Aksi ketika Prestasi ditekan
