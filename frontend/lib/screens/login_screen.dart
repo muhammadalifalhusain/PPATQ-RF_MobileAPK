@@ -315,34 +315,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                       label: 'Password',
                                       icon: Icons.lock_outline,
                                       isPassword: true,
-                                    ),
-                                    
-                                    SizedBox(height: 16),                                    
-                                    Row(
-                                      children: [
-                                        Checkbox(
-                                          value: _rememberMe,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _rememberMe = value ?? false;
-                                            });
-                                          },
-                                          fillColor: MaterialStateProperty.all(Colors.white),
-                                          checkColor: Color(0xFF00695C),
-                                        ),
-                                        Text(
-                                          'Ingat saya',
-                                          style: TextStyle(
-                                            color: Colors.white.withOpacity(0.8),
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    
-                                    SizedBox(height: 24),
-                                    
-                                    // Login Button
+                                    ),                                    
+                                    SizedBox(height: 20),                                    
                                     Container(
                                       width: double.infinity,
                                       height: 50,

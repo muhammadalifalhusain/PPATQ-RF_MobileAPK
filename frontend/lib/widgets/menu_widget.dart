@@ -45,12 +45,10 @@ class MenuIkonWidget extends StatelessWidget {
                 );
               }),
               _buildMenuIkon(Icons.emoji_events, 'Prestasi', () {
-                // Aksi ketika Prestasi ditekan
-                print('Prestasi diklik');
+                _showDevelopmentDialog(context);
               }),
               _buildMenuIkon(Icons.help_center, 'Layanan', () {
-                // Aksi ketika Layanan ditekan
-                print('Layanan diklik');
+                _showDevelopmentDialog(context);
               }),
             ],
           ),
@@ -73,6 +71,83 @@ class MenuIkonWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDevelopmentDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 10),
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.engineering,
+                  size: 60,
+                  color: Colors.orange,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Sedang Dalam Pengembangan',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 15),
+                Text(
+                  'Maaf, menu ini sedang dalam tahap pengembangan. Kami akan segera meluncurkannya!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 25),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black, 
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  ),
+                  child: Text(
+                    'Mengerti',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

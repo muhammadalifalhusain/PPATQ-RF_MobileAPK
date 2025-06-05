@@ -80,7 +80,7 @@ class KonfirmasiLoginScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                           ),
-                          child: Text('Wali Santri', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          child: Text('WalSan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                         SizedBox(height: 20),
 

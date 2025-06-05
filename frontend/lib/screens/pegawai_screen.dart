@@ -121,7 +121,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
     return SlideTransition(
       position: _slideAnimation,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 25),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.9),
           borderRadius: BorderRadius.circular(25),
@@ -183,7 +183,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
               'Memuat data pegawai...',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.teal,
+                color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -420,12 +420,12 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       backgroundColor: Colors.teal,
       centerTitle: true,
       iconTheme: const IconThemeData(
-        color: Colors.white, // Ini yang membuat icon back berwarna putih
+        color: Colors.white, 
       ),
       title: _isSearching 
           ? null 
           : const Text(
-              'Data Pegawai',
+              'Pegawai',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -474,7 +474,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.school, size: 18),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 2),
                         const Text('Ustadz'),
                       ],
                     ),
@@ -484,7 +484,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.supervisor_account, size: 18),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         const Text('Murroby'),
                       ],
                     ),
@@ -494,7 +494,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.people, size: 18),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         const Text('Staff'),
                       ],
                     ),
