@@ -82,7 +82,7 @@ class AppHeader extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => KonfirmasiLoginScreen()),
+                        MaterialPageRoute(builder: (_) => LoginScreen()),
                       );
                     },
                   ),

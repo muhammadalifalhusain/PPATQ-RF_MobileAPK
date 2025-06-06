@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../kesehatan_screen.dart';
 import '../santri_screen.dart';
 import '../pembayaran_screen.dart';
-import '../pembayaran_screen.dart';
 import '../validasi_pembayaran.dart';
 
 class MainScreen extends StatefulWidget {
