@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../kesehatan_screen.dart';
-import '../santri_screen.dart';
+// import '../santri_screen.dart';
 import '../pembayaran_screen.dart';
 import '../validasi_pembayaran.dart';
 
@@ -15,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     ValidasiSantriScreen(),  // Index 0
     KesehatanScreen(),  // Index 1
-    SantriScreen(), // Index 2
+    // SantriScreen(), // Index 2
   ];
 
   void _onItemTapped(int index) {

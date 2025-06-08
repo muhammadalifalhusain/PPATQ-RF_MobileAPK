@@ -1,13 +1,9 @@
 class Kelas {
-  final String code;
-  final String name;
+  final String kode;
 
-  Kelas({required this.code, required this.name});
+  Kelas({required this.kode});
 
   factory Kelas.fromJson(Map<String, dynamic> json) {
-    return Kelas(
-      code: json['code'],
-      name: json['name'],
-    );
+    return Kelas(kode: json['kode']);
   }
 }

@@ -6,6 +6,9 @@ import '../screens/galeri_screen.dart';
 import '../screens/pegawai_screen.dart';
 import '../screens/dakwah_screen.dart';
 
+import '../screens/keluhan_screen.dart';
+import '../services/keluhan_service.dart';
+
 class MenuIkonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -51,8 +54,11 @@ class MenuIkonWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => DakwahScreen()),
                 );
               }),
-              _buildMenuIkon(Icons.help_center, 'Layanan', () {
-                _showDevelopmentDialog(context);
+              _buildMenuIkon(Icons.feedback, 'Saran', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => KeluhanScreen(keluhanService: KeluhanService(),)),
+                );
               }),
             ],
           ),
