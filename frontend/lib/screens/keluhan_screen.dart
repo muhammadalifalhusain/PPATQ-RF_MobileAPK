@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/keluhan_model.dart';
-import '../models/get-santri_model.dart'; // Tambahkan ini jika belum ada
-import '../services/keluhan_service.dart';
-import '../services/get-santri_service.dart';
-import 'package:flutter/material.dart';
-import '../models/keluhan_model.dart';
 import '../models/get-santri_model.dart';
-import '../models/kelas_model.dart';
 import '../services/keluhan_service.dart';
 import '../services/get-santri_service.dart';
+import '../models/kelas_model.dart';
 import '../services/get-kelas_service.dart';
+import '../models/kategori_keluhan_model.dart'; // Tambahkan ini
+import '../services/kategori_keluhan_service.dart'; // Tambahkan ini
 
 class KeluhanScreen extends StatefulWidget {
   final KeluhanService keluhanService;
@@ -41,6 +38,9 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   List<Kelas> _kelasList = [];
   String? _selectedKodeKelas;
 
+  List<KategoriKeluhan> _kategoriKeluhanList = []; // Tambahkan ini
+  KategoriKeluhan? _selectedKategoriKeluhan; // Tambahkan ini
+
   int _rating = 5;
   String _selectedJenis = 'Keluhan';
   final List<String> _jenisLaporan = ['Keluhan', 'Aduan'];
@@ -50,6 +50,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   bool _isSearching = false;
   bool _isLoadingSantri = false;
   bool _isLoadingKelas = false;
+  bool _isLoadingKategoriKeluhan = false; // Tambahkan ini
 
   final Duration _animationDuration = const Duration(milliseconds: 300);
   final Curve _animationCurve = Curves.easeInOut;
@@ -59,6 +60,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     super.initState();
     _loadSantriData();
     _loadKelasData();
+    _loadKategoriKeluhan(); // Tambahkan ini
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -72,7 +74,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memuat data santri: \${e.toString()}')),
+        SnackBar(content: Text('Gagal memuat data santri: ${e.toString()}')),
       );
     } finally {
       setState(() => _isLoadingSantri = false);
@@ -85,10 +87,23 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
       _kelasList = await KelasService.fetchKelas();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memuat kelas: \$e')),
+        SnackBar(content: Text('Gagal memuat kelas: $e')),
       );
     } finally {
       setState(() => _isLoadingKelas = false);
+    }
+  }
+
+  Future<void> _loadKategoriKeluhan() async { // Tambahkan ini
+    setState(() => _isLoadingKategoriKeluhan = true);
+    try {
+      _kategoriKeluhanList = await KategoriKeluhanService.fetchKategoriKeluhan();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memuat kategori keluhan: $e')),
+      );
+    } finally {
+      setState(() => _isLoadingKategoriKeluhan = false);
     }
   }
 
@@ -186,6 +201,32 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     );
   }
 
+  Widget _buildDropdownKategoriKeluhan() { // Tambahkan ini
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: _isLoadingKategoriKeluhan
+          ? const CircularProgressIndicator()
+          : DropdownButtonFormField<KategoriKeluhan>(
+              value: _selectedKategoriKeluhan,
+              decoration: InputDecoration(
+                labelText: 'Kategori Keluhan',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              items: _kategoriKeluhanList
+                  .map((kategori) => DropdownMenuItem(
+                        value: kategori,
+                        child: Text(kategori.nama),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedKategoriKeluhan = value;
+                });
+              },
+              validator: (value) => value == null ? 'Pilih kategori keluhan' : null,
+            ),
+    );
+  }
 
   void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -199,13 +240,13 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         curve: _animationCurve,
       );
 
-       Keluhan keluhan = Keluhan(
+      Keluhan keluhan = Keluhan(
         namaPelapor: _namaPelaporController.text.trim(),
         email: _emailController.text.trim(),
         noHp: _noHpController.text.trim(),
         idSantri: _idSantriController.text.trim(),
         namaWaliSantri: _namaWaliSantriController.text.trim(),
-        idKategori: _selectedKodeKelas ?? '',
+        idKategori: _selectedKategoriKeluhan?.id.toString() ?? '', // Ubah ini
         masukan: _masukanController.text.trim(),
         saran: _saranController.text.trim(),
         rating: _rating,
@@ -231,6 +272,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
               _searchController.clear();
               _selectedSantri = null;
               _selectedKodeKelas = null;
+              _selectedKategoriKeluhan = null; // Reset kategori keluhan
             });
           }
         });
@@ -485,9 +527,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                                       controller: _namaWaliSantriController,
                                       label: 'Nama Wali Santri',
                                     ),
-                                    _buildDropdownKelas(
-                                      
-                                    ),
+                                    _buildDropdownKelas(),
                                   ],
                                 ),
                               ),
@@ -506,6 +546,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 16),
+                                    _buildDropdownKategoriKeluhan(), // Tambahkan ini
                                     _buildTextField(
                                       controller: _masukanController,
                                       label: 'Detail Laporan',
