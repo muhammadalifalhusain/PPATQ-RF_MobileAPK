@@ -4,6 +4,7 @@ import '../screens/about_screen.dart';
 import '../screens/agenda_screen.dart';
 import '../screens/galeri_screen.dart';
 import '../screens/pegawai_screen.dart';
+import '../screens/dakwah_screen.dart';
 
 class MenuIkonWidget extends StatelessWidget {
   @override
@@ -44,8 +45,11 @@ class MenuIkonWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => PegawaiDataScreen()),
                 );
               }),
-              _buildMenuIkon(Icons.emoji_events, 'Prestasi', () {
-                _showDevelopmentDialog(context);
+              _buildMenuIkon(Icons.emoji_events, 'Dakwah', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => DakwahScreen()),
+                );
               }),
               _buildMenuIkon(Icons.help_center, 'Layanan', () {
                 _showDevelopmentDialog(context);

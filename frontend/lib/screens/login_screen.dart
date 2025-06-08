@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'register_screen.dart';
 import 'landing_page.dart';
-import 'kesehatan_screen.dart';
 import '../services/api_service.dart';
 import './dashboard/main.dart';
 
@@ -14,13 +12,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
   final TextEditingController noIndukController = TextEditingController();
   final TextEditingController kodeController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   final ApiService apiService = ApiService();
   final _formKey = GlobalKey<FormState>();
-  
+
   bool isLoading = false;
-  bool _obscurePassword = true;
-  bool _rememberMe = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -39,9 +34,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       begin: Offset(0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
-    
+
     _animationController.forward();
-    _loadRememberMe();
   }
 
   @override
@@ -49,38 +43,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     _animationController.dispose();
     noIndukController.dispose();
     kodeController.dispose();
-    passwordController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadRememberMe() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _rememberMe = prefs.getBool('remember_me') ?? false;
-      if (_rememberMe) {
-        noIndukController.text = prefs.getString('saved_no_induk') ?? '';
-        kodeController.text = prefs.getString('saved_kode') ?? '';
-      }
-    });
-  }
-
-  Future<void> _saveRememberMe() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (_rememberMe) {
-      await prefs.setString('saved_no_induk', noIndukController.text);
-      await prefs.setString('saved_kode', kodeController.text);
-      await prefs.setBool('remember_me', true);
-    } else {
-      await prefs.remove('saved_no_induk');
-      await prefs.remove('saved_kode');
-      await prefs.setBool('remember_me', false);
-    }
-  }
-
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       isLoading = true;
@@ -89,22 +56,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     try {
       final noIndukText = noIndukController.text.trim();
       final kode = kodeController.text.trim();
-      final password = passwordController.text.trim();
-
       final noInduk = int.parse(noIndukText);
 
-      await _saveRememberMe();
-
-      final response = await apiService.loginSiswa(
-        noInduk: noInduk,
-        kode: kode,
-        password: password,
-      );
+      final response = await apiService.loginSiswa(noInduk: noInduk, kode: kode);
 
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', response.token);
-      await prefs.setInt('user_id', response.id);
-      await prefs.setString('user_name', response.nama);
       await prefs.setInt('no_induk', response.noInduk);
       await prefs.setString('kode', response.kode);
 
@@ -123,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       );
 
       await Future.delayed(Duration(milliseconds: 500));
-      
+
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -133,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           },
         ),
       );
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -173,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         child: SafeArea(
           child: Column(
             children: [
-              // Custom AppBar
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -196,7 +150,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   ],
                 ),
               ),
-
               Expanded(
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
@@ -229,10 +182,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 width: 80,
                               ),
                             ),
-                            
                             SizedBox(height: 24),
-                            
-                            // Title dengan animasi
                             Text(
                               'Selamat Datang',
                               style: TextStyle(
@@ -250,10 +200,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 letterSpacing: 1.2,
                               ),
                             ),
-                            
                             SizedBox(height: 40),
-
-                            // Form Login dengan glass morphism effect
                             Container(
                               padding: EdgeInsets.all(24),
                               decoration: BoxDecoration(
@@ -275,7 +222,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 key: _formKey,
                                 child: Column(
                                   children: [
-                                    // No Induk Field
                                     _buildTextField(
                                       controller: noIndukController,
                                       label: 'Nomor Induk',
@@ -291,32 +237,19 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                         return null;
                                       },
                                     ),
-                                    
                                     SizedBox(height: 20),
-                                    
-                                    // Kode Field
                                     _buildTextField(
                                       controller: kodeController,
-                                      label: 'Kode',
+                                      label: 'Kelas',
                                       icon: Icons.qr_code_2,
                                       validator: (value) {
                                         if (value?.isEmpty ?? true) {
-                                          return 'Kode harus diisi';
+                                          return 'Kelas harus diisi';
                                         }
                                         return null;
                                       },
                                     ),
-                                    
                                     SizedBox(height: 20),
-                                    
-                                    // Password Field
-                                    _buildTextField(
-                                      controller: passwordController,
-                                      label: 'Password',
-                                      icon: Icons.lock_outline,
-                                      isPassword: true,
-                                    ),                                    
-                                    SizedBox(height: 20),                                    
                                     Container(
                                       width: double.infinity,
                                       height: 50,
@@ -355,7 +288,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 ),
                               ),
                             ),
-                            
                             SizedBox(height: 40),
                           ],
                         ),
@@ -364,8 +296,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   ),
                 ),
               ),
-              
-              // Footer
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -401,37 +331,21 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     required String label,
     required IconData icon,
     TextInputType? keyboardType,
-    bool isPassword = false,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      obscureText: isPassword ? _obscurePassword : false,
       validator: validator,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
         prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.8)),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.white.withOpacity(0.8),
-                ),
-                onPressed: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              )
-            : null,
         filled: true,
         fillColor: Colors.white.withOpacity(0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),

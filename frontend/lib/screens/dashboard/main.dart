@@ -39,8 +39,8 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Payment',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.medical_services),
+            label: 'Kesehatan',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),

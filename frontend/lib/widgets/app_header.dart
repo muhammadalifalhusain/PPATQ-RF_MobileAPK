@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/login_screen.dart';
 
-import '../screens/murroby/login_screen.dart';
-import '../screens/konfirmasi_login_screen.dart';
 
 // import '../screens/register_screen.dart';
 
@@ -66,7 +64,6 @@ class AppHeader extends StatelessWidget {
           ),
           SizedBox(height: 10),
 
-          // Tombol Login/Register (hanya tampil jika showAuthButtons == true)
           if (showAuthButtons)
             Container(
               padding: EdgeInsets.symmetric(horizontal: 25),
