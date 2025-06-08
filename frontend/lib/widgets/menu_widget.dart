@@ -45,7 +45,7 @@ class MenuIkonWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => PegawaiDataScreen()),
                 );
               }),
-              _buildMenuIkon(Icons.emoji_events, 'Dakwah', () {
+              _buildMenuIkon(Icons.record_voice_over, 'Dakwah', () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => DakwahScreen()),
