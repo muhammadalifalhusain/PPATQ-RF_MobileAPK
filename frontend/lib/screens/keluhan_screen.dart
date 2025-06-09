@@ -121,7 +121,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   void _selectSantri(Santri santri) {
     setState(() {
       _selectedSantri = santri;
-      _idSantriController.text = santri.nama;
+      _idSantriController.text = santri.id;
       _isSearching = false;
     });
   }
@@ -244,14 +244,16 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         namaPelapor: _namaPelaporController.text.trim(),
         email: _emailController.text.trim(),
         noHp: _noHpController.text.trim(),
-        idSantri: _idSantriController.text.trim(),
+        idSantri: _selectedSantri?.id != null ? int.tryParse(_selectedSantri!.id!) : null, // Pastikan ini benar
         namaWaliSantri: _namaWaliSantriController.text.trim(),
-        idKategori: _selectedKategoriKeluhan?.id.toString() ?? '', // Ubah ini
+        idKategori: _selectedKategoriKeluhan?.id,
         masukan: _masukanController.text.trim(),
         saran: _saranController.text.trim(),
         rating: _rating,
         jenis: _selectedJenis,
       );
+
+
 
       bool success = await widget.keluhanService.submitKeluhan(keluhan);
 

@@ -2,9 +2,9 @@ class Keluhan {
   final String namaPelapor;
   final String email;
   final String noHp;
-  final String idSantri;
+  final int? idSantri; // ubah ke int?
   final String namaWaliSantri;
-  final String idKategori;
+  final int? idKategori; // juga int?
   final String masukan;
   final String saran;
   final int rating;
@@ -14,9 +14,9 @@ class Keluhan {
     required this.namaPelapor,
     required this.email,
     required this.noHp,
-    required this.idSantri,
+    this.idSantri,
     required this.namaWaliSantri,
-    required this.idKategori,
+    this.idKategori,
     required this.masukan,
     required this.saran,
     required this.rating,
@@ -25,12 +25,12 @@ class Keluhan {
 
   Map<String, dynamic> toJson() {
     return {
-      'namaPelapor': namaPelapor,
+      'nama_pelapor': namaPelapor,
       'email': email,
-      'noHp': noHp,
-      'namaSantri': idSantri,
-      'namaWaliSantri': namaWaliSantri,
-      'kategori': idKategori,
+      'no_hp': noHp,
+      'id_santri': idSantri, // int or null
+      'nama_wali_santri': namaWaliSantri,
+      'id_kategori': idKategori,
       'masukan': masukan,
       'saran': saran,
       'rating': rating,

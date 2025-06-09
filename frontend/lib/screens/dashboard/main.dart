@@ -3,6 +3,7 @@ import '../kesehatan_screen.dart';
 // import '../santri_screen.dart';
 import '../pembayaran_screen.dart';
 import '../validasi_pembayaran.dart';
+import 'profile_dashboard.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     ValidasiSantriScreen(),  // Index 0
     KesehatanScreen(),  // Index 1
-    // SantriScreen(), // Index 2
+    ProfileDashboard()
   ];
 
   void _onItemTapped(int index) {
