@@ -75,7 +75,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       
       return true;
-    } catch (e) {
+  } catch (e) {
       _setError(e.toString().replaceAll('Exception: ', ''));
       _setLoading(false);
       return false;

@@ -72,13 +72,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                   // Bagian profil
                   Container(
                     padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF9CAF88),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                      ),
-                    ),
                     child: Column(
                       children: [
                         CircleAvatar(
@@ -94,7 +87,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                         ),
                         SizedBox(height: 5),
@@ -103,14 +96,14 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                             'Kelas: ${_loginData!.kode} | Kamar: ${additionalData['kamar']}',
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.black.withOpacity(0.9),
                             ),
                           ),
                         Text(
                           'No. Induk: ${_loginData!.noInduk}',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withOpacity(0.8),
+                            color: Colors.black.withOpacity(0.8),
                           ),
                         ),
                       ],
@@ -123,28 +116,34 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Info Santri
-                        Text(
-                          'Informasi Santri',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Card(
+                          color: Colors.teal, 
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12), // Border radius
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0), 
+                            child: Text(
+                              'Informasi Santri',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white, 
+                              ),
+                            ),
                           ),
                         ),
+
                         SizedBox(height: 10),
                         _buildInfoItem(Icons.home, 'Alamat', _loginData!.alamat),
                         _buildInfoItem(Icons.people, 'Wali', _loginData!.namaAyah),
-                        _buildInfoItem(Icons.night_shelter, 'Kamar', _loginData!.kamar),
                         _buildInfoItem(Icons.calendar_today, 'Tanggal Lahir', _loginData!.tanggalLahir),
                         _buildInfoItem(Icons.location_city, 'Tempat Lahir', _loginData!.tempatLahir),
                         _buildInfoItem(Icons.male, 'Jenis Kelamin', _loginData!.jenisKelamin),
                         _buildInfoItem(Icons.phone, 'No. HP', _loginData!.noHp),
-                        _buildInfoItem(Icons.phone, 'Alamat', _loginData!.namaAyah),
                       ],
                     ),
                   ),
-                  
-                  // Menu Dashboard
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: GridView.builder(
@@ -162,14 +161,12 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                           menuItems[index]['icon'],
                           menuItems[index]['label'],
                           () {
-                            // Navigasi ke halaman sesuai menu
                             print('Navigasi ke: ${menuItems[index]['label']}');
                           },
                         );
                       },
                     ),
-                  ),
-                  
+                  ),                 
                   SizedBox(height: 20),
                 ],
               ),
@@ -177,14 +174,13 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     );
   }
 
-  // Widget untuk menampilkan item informasi
   Widget _buildInfoItem(IconData icon, String label, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: Colors.blue),
+          Icon(icon, size: 20, color: Colors.teal),
           SizedBox(width: 10),
           Expanded(
             child: Column(

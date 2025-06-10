@@ -7,6 +7,8 @@ import 'landing_page.dart';
 import './dashboard/main.dart';
 import '../services/get-santri_service.dart';
 import '../models/get-santri_model.dart';
+import '../models/kelas_model.dart';
+import '../services/get-kelas_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -22,6 +24,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   List<Santri> santriList = [];
   Santri? selectedSantri;
 
+  List<Kelas> _kelasList = [];
+  String? _selectedKodeKelas;
+
+  bool _isLoadingKelas = false;
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -32,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     searchController = TextEditingController();
     _fetchSantri();
     
+    _loadKelasData();
     _animationController = AnimationController(
       duration: Duration(milliseconds: 1200),
       vsync: this,
@@ -47,6 +55,19 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
 
     _animationController.forward();
+  }
+
+  Future<void> _loadKelasData() async {
+    setState(() => _isLoadingKelas = true);
+    try {
+      _kelasList = await KelasService.fetchKelas();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memuat kelas: $e')),
+      );
+    } finally {
+      setState(() => _isLoadingKelas = false);
+    }
   }
 
   Future<void> _fetchSantri() async {
@@ -82,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Future<void> _login(AuthProvider auth) async {
-    if (!_formKey.currentState!.validate() || selectedSantri == null || selectedDate == null) {
+    if (!_formKey.currentState!.validate() || selectedSantri == null || selectedDate == null || _selectedKodeKelas == null) {
       _showError('Harap isi semua data dengan benar');
       return;
     }
@@ -90,24 +111,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     try {
       final tanggalLahirFormatted = DateFormat('yyyy-MM-dd').format(selectedDate!);
       
-      // Mengonversi noInduk dari String ke int
       final noInduk = int.parse(selectedSantri!.noInduk); // Pastikan noInduk adalah String yang dapat dikonversi ke int
 
-      // Melakukan login dan mendapatkan response
       final success = await auth.login(
         noInduk: noInduk,
-        kode: kodeController.text.trim(),
+        kode: _selectedKodeKelas!, 
         tanggalLahir: tanggalLahirFormatted,
       );
 
       if (success) {
-        // Menyimpan data login ke dalam model
-        final loginResponse = auth.loginResponse; // Ambil data login response
-        if (loginResponse != null) {
-          // Anda bisa melakukan sesuatu dengan loginResponse di sini jika perlu
-          print('Login berhasil: ${loginResponse.nama}'); // Contoh penggunaan
-        }
-
         _showSuccess('Login berhasil! Selamat datang');
         await Future.delayed(Duration(milliseconds: 500));
         Navigator.pushReplacement(
@@ -224,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                       ),
                                     ),
                                   SizedBox(height: 20),
-                                  _buildKodeField(),
+                                  _buildDropdownKelas(),
                                   SizedBox(height: 20),
                                   _buildDatePicker(),
                                   SizedBox(height: 24),
@@ -284,7 +296,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   final Santri option = options.elementAt(index);
                   return ListTile(
                     title: Text(option.nama),
-                    subtitle: Text('No. Induk: ${option.noInduk}'),
                     onTap: () => onSelected(option),
                   );
                 },
@@ -317,23 +328,47 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     );
   }
 
-  Widget _buildKodeField() {
-    return TextFormField(
-      controller: kodeController,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: 'Kelas',
-        labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
-        prefixIcon: Icon(Icons.qr_code_2, color: Colors.white.withOpacity(0.8)),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.1),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+  Widget _buildDropdownKelas() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: DropdownButtonFormField<String>(
+        value: _selectedKodeKelas,
+        decoration: InputDecoration(
+          labelText: 'Kode Kelas',
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.1), // Warna latar belakang
+          labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)), // Warna teks label
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15), // Radius border
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), // Warna border
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), // Warna border saat enabled
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.white), // Warna border saat fokus
+          ),
+          prefixIcon: Icon(Icons.class_, color: Colors.white.withOpacity(0.8)), // Ikon prefix
         ),
+        items: _kelasList
+            .map((kelas) => DropdownMenuItem(
+                  value: kelas.kode,
+                  child: Text(
+                    kelas.kode,
+                    style: TextStyle(color: Colors.white), // Warna teks item
+                  ),
+                ))
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedKodeKelas = value;
+          });
+        },
+        validator: (value) => value == null ? 'Pilih kode kelas' : null,
+        dropdownColor: Color(0xFF004D40), // Warna dropdown
       ),
-      validator: (value) => value?.isEmpty ?? true ? 'Kelas harus diisi' : null,
     );
   }
 
