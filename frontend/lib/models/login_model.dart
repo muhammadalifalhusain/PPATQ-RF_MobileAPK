@@ -1,6 +1,3 @@
-// models/login_model.dart
-
-// Model untuk transaksi uang saku masuk
 class SakuMasuk {
   final String uangAsal;
   final int jumlah;
@@ -13,12 +10,19 @@ class SakuMasuk {
   });
 
   factory SakuMasuk.fromJson(Map<String, dynamic> json) {
+    int jumlahValue = 0;
+    if (json['jumlah'] is int) {
+      jumlahValue = json['jumlah'] as int;
+    } else if (json['jumlah'] is String) {
+      jumlahValue = int.tryParse(json['jumlah'].toString()) ?? 0;
+      print('Warning: jumlah (SakuMasuk) adalah string: ${json['jumlah']}');
+    } else {
+      print('Error: jumlah (SakuMasuk) bukan int atau string');
+    }
     return SakuMasuk(
-      uangAsal: json['uangAsal']?.toString() ?? '',
-      jumlah: json['jumlah'] is int 
-          ? json['jumlah'] 
-          : int.parse(json['jumlah'].toString()),
-      tanggal: json['tanggal']?.toString() ?? '',
+      uangAsal: json['uangAsal']?.toString() ??  '',
+      jumlah: jumlahValue,
+      tanggal: json['tanggal']?.toString() ??  '',
     );
   }
 
@@ -46,13 +50,20 @@ class SakuKeluar {
   });
 
   factory SakuKeluar.fromJson(Map<String, dynamic> json) {
+    int jumlahValue = 0;
+    if (json['jumlah'] is int) {
+      jumlahValue = json['jumlah'] as int;
+    } else if (json['jumlah'] is String) {
+      jumlahValue = int.tryParse(json['jumlah'].toString()) ?? 0;
+      print('Warning: jumlah (SakuKeluar) adalah string: ${json['jumlah']}');
+    } else {
+      print('Error: jumlah (SakuKeluar) bukan int atau string');
+    }
     return SakuKeluar(
-      nama: json['nama']?.toString() ?? '',
-      jumlah: json['jumlah'] is int 
-          ? json['jumlah'] 
-          : int.parse(json['jumlah'].toString()),
-      note: json['note']?.toString() ?? '',
-      tanggal: json['tanggal']?.toString() ?? '',
+      nama: json['nama']?.toString() ??  '',
+      jumlah: jumlahValue,
+      note: json['note']?.toString() ??  '',
+      tanggal: json['tanggal']?.toString() ??  '',
     );
   }
 
@@ -79,16 +90,25 @@ class Keuangan {
   });
 
   factory Keuangan.fromJson(Map<String, dynamic> json) {
+    int saldoValue = 0;
+    if (json['saldo'] is int) {
+      saldoValue = json['saldo'] as int;
+    } else if (json['saldo'] is String) {
+      saldoValue = int.tryParse(json['saldo'].toString()) ?? 0;
+      print('Warning: saldo (Keuangan) adalah string: ${json['saldo']}');
+    } else {
+      print('Error: saldo (Keuangan) bukan int atau string');
+    }
     return Keuangan(
-      saldo: json['saldo'] is int 
-          ? json['saldo'] 
-          : int.parse(json['saldo'].toString()),
+      saldo: saldoValue,
       sakuMasuk: (json['sakuMasuk'] as List<dynamic>?)
-          ?.map((item) => SakuMasuk.fromJson(item))
-          .toList() ?? [],
+              ?.map((item) => SakuMasuk.fromJson(item))
+              .toList() ??
+          [],
       sakuKeluar: (json['sakuKeluar'] as List<dynamic>?)
-          ?.map((item) => SakuKeluar.fromJson(item))
-          .toList() ?? [],
+              ?.map((item) => SakuKeluar.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 
@@ -101,7 +121,6 @@ class Keuangan {
   }
 }
 
-// Model utama untuk data santri (LoginResponse)
 class LoginResponse {
   final int noInduk;
   final String kode;
@@ -154,32 +173,48 @@ class LoginResponse {
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    Map<String, dynamic>? keuanganJson;
+    if (json['keuangan'] is Map<String, dynamic>) {
+      keuanganJson = json['keuangan'] as Map<String, dynamic>;
+    } else {
+      // Tangani kasus ketika keuangan bukan Map<String, dynamic>
+      print('Error: keuangan bukan Map<String, dynamic>');
+      keuanganJson = {}; // Berikan Map kosong sebagai default
+    }
+
+    int noIndukValue = 0;
+    if (json['noInduk'] is int) {
+      noIndukValue = json['noInduk'] as int;
+    } else if (json['noInduk'] is String) {
+      noIndukValue = int.tryParse(json['noInduk'] as String) ?? 0; // Coba parse sebagai int
+    } else {
+      print('Error: noInduk bukan int atau string');
+    }
+
     return LoginResponse(
-      noInduk: json['noInduk'] is int 
-          ? json['noInduk'] 
-          : int.parse(json['noInduk'].toString()),
-      kode: json['kode']?.toString() ?? '',
-      nama: json['nama']?.toString() ?? '',
-      photo: json['photo']?.toString() ?? '',
-      kelas: json['kelas']?.toString() ?? '',
-      kelasTahfidz: json['kelasTahfidz']?.toString() ?? '',
-      tempatLahir: json['tempatLahir']?.toString() ?? '',
-      tanggalLahir: json['tanggalLahir']?.toString() ?? '',
-      jenisKelamin: json['jenisKelamin']?.toString() ?? '',
-      alamat: json['alamat']?.toString() ?? '',
-      namaAyah: json['namaAyah']?.toString() ?? '',
-      pendidikanAyah: json['pendidikanAyah']?.toString() ?? '',
-      pekerjaanAyah: json['pekerjaanAyah']?.toString() ?? '',
-      namaIbu: json['namaIbu']?.toString() ?? '',
-      pendidikanIbu: json['pendidikanIbu']?.toString() ?? '',
-      pekerjaanIbu: json['pekerjaanIbu']?.toString() ?? '',
-      noHp: json['noHp']?.toString() ?? '',
-      kamar: json['kamar']?.toString() ?? '',
-      namaMurroby: json['namaMurroby']?.toString() ?? '',
-      fotoMurroby: json['fotoMurroby']?.toString() ?? '',
-      namaUstadTahfidz: json['namaUstadTahfidz']?.toString() ?? '',
-      fotoUstadTahfidz: json['fotoUstadTahfidz']?.toString() ?? '',
-      keuangan: json['keuangan'] != null 
+      noInduk: noIndukValue,
+      kode: json['kode']?.toString() ??  '',
+      nama: json['nama']?.toString() ??  '',
+      photo: json['photo']?.toString() ??  '',
+      kelas: json['kelas']?.toString() ??  '',
+      kelasTahfidz: json['kelasTahfidz']?.toString() ??  '',
+      tempatLahir: json['tempatLahir']?.toString() ??  '',
+      tanggalLahir: json['tanggalLahir']?.toString() ??  '',
+      jenisKelamin: json['jenisKelamin']?.toString() ??  '',
+      alamat: json['alamat']?.toString() ??  '',
+      namaAyah: json['namaAyah']?.toString() ??  '',
+      pendidikanAyah: json['pendidikanAyah']?.toString() ??  '',
+      pekerjaanAyah: json['pekerjaanAyah']?.toString() ??  '',
+      namaIbu: json['namaIbu']?.toString() ??  '',
+      pendidikanIbu: json['pendidikanIbu']?.toString() ??  '',
+      pekerjaanIbu: json['pekerjaanIbu']?.toString() ??  '',
+      noHp: json['noHp']?.toString() ??  '',
+      kamar: json['kamar']?.toString() ??  '',
+      namaMurroby: json['namaMurroby']?.toString() ??  '',
+      fotoMurroby: json['fotoMurroby']?.toString() ??  '',
+      namaUstadTahfidz: json['namaUstadTahfidz']?.toString() ??  '',
+      fotoUstadTahfidz: json['fotoUstadTahfidz']?.toString() ??  '',
+      keuangan: json['keuangan'] != null
           ? Keuangan.fromJson(json['keuangan'])
           : Keuangan(saldo: 0, sakuMasuk: [], sakuKeluar: []),
     );

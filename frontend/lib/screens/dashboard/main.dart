@@ -44,8 +44,8 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Kesehatan',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Santri',
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),

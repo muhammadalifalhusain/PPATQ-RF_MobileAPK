@@ -1,4 +1,6 @@
 // providers/auth_provider.dart
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -12,7 +14,6 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
   LoginResponse? get loginResponse => _loginResponse;
   bool get isLoggedIn => _isLoggedIn;
   bool get isLoading => _isLoading;
@@ -26,7 +27,6 @@ class AuthProvider with ChangeNotifier {
     _checkLoginStatus();
   }
 
-  // Check if user is already logged in when app starts
   Future<void> _checkLoginStatus() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -46,7 +46,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Login method
   Future<bool> login({
     required int noInduk,
     required String kode,
@@ -56,14 +55,12 @@ class AuthProvider with ChangeNotifier {
       _setLoading(true);
       _clearError();
 
-      // Mengonversi noInduk ke String jika diperlukan
-      final noIndukString = noInduk.toString();
-
       final response = await _loginService.loginSiswa(
-        noInduk: noIndukString, 
+        noInduk: noInduk, 
         kode: kode,
         tanggalLahir: tanggalLahir,
       );
+
 
       // Save login data
       await _saveLoginData(response);
@@ -82,20 +79,16 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Save login data to SharedPreferences
   Future<void> _saveLoginData(LoginResponse response) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
-      // Save individual fields for quick access
-      await prefs.setString('no_induk', response.noInduk.toString());
+      await prefs.setInt('no_induk', response.noInduk);
       await prefs.setString('kode', response.kode);
       await prefs.setString('nama', response.nama);
       await prefs.setString('photo', response.photo);
       await prefs.setString('kelas', response.kelas);
       await prefs.setBool('is_logged_in', true);
       
-      // Save complete login data as JSON string
       await prefs.setString('login_data', json.encode(response.toJson()));
       
     } catch (e) {
@@ -103,7 +96,6 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Logout method
   Future<void> logout() async {
     try {
       final prefs = await SharedPreferences.getInstance();

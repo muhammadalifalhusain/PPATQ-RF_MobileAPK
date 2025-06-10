@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     try {
       final tanggalLahirFormatted = DateFormat('yyyy-MM-dd').format(selectedDate!);
       
-      final noInduk = int.parse(selectedSantri!.noInduk); // Pastikan noInduk adalah String yang dapat dikonversi ke int
+      final noInduk = int.parse(selectedSantri!.noInduk); 
 
       final success = await auth.login(
         noInduk: noInduk,
@@ -348,16 +348,16 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.white), // Warna border saat fokus
+            borderSide: BorderSide(color: Colors.white), 
           ),
-          prefixIcon: Icon(Icons.class_, color: Colors.white.withOpacity(0.8)), // Ikon prefix
+          prefixIcon: Icon(Icons.class_, color: Colors.white.withOpacity(0.8)), 
         ),
         items: _kelasList
             .map((kelas) => DropdownMenuItem(
                   value: kelas.kode,
                   child: Text(
                     kelas.kode,
-                    style: TextStyle(color: Colors.white), // Warna teks item
+                    style: TextStyle(color: Colors.white),
                   ),
                 ))
             .toList(),
@@ -389,7 +389,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             SizedBox(width: 12),
             Text(
               selectedDate == null
-                  ? 'Pilih Tanggal Lahir'
+                  ? 'Tanggal Lahir'
                   : DateFormat('yyyy-MM-dd').format(selectedDate!),
               style: TextStyle(color: Colors.white.withOpacity(0.9)),
             ),
