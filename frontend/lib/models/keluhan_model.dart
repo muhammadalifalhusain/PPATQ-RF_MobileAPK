@@ -25,12 +25,12 @@ class Keluhan {
 
   Map<String, dynamic> toJson() {
     return {
-      'nama_pelapor': namaPelapor,
+      'namaPelapor': namaPelapor,
       'email': email,
-      'no_hp': noHp,
-      'id_santri': idSantri, // int or null
-      'nama_wali_santri': namaWaliSantri,
-      'id_kategori': idKategori,
+      'noHp': noHp,
+      'namaSantri': idSantri, 
+      'namaWaliSantri': namaWaliSantri,
+      'kategori': idKategori,
       'masukan': masukan,
       'saran': saran,
       'rating': rating,

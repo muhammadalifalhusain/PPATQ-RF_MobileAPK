@@ -5,8 +5,8 @@ import '../services/keluhan_service.dart';
 import '../services/get-santri_service.dart';
 import '../models/kelas_model.dart';
 import '../services/get-kelas_service.dart';
-import '../models/kategori_keluhan_model.dart'; // Tambahkan ini
-import '../services/kategori_keluhan_service.dart'; // Tambahkan ini
+import '../models/kategori_keluhan_model.dart'; 
+import '../services/kategori_keluhan_service.dart'; 
 
 class KeluhanScreen extends StatefulWidget {
   final KeluhanService keluhanService;
@@ -94,7 +94,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     }
   }
 
-  Future<void> _loadKategoriKeluhan() async { // Tambahkan ini
+  Future<void> _loadKategoriKeluhan() async { 
     setState(() => _isLoadingKategoriKeluhan = true);
     try {
       _kategoriKeluhanList = await KategoriKeluhanService.fetchKategoriKeluhan();
@@ -121,7 +121,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   void _selectSantri(Santri santri) {
     setState(() {
       _selectedSantri = santri;
-      _idSantriController.text = santri.id;
+      _idSantriController.text = santri.noInduk; 
       _isSearching = false;
     });
   }
@@ -130,12 +130,12 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Cari Santri*', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        const Text('Cari Santri', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
         const SizedBox(height: 8),
         TextFormField(
           controller: _searchController,
           decoration: InputDecoration(
-            hintText: 'Cari berdasarkan nama atau nomor induk',
+            hintText: 'Cari nama / Nomor Induk',
             prefixIcon: const Icon(Icons.search),
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
@@ -227,9 +227,15 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
             ),
     );
   }
-
   void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
+      if (_selectedSantri == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Harap pilih santri')),
+        );
+        return; 
+      }
+
       setState(() {
         _isLoading = true;
       });
@@ -244,7 +250,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         namaPelapor: _namaPelaporController.text.trim(),
         email: _emailController.text.trim(),
         noHp: _noHpController.text.trim(),
-        idSantri: _selectedSantri?.id != null ? int.tryParse(_selectedSantri!.id!) : null, // Pastikan ini benar
+        idSantri: int.tryParse(_selectedSantri!.noInduk ?? '') ?? 0,
         namaWaliSantri: _namaWaliSantriController.text.trim(),
         idKategori: _selectedKategoriKeluhan?.id,
         masukan: _masukanController.text.trim(),
@@ -253,28 +259,34 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         jenis: _selectedJenis,
       );
 
-
-
       bool success = await widget.keluhanService.submitKeluhan(keluhan);
 
       setState(() {
         _isLoading = false;
         _isSubmitted = success;
       });
-
+      //reset field ke setelan pabrik bosQuuuu
       if (success) {
-        Future.delayed(const Duration(seconds: 3), () {
+        Future.delayed(const Duration(seconds: 5), () {
           if (mounted) {
             setState(() {
               _isSubmitted = false;
               _formKey.currentState?.reset();
-              _rating = 5;
-              _selectedJenis = 'Keluhan';
+              _namaPelaporController.clear();
+              _emailController.clear();
+              _noHpController.clear();
+              _namaWaliSantriController.clear();
+              _masukanController.clear();
+              _saranController.clear();
               _idSantriController.clear();
               _searchController.clear();
+
+              // Reset semua dropdown dan nilai tambahan
+              _rating = 5;
+              _selectedJenis = 'Keluhan';
               _selectedSantri = null;
               _selectedKodeKelas = null;
-              _selectedKategoriKeluhan = null; // Reset kategori keluhan
+              _selectedKategoriKeluhan = null;
             });
           }
         });
@@ -333,7 +345,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Jenis Laporan*',
+        const Text('Jenis Laporan',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
         const SizedBox(height: 8),
         Wrap(
@@ -348,11 +360,12 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                   _selectedJenis = selected ? jenis : _selectedJenis;
                 });
               },
-              selectedColor: Theme.of(context).primaryColor,
+              selectedColor: Colors.teal,
               labelStyle: TextStyle(
                   color: _selectedJenis == jenis ? Colors.white : null),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
+                  showCheckmark: false, 
             );
           }).toList(),
         ),

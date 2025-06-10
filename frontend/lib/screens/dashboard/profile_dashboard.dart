@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:provider/provider.dart'; // Impor Provider
-import '../../models/login_model.dart'; // Pastikan untuk mengimpor model LoginResponse
-import '../../providers/auth_provider.dart'; // Impor AuthProvider
+import 'package:provider/provider.dart'; 
+import '../../models/login_model.dart'; 
+import '../../providers/auth_provider.dart'; 
+
+import '../../screens/kesehatan_screen.dart';
 
 class ProfileDashboard extends StatefulWidget {
   @override
@@ -11,18 +13,15 @@ class ProfileDashboard extends StatefulWidget {
 
 class _ProfileDashboardState extends State<ProfileDashboard> {
   LoginResponse? _loginData;
-
-  // Data santri lainnya yang diambil dari LoginResponse
   Map<String, dynamic> additionalData = {
-    'alamat': '', // Akan diisi dari _loginData
-    'wali': '', // Akan diisi dari _loginData
-    'saldo': 50000, // Anda bisa mengubah ini sesuai kebutuhan
-    'kamar': '', // Akan diisi dari _loginData
+    'alamat': '', 
+    'wali': '', 
+    'saldo': 50000, 
+    'kamar': '', 
   };
 
-  // Menu dashboard
   final List<Map<String, dynamic>> menuItems = [
-    {'icon': FontAwesome.heart, 'label': 'Kesehatan'},
+    {'icon': FontAwesome.hospital_o, 'label': 'Kesehatan'},
     {'icon': FontAwesome.history, 'label': 'Riwayat Bayar'},
     {'icon': FontAwesome.book, 'label': 'Nilai Akademik'},
     {'icon': FontAwesome.calendar, 'label': 'Jadwal'},
@@ -36,15 +35,13 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     _loadLoginData();
   }
 
-  // Fungsi untuk memuat data login
   Future<void> _loadLoginData() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     setState(() {
-      _loginData = authProvider.loginResponse; // Ambil data dari AuthProvider
-      // Mengisi additionalData dengan data dari _loginData
-      additionalData['alamat'] = _loginData!.alamat; // Pastikan alamat ada di LoginResponse
-      additionalData['wali'] = _loginData!.namaAyah; // Misalnya, menggunakan namaAyah sebagai wali
-      additionalData['kamar'] = _loginData!.kamar; // Misalnya, menggunakan kamar sebagai kamar
+      _loginData = authProvider.loginResponse;
+      additionalData['alamat'] = _loginData!.alamat; 
+      additionalData['wali'] = _loginData!.namaAyah; 
+      additionalData['kamar'] = _loginData!.kamar; 
     });
   }
 
@@ -109,8 +106,148 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                       ],
                     ),
                   ),
+
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.teal.shade300, Colors.teal.shade600],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.teal.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(Icons.account_balance_wallet, color: Colors.white, size: 30),
+                          SizedBox(height: 5),
+                          Text(
+                            'Saldo',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Rp. 1.000.000',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(right: 8),
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.green.shade400, Colors.green.shade600],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(Icons.trending_up, color: Colors.white, size: 28),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Uang Masuk',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Rp. 500.000',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 8),
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.red.shade400, Colors.red.shade600],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.red.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(Icons.trending_down, color: Colors.white, size: 28),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Uang Keluar',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Rp. 200.000',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   
-                  // Bagian detail santri
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(
@@ -161,7 +298,17 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                           menuItems[index]['icon'],
                           menuItems[index]['label'],
                           () {
-                            print('Navigasi ke: ${menuItems[index]['label']}');
+                            String label = menuItems[index]['label'];
+                            switch (label) {
+                              case 'Kesehatan':
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => KesehatanScreen()),
+                                );
+                                break;
+                              default:
+                                print('Navigasi ke: $label');
+                            }
                           },
                         );
                       },

@@ -60,7 +60,7 @@ class AuthProvider with ChangeNotifier {
       final noIndukString = noInduk.toString();
 
       final response = await _loginService.loginSiswa(
-        noInduk: noIndukString, // Menggunakan noInduk yang sudah dikonversi
+        noInduk: noIndukString, 
         kode: kode,
         tanggalLahir: tanggalLahir,
       );
