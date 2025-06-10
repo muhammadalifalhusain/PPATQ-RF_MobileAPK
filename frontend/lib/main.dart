@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart'; // Impor Provider
 import 'screens/splash_screen.dart';
+import 'providers/auth_provider.dart'; // Impor AuthProvider
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthProvider(), // Menyediakan AuthProvider
+      child: const MyApp(),
+    ),
+  );
 }
 
 final ThemeData appTheme = ThemeData(

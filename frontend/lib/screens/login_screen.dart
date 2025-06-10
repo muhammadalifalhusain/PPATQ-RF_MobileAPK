@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/auth_provider.dart';
 import 'landing_page.dart';
 import './dashboard/main.dart';
-import '../services/login_service.dart';
 import '../services/get-santri_service.dart';
 import '../models/get-santri_model.dart';
 
@@ -18,10 +18,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   late TextEditingController searchController;
   DateTime? selectedDate;
 
-  final LoginService loginService = LoginService();
   final _formKey = GlobalKey<FormState>();
-
-  bool isLoading = false;
   List<Santri> santriList = [];
   Santri? selectedSantri;
 
@@ -59,13 +56,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         santriList = response.data;
       });
     } catch (e) {
-      print('Gagal ambil data santri: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal memuat data santri'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showError('Gagal memuat data santri');
     }
   }
 
@@ -86,89 +77,88 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       lastDate: now,
     );
     if (picked != null) {
-      setState(() {
-        selectedDate = picked;
-      });
+      setState(() => selectedDate = picked);
     }
   }
 
-  Future<void> _login() async {
+  Future<void> _login(AuthProvider auth) async {
     if (!_formKey.currentState!.validate() || selectedSantri == null || selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Harap isi semua data dengan benar."),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showError('Harap isi semua data dengan benar');
       return;
     }
 
-    setState(() => isLoading = true);
-
     try {
       final tanggalLahirFormatted = DateFormat('yyyy-MM-dd').format(selectedDate!);
+      
+      // Mengonversi noInduk dari String ke int
+      final noInduk = int.parse(selectedSantri!.noInduk); // Pastikan noInduk adalah String yang dapat dikonversi ke int
 
-      print('Login attempt - noInduk: ${selectedSantri!.noInduk}, kode: ${kodeController.text.trim()}, tanggalLahir: $tanggalLahirFormatted');
-
-      final response = await loginService.loginSiswa(
-        noInduk: selectedSantri!.noInduk,
+      // Melakukan login dan mendapatkan response
+      final success = await auth.login(
+        noInduk: noInduk,
         kode: kodeController.text.trim(),
         tanggalLahir: tanggalLahirFormatted,
       );
 
-      print('Login successful: $response');
+      if (success) {
+        // Menyimpan data login ke dalam model
+        final loginResponse = auth.loginResponse; // Ambil data login response
+        if (loginResponse != null) {
+          // Anda bisa melakukan sesuatu dengan loginResponse di sini jika perlu
+          print('Login berhasil: ${loginResponse.nama}'); // Contoh penggunaan
+        }
 
-      // Simpan data login ke SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('no_induk', response.noInduk.toString());
-      await prefs.setString('kode', response.kode);
-      await prefs.setString('nama', response.nama);
-      await prefs.setBool('is_logged_in', true);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 8),
-              Expanded(child: Text('Login berhasil! Selamat datang')),
-            ],
+        _showSuccess('Login berhasil! Selamat datang');
+        await Future.delayed(Duration(milliseconds: 500));
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => MainScreen(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
           ),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      await Future.delayed(Duration(milliseconds: 500));
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => MainScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
+        );
+      }
     } catch (e) {
-      print('Login error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.error_outline, color: Colors.white),
-              SizedBox(width: 8),
-              Expanded(child: Text(e.toString().replaceAll('Exception: ', ''))),
-            ],
-          ),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() => isLoading = false);
+      _showError(e.toString());
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.white),
+            SizedBox(width: 8),
+            Text(message),
+          ],
+        ),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _showSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 8),
+            Text(message),
+          ],
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -194,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                         icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                         onPressed: () => Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => LandingPage()),
+                          MaterialPageRoute(builder: (_) => LandingPage()),
                         ),
                       ),
                     ),
@@ -214,82 +204,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             SizedBox(height: 20),
                             Image.asset('assets/images/logo.png', height: 80, width: 80),
                             SizedBox(height: 24),
-                            Text('Selamat Datang', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+                            Text('Selamat Datang', 
+                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
                             SizedBox(height: 8),
-                            Text('PPATQ RAUDLATUL FALAH', style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.8))),
+                            Text('PPATQ RAUDLATUL FALAH', 
+                                style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.8))),
                             SizedBox(height: 40),
                             Form(
                               key: _formKey,
                               child: Column(
                                 children: [
-                                  Autocomplete<Santri>(
-                                    optionsBuilder: (TextEditingValue textEditingValue) {
-                                      if (textEditingValue.text.isEmpty) {
-                                        return const Iterable<Santri>.empty();
-                                      }
-                                      return santriList.where((santri) =>
-                                        santri.nama.toLowerCase().contains(textEditingValue.text.toLowerCase()) ||
-                                        (santri.noInduk.toLowerCase().contains(textEditingValue.text.toLowerCase())));
-                                    },
-                                    displayStringForOption: (Santri santri) => '${santri.nama} (${santri.noInduk})',
-                                    onSelected: (Santri selection) {
-                                      setState(() {
-                                        selectedSantri = selection;
-                                        searchController.text = '${selection.nama} (${selection.noInduk})';
-                                      });
-                                    },
-                                    optionsViewBuilder: (context, onSelected, options) {
-                                      return Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Material(
-                                          elevation: 4.0,
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width * 0.9,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: ListView.builder(
-                                              padding: EdgeInsets.zero,
-                                              shrinkWrap: true,
-                                              itemCount: options.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                final Santri option = options.elementAt(index);
-                                                return ListTile(
-                                                  title: Text(option.nama),
-                                                  subtitle: Text('No. Induk: ${option.noInduk}'),
-                                                  onTap: () {
-                                                    onSelected(option);
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
-                                      return TextFormField(
-                                        controller: controller,
-                                        focusNode: focusNode,
-                                        onEditingComplete: onEditingComplete,
-                                        style: TextStyle(color: Colors.white),
-                                        decoration: InputDecoration(
-                                          labelText: 'Cari Nama Santri',
-                                          labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
-                                          prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.8)),
-                                          filled: true,
-                                          fillColor: Colors.white.withOpacity(0.1),
-                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(15),
-                                            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
-                                          ),
-                                        ),
-                                        validator: (_) => selectedSantri == null ? 'Pilih nama santri' : null,
-                                      );
-                                    },
-                                  ),
+                                  _buildSantriSearch(),
                                   if (selectedSantri != null)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
@@ -299,38 +224,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                       ),
                                     ),
                                   SizedBox(height: 20),
-                                  _buildTextField(
-                                    controller: kodeController,
-                                    label: 'Kelas',
-                                    icon: Icons.qr_code_2,
-                                    validator: (value) => value?.isEmpty ?? true ? 'Kelas harus diisi' : null,
-                                  ),
+                                  _buildKodeField(),
                                   SizedBox(height: 20),
-                                  _buildDatePicker(context),
+                                  _buildDatePicker(),
                                   SizedBox(height: 24),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 50,
-                                    child: ElevatedButton(
-                                      onPressed: isLoading ? null : _login,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Color(0xFF00695C),
-                                        elevation: 8,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                      ),
-                                      child: isLoading
-                                          ? SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00695C)),
-                                              ),
-                                            )
-                                          : Text('Masuk', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                    ),
-                                  ),
+                                  _buildLoginButton(auth),
                                 ],
                               ),
                             ),
@@ -342,16 +240,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text('PPATQ RAUDLATUL FALAH', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8))),
-                    SizedBox(height: 4),
-                    Text('Copyright © 2025 All Rights Reserved', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.6))),
-                  ],
-                ),
-              ),
+              _buildFooter(),
             ],
           ),
         ),
@@ -359,22 +248,83 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
+  Widget _buildSantriSearch() {
+    return Autocomplete<Santri>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text.isEmpty) {
+          return const Iterable<Santri>.empty();
+        }
+        return santriList.where((santri) =>
+          santri.nama.toLowerCase().contains(textEditingValue.text.toLowerCase()) ||
+          (santri.noInduk.toLowerCase().contains(textEditingValue.text.toLowerCase())));
+      },
+      displayStringForOption: (Santri santri) => '${santri.nama} (${santri.noInduk})',
+      onSelected: (Santri selection) {
+        setState(() {
+          selectedSantri = selection;
+          searchController.text = '${selection.nama} (${selection.noInduk})';
+        });
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4.0,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: options.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final Santri option = options.elementAt(index);
+                  return ListTile(
+                    title: Text(option.nama),
+                    subtitle: Text('No. Induk: ${option.noInduk}'),
+                    onTap: () => onSelected(option),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+      fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+        return TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          onEditingComplete: onEditingComplete,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            labelText: 'Cari Nama Santri',
+            labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
+            prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.8)),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.1),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+            ),
+          ),
+          validator: (_) => selectedSantri == null ? 'Pilih nama santri' : null,
+        );
+      },
+    );
+  }
+
+  Widget _buildKodeField() {
     return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      validator: validator,
+      controller: kodeController,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        labelText: label,
+        labelText: 'Kelas',
         labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
-        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.8)),
+        prefixIcon: Icon(Icons.qr_code_2, color: Colors.white.withOpacity(0.8)),
         filled: true,
         fillColor: Colors.white.withOpacity(0.1),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -383,10 +333,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
         ),
       ),
+      validator: (value) => value?.isEmpty ?? true ? 'Kelas harus diisi' : null,
     );
   }
 
-  Widget _buildDatePicker(BuildContext context) {
+  Widget _buildDatePicker() {
     return GestureDetector(
       onTap: _pickDate,
       child: Container(
@@ -409,6 +360,47 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton(AuthProvider auth) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: auth.isLoading ? null : () => _login(auth),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF00695C),
+          elevation: 8,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        ),
+        child: auth.isLoading
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00695C)),
+                ),
+              )
+            : Text('Masuk', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Text('PPATQ RAUDLATUL FALAH', 
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8))),
+          SizedBox(height: 4),
+          Text('Copyright © 2025 All Rights Reserved', 
+              style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.6))),
+        ],
       ),
     );
   }
