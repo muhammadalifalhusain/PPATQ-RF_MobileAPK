@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 import '../../models/login_model.dart';
 import '../../providers/auth_provider.dart';
 
 import '../../screens/kesehatan_screen.dart';
+import '../landing_page.dart';
 import '../../screens/ketahfidzan_screen.dart';
 
 class ProfileDashboard extends StatefulWidget {
@@ -20,6 +23,47 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     'saldo': 50000,
     'kamar': '',
   };
+
+  final currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  
+  Widget _buildTextRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16), 
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[800],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   final List<Map<String, dynamic>> menuItems = [
     {'icon': FontAwesome.hospital_o, 'label': 'Kesehatan'},
@@ -48,18 +92,23 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
   }
 
   @override
+  
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 1,
-        centerTitle: true,
+        toolbarHeight: 48, 
         automaticallyImplyLeading: false,
-        title: Text(
-          'Profile',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        centerTitle: false, 
+        title: Padding(
+          padding: const EdgeInsets.only(left: 15.0), 
+          child: Text(
+            'Profile',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -117,57 +166,64 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Container(
-                      padding: EdgeInsets.all(20),
+                      width: double.infinity, 
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Padding lebih ramping
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
                             Colors.teal.shade300,
-                            Colors.teal.shade600
+                            Colors.teal.shade600,
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(14), 
                         boxShadow: [
                           BoxShadow(
                             color: Colors.teal.withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: Offset(0, 5),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
-                      child: Column(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.account_balance_wallet,
-                              color: Colors.white, size: 30),
-                          SizedBox(height: 5),
-                          Text(
-                            'Saldo',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.white70,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Rp. 1.000.000',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          Icon(Icons.account_balance_wallet, color: Colors.white, size: 28),
+                          SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Saldo',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                currencyFormat.format(_loginData?.keuangan.saldo ?? 0),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
                   ),
+
                   SizedBox(height: 15),
                   Container(
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: Colors.teal,  // Warna garis
-                          width: 2.0,          // Ketebalan garis
+                          color: Colors.teal,  
+                          width: 2.0,          
                         ),
                       ),
                     ),
@@ -181,7 +237,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0), // Reduced top padding from 20 to 10
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0), 
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -223,7 +279,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.all(15), // Reduced padding
+                    padding: EdgeInsets.all(15), 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -261,8 +317,78 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                       ],
                     ),
                   ),
-
+                  SizedBox(height: 5), 
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 1,
+                      child: ExpansionTile(
+                        title: Text(
+                          'Data Ortu',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        childrenPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 5), 
+                        children: [
+                          _buildTextRow('Nama Ayah', _loginData?.namaAyah ?? 'Tidak Tersedia'),
+                          _buildTextRow('Pendidikan', _loginData?.pendidikanAyah ?? 'Tidak Tersedia'),
+                          _buildTextRow('Pekerjaan', _loginData?.pekerjaanAyah ?? 'Tidak Tersedia'),
+                          _buildTextRow('Nama Ibu', _loginData?.namaIbu ?? 'Tidak Tersedia'),
+                          _buildTextRow('Pendidikan', _loginData?.pendidikanIbu ?? 'Tidak Tersedia'), 
+                          _buildTextRow('Pekerjaan', _loginData?.pekerjaanIbu ?? 'Tidak Tersedia'), 
+                          _buildTextRow('No Ortu', _loginData?.noHp ?? 'Tidak Tersedia'),
+                        ],
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                        await authProvider.logout();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => LandingPage()), 
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 7),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 212, 97, 97), 
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.logout, color: Colors.white),
+                            SizedBox(width: 10),
+                            Text(
+                              'Logout',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),

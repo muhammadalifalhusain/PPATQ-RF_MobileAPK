@@ -67,20 +67,17 @@ class DetailSantri {
 }
 
 class KetahfidzanEntry {
-  final String tanggal;
-  final int kode;
+  final String tanggalTahfidzan;
   final String nmJuz;
 
   KetahfidzanEntry({
-    required this.tanggal,
-    required this.kode,
+    required this.tanggalTahfidzan,
     required this.nmJuz,
   });
 
   factory KetahfidzanEntry.fromJson(Map<String, dynamic> json) {
     return KetahfidzanEntry(
-      tanggal: json['tanggal'],
-      kode: json['kode'],
+      tanggalTahfidzan: json['tanggalTahfidzan'],
       nmJuz: json['nmJuz'],
     );
   }

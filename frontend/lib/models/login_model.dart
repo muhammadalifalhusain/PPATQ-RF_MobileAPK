@@ -77,7 +77,6 @@ class SakuKeluar {
   }
 }
 
-// Model untuk data keuangan
 class Keuangan {
   final int saldo;
   final List<SakuMasuk> sakuMasuk;
