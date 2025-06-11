@@ -17,12 +17,6 @@ class ProfileDashboard extends StatefulWidget {
 
 class _ProfileDashboardState extends State<ProfileDashboard> {
   LoginResponse? _loginData;
-  Map<String, dynamic> additionalData = {
-    'alamat': '',
-    'wali': '',
-    'saldo': 50000,
-    'kamar': '',
-  };
 
   final currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -82,9 +76,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     try {
       setState(() {
         _loginData = authProvider.loginResponse;
-        additionalData['alamat'] = _loginData?.alamat ?? '';
-        additionalData['wali'] = _loginData?.namaAyah ?? '';
-        additionalData['kamar'] = _loginData?.kamar ?? '';
       });
     } catch (e) {
       print('Error loading login data: $e');
@@ -102,7 +93,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
         automaticallyImplyLeading: false,
         centerTitle: false, 
         title: Padding(
-          padding: const EdgeInsets.only(left: 15.0), 
+          padding: const EdgeInsets.only(left: 10.0), 
           child: Text(
             'Profile',
             style: TextStyle(
@@ -162,12 +153,11 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                     ),
                   ),
 
-                  // Saldo Section
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Container(
                       width: double.infinity, 
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Padding lebih ramping
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), 
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [

@@ -120,14 +120,11 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Update user profile data (if needed)
   void updateUserData(LoginResponse newData) {
     _loginResponse = newData;
     _saveLoginData(newData);
     notifyListeners();
   }
-
-  // Helper methods
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -142,19 +139,9 @@ class AuthProvider with ChangeNotifier {
     _errorMessage = null;
   }
 
-  // Clear error message
   void clearError() {
     _clearError();
   }
 
-  // Get user saldo
-  int get userSaldo => _loginResponse?.keuangan.saldo ?? 0;
-
-  // Get user photo URL (you might need to add base URL)
-  String get userPhotoUrl => _loginResponse?.photo ?? '';
-
-  // Get user basic info
-  String get userName => _loginResponse?.nama ?? 'Unknown';
-  String get userClass => _loginResponse?.kelas ?? '';
-  String get userNoInduk => _loginResponse?.noInduk.toString() ?? '';
+  
 }

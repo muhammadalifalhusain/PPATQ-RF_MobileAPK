@@ -416,20 +416,19 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      elevation: 0,
       backgroundColor: Colors.teal,
-      centerTitle: true,
-      iconTheme: const IconThemeData(
-        color: Colors.white, 
-      ),
-      title: _isSearching 
-          ? null 
+      elevation: 1,
+      toolbarHeight: 48,
+      automaticallyImplyLeading: true,
+      centerTitle: false,
+      iconTheme: const IconThemeData(color: Colors.white),       title: _isSearching
+          ? null
           : const Text(
               'Pegawai',
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
                 color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
       actions: [
@@ -445,19 +444,15 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(_isSearching ? 120 : 48),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_isSearching) _buildSearchField(),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+            if (_isSearching)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: _buildSearchField(),
               ),
+            Container(
+              color: Colors.white,
               child: TabBar(
                 controller: _tabController,
                 labelColor: Colors.blue[700],
@@ -472,30 +467,30 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                   Tab(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.school, size: 18),
-                        const SizedBox(width: 2),
-                        const Text('Ustadz'),
+                        SizedBox(width: 4),
+                        Text('Ustadz'),
                       ],
                     ),
                   ),
                   Tab(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.supervisor_account, size: 18),
-                        const SizedBox(width: 3),
-                        const Text('Murroby'),
+                        SizedBox(width: 4),
+                        Text('Murroby'),
                       ],
                     ),
                   ),
                   Tab(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Icon(Icons.people, size: 18),
-                        const SizedBox(width: 3),
-                        const Text('Staff'),
+                        SizedBox(width: 4),
+                        Text('Staff'),
                       ],
                     ),
                   ),
@@ -507,6 +502,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       ),
     );
   }
+
 
   @override
   void dispose() {

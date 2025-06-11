@@ -41,12 +41,11 @@ class _AboutScreenState extends State<AboutScreen> {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 1,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
+        toolbarHeight: 48,
+        automaticallyImplyLeading: true,
+        centerTitle: false,
+        iconTheme: const IconThemeData(color: Colors.white), 
+        title: const Text(
           'Tentang',
           style: TextStyle(
             color: Colors.white,
@@ -60,7 +59,7 @@ class _AboutScreenState extends State<AboutScreen> {
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.only(
-                  top: 16,
+                  top: 25,
                   left: 16,
                   right: 16,
                 ),
@@ -84,7 +83,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

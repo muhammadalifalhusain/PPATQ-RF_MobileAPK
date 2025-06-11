@@ -15,11 +15,26 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   KetahfidzanResponse? _ketahfidzanData;
   bool _isLoading = true;
   String _errorMessage = '';
+  String _nama = '';
+  String _noInduk = '';
+  String _photo = '';
+  String _kelas = '';
 
   @override
   void initState() {
     super.initState();
+    _loadSantriInfo(); 
     _fetchKetahfidzanData();
+  }
+
+  Future<void> _loadSantriInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _nama = prefs.getString('nama') ?? '';
+      _noInduk = prefs.getInt('no_induk')?.toString() ?? '';
+      _photo = prefs.getString('photo') ?? '';
+      _kelas = prefs.getString('kelas') ?? '';
+    });
   }
 
   Future<void> _fetchKetahfidzanData() async {
@@ -41,16 +56,17 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Progress Tahfidz'),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue[800]!, Colors.blue[600]!],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+        backgroundColor: Colors.teal,
+        elevation: 1,
+        toolbarHeight: 48,
+        automaticallyImplyLeading: true,
+        centerTitle: false,
+        iconTheme: const IconThemeData(color: Colors.white), // <-- warna ikon back
+        title: const Text(
+          'Ketahfidzan',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -64,9 +80,10 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[800]!),
-            SizedBox(height: 16),
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+            ),
+            const SizedBox(height: 16),
             Text(
               'Memuat data...',
               style: TextStyle(
@@ -78,6 +95,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
         ),
       );
     }
+
 
     if (_errorMessage.isNotEmpty) {
       return Center(
@@ -91,7 +109,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                 color: Colors.red[400],
                 size: 48,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Terjadi Kesalahan',
                 style: TextStyle(
@@ -100,22 +118,22 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                   color: Colors.red[400],
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 _errorMessage,
                 style: TextStyle(color: Colors.grey[700]),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[800],
+                  backgroundColor: const Color(0xFF1565C0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 onPressed: _fetchKetahfidzanData,
-                child: Text('Coba Lagi'),
+                child: const Text('Coba Lagi'),
               ),
             ],
           ),
@@ -133,12 +151,12 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
               color: Colors.blue[400],
               size: 48,
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Tidak ada data ketahfidzan',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[700],
+                color: Colors.grey,
               ),
             ),
           ],
@@ -147,14 +165,16 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
     }
 
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSantriInfo(),
-            SizedBox(height: 24),
+            Center( 
+              child: _buildSantriInfo(),
+            ),
+            const SizedBox(height: 24),
             _buildKetahfidzanData(),
           ],
         ),
@@ -163,79 +183,47 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   }
 
   Widget _buildSantriInfo() {
-    final santri = _ketahfidzanData!.data.detailSantri.first;
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue[50]!, Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.person,
-                    color: Colors.blue[800],
-                    size: 24,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Informasi Santri',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[800],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
-              _buildInfoRow('Nama', santri.nama),
-              _buildInfoRow('No. Induk', santri.noInduk.toString()),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+    final imageUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/$_photo';
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(15),
+      child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,     
+      crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          CircleAvatar(
+            radius: 60,
+            backgroundColor: Colors.white,
+            backgroundImage: _photo.isNotEmpty ? NetworkImage(imageUrl) : null,
+            child: _photo.isEmpty
+                ? Icon(Icons.person, size: 40, color: Colors.grey[400])
+                : null,
+          ),
+          const SizedBox(height: 12),
           Text(
-            '$label: ',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
+            _nama.isNotEmpty ? _nama : 'Nama Tidak Tersedia',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                color: Colors.grey[800],
-              ),
+          const SizedBox(height: 8),
+          Text(
+            'Kelas: ${_kelas.isNotEmpty ? _kelas : '-'} | No. Induk: ${_noInduk.isNotEmpty ? _noInduk : '-'}',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
             ),
           ),
         ],
       ),
     );
   }
+
 
   Widget _buildKetahfidzanData() {
     final ketahfidzan = _ketahfidzanData!.data.ketahfidzan;
@@ -250,7 +238,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
               color: Colors.blue[800],
               size: 24,
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               'Progress Tahfidz',
               style: TextStyle(
@@ -261,11 +249,11 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
             ),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         ...ketahfidzan.entries.map((yearEntry) {
           return Card(
             elevation: 2,
-            margin: EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -285,16 +273,16 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   ...yearEntry.value.entries.map((monthEntry) {
                     return Container(
-                      margin: EdgeInsets.only(bottom: 8),
+                      margin: const EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey[200]!),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ExpansionTile(
-                        tilePadding: EdgeInsets.symmetric(horizontal: 12),
+                        tilePadding: const EdgeInsets.symmetric(horizontal: 12),
                         leading: Icon(
                           Icons.calendar_today,
                           color: Colors.blue[600],
@@ -331,7 +319,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
 
   Widget _buildHafalanCard(KetahfidzanEntry entry) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -348,7 +336,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                   color: Colors.blue[600],
                   size: 16,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Tanggal:',
                   style: TextStyle(
@@ -356,7 +344,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                     color: Colors.grey[700],
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   entry.tanggalTahfidzan,
                   style: TextStyle(
@@ -365,7 +353,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Icon(
@@ -373,7 +361,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                   color: Colors.blue[600],
                   size: 16,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Juz:',
                   style: TextStyle(
@@ -381,7 +369,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                     color: Colors.grey[700],
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   entry.nmJuz,
                   style: TextStyle(

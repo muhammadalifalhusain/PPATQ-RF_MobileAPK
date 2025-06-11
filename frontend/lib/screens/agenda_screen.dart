@@ -216,17 +216,19 @@ class _AgendaScreenState extends State<AgendaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+       appBar: AppBar(
         backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
+        elevation: 1,
+        toolbarHeight: 48,
+        automaticallyImplyLeading: true,
+        centerTitle: false,
+        iconTheme: const IconThemeData(color: Colors.white), 
         title: const Text(
-          'Agenda PPATQ',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          'Agenda',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SafeArea(

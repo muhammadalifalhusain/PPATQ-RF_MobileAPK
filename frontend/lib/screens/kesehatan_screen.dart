@@ -23,16 +23,17 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Data Kesehatan'),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue.shade700, Colors.lightBlue.shade400],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+        backgroundColor: Colors.teal,
+        elevation: 1,
+        toolbarHeight: 48,
+        automaticallyImplyLeading: true,
+        centerTitle: false,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Kesehatan',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -99,16 +100,19 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
           final data = snapshot.data!.data;
 
           return DefaultTabController(
-            length: 3,
-            child: Column(
-              children: [
-                Container(
+          length: 3,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.blue.shade700, Colors.lightBlue.shade400],
+                      colors: [Colors.teal.shade400, Colors.grey.shade600],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: TabBar(
                     indicator: BoxDecoration(
@@ -116,40 +120,42 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
-                    indicatorPadding: EdgeInsets.all(6),
+                    indicatorPadding: const EdgeInsets.all(6),
                     labelColor: Colors.white,
                     unselectedLabelColor: Colors.white.withOpacity(0.7),
-                    tabs: [
-                      Tab(icon: Icon(Icons.history), text: 'Riwayat'),
-                      Tab(icon: Icon(Icons.medical_services), text: 'CheckUp'),
-                      Tab(icon: Icon(Icons.local_hospital), text: 'Rawat'),
+                    tabs: const [
+                      Tab(text: 'Riwayat'),
+                      Tab(text: 'CheckUp'),
+                      Tab(text: 'Rawat'),
                     ],
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.grey.shade50,
-                          Colors.grey.shade100,
-                        ],
-                      ),
-                    ),
-                    child: TabBarView(
-                      children: [
-                        _buildRiwayatSakitTab(data.riwayatSakit),
-                        _buildPemeriksaanTab(data.pemeriksaan),
-                        _buildRawatInapTab(data.rawatInap),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.grey.shade50,
+                        Colors.grey.shade100,
                       ],
                     ),
                   ),
+                  child: TabBarView(
+                    children: [
+                      _buildRiwayatSakitTab(data.riwayatSakit),
+                      _buildPemeriksaanTab(data.pemeriksaan),
+                      _buildRawatInapTab(data.rawatInap),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          );
+              ),
+            ],
+          ),
+        );
+
         },
       ),
     );
