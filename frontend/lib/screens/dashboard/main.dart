@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import '../kesehatan_screen.dart';
-// import '../santri_screen.dart';
-import '../pembayaran_screen.dart';
 import '../validasi_pembayaran.dart';
 import 'profile_dashboard.dart';
 
@@ -11,11 +8,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   final List<Widget> _screens = [
-    ValidasiSantriScreen(),  // Index 0
-    KesehatanScreen(),  // Index 1
+    ValidasiSantriScreen(),  // Index 0  // Index 1
     ProfileDashboard()
   ];
 
@@ -38,10 +34,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.payment),
             label: 'Payment',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services),
-            label: 'Kesehatan',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

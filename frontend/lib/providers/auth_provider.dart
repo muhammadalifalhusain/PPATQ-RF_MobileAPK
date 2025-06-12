@@ -22,7 +22,6 @@ class AuthProvider with ChangeNotifier {
   // Auth Service
   final LoginService _loginService = LoginService();
 
-  // Constructor - check if user is already logged in
   AuthProvider() {
     _checkLoginStatus();
   }
@@ -62,7 +61,6 @@ class AuthProvider with ChangeNotifier {
       );
 
 
-      // Save login data
       await _saveLoginData(response);
       
       _loginResponse = response;
