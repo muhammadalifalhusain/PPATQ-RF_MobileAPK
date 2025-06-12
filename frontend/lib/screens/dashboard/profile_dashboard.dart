@@ -12,6 +12,7 @@ import '../landing_page.dart';
 import '../../screens/ketahfidzan_screen.dart';
 import 'saku_keluar.dart';
 import 'saku_masuk.dart';
+import 'riwayat_bayar_screen.dart';
 
 class ProfileDashboard extends StatefulWidget {
   @override
@@ -155,7 +156,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                     ],
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 2),
                 Column(
                   children: [
                     Padding(
@@ -211,7 +212,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                      SizedBox(height: 4),
                                       Text(
                                         currencyFormat.format(_loginData?.keuangan.saldo ?? 0),
                                         style: TextStyle(
@@ -226,16 +226,22 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ],
                             ),
                             
-                            SizedBox(height: 16),
+                            SizedBox(height: 13),
                             
                             InkWell(
                               onTap: () {
                                 // Navigate to history
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const RiwayatPembayaranScreen(),
+                                  ),
+                                );
                               },
                               borderRadius: BorderRadius.circular(12),
                               child: Container(
                                 width: double.infinity,
-                                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.15),
                                   borderRadius: BorderRadius.circular(12),
@@ -254,10 +260,10 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                     ),
                                     SizedBox(width: 8),
                                     Text(
-                                      'Lihat Riwayat Pembayaran',
+                                      'Riwayat Pembayaran Pondok',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),

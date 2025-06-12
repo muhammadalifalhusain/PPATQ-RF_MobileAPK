@@ -196,7 +196,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Riwayat Transaksi',
+                              'Riwayat Uang Masuk',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

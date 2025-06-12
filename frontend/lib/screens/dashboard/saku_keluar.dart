@@ -195,7 +195,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Riwayat Pengeluaran',
+                              'Riwayat Uang Keluar',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

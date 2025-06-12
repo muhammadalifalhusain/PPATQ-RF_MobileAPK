@@ -153,6 +153,9 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                   )
                 : null,
           ),
+          onChanged: (value) {
+            _filterLists();
+          },
         ),
       ),
     );
@@ -419,9 +422,16 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       backgroundColor: Colors.teal,
       elevation: 1,
       toolbarHeight: 48,
-      automaticallyImplyLeading: true,
+      automaticallyImplyLeading: false, // Nonaktifkan tombol back default
       centerTitle: false,
-      iconTheme: const IconThemeData(color: Colors.white),       title: _isSearching
+      iconTheme: const IconThemeData(color: Colors.white),
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop(); // Selalu kembali ke halaman sebelumnya
+          },
+        ),
+      title: _isSearching
           ? null
           : const Text(
               'Pegawai',
@@ -434,7 +444,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       actions: [
         IconButton(
           icon: Icon(
-            _isSearching ? Icons.close : Icons.search,
+            _isSearching ? Icons.search_off : Icons.search,
             color: Colors.white,
           ),
           onPressed: _toggleSearch,
@@ -442,7 +452,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
         const SizedBox(width: 8),
       ],
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(_isSearching ? 120 : 48),
+        preferredSize: Size.fromHeight(_isSearching ? 155 : 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -468,7 +478,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(Icons.school, size: 18),
+                        Icon(Icons.school, size: 15),
                         SizedBox(width: 4),
                         Text('Ustadz'),
                       ],
@@ -478,7 +488,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(Icons.supervisor_account, size: 18),
+                        Icon(Icons.supervisor_account, size: 15),
                         SizedBox(width: 4),
                         Text('Murroby'),
                       ],
@@ -488,7 +498,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(Icons.people, size: 18),
+                        Icon(Icons.people, size: 15),
                         SizedBox(width: 4),
                         Text('Staff'),
                       ],
@@ -502,7 +512,6 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       ),
     );
   }
-
 
   @override
   void dispose() {
