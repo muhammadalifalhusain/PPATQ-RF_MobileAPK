@@ -108,7 +108,7 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.teal.shade400, Colors.grey.shade600],
+                      colors: [Colors.teal.shade300, Colors.lightGreen.shade500],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -121,8 +121,16 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
                     indicatorPadding: const EdgeInsets.all(6),
-                    labelColor: Colors.white,
+                    labelColor: Colors.black,
                     unselectedLabelColor: Colors.white.withOpacity(0.7),
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16, 
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16, 
+                    ),
                     tabs: const [
                       Tab(text: 'Riwayat'),
                       Tab(text: 'CheckUp'),

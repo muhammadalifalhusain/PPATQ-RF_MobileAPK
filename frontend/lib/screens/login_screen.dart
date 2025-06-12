@@ -327,7 +327,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       },
     );
   }
-
   Widget _buildDropdownKelas() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -336,29 +335,35 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         decoration: InputDecoration(
           labelText: 'Kode Kelas',
           filled: true,
-          fillColor: Colors.white.withOpacity(0.1), // Warna latar belakang
-          labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)), // Warna teks label
+          fillColor: Colors.white.withOpacity(0.1), // Field tetap transparan
+          labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15), // Radius border
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), // Warna border
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)), // Warna border saat enabled
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.white), 
+            borderSide: BorderSide(color: Colors.white),
           ),
-          prefixIcon: Icon(Icons.class_, color: Colors.white.withOpacity(0.8)), 
+          prefixIcon: Icon(Icons.class_, color: Colors.white.withOpacity(0.8)),
         ),
         items: _kelasList
             .map((kelas) => DropdownMenuItem(
                   value: kelas.kode,
                   child: Text(
                     kelas.kode,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black), // Teks saat dropdown dibuka
                   ),
+                ))
+            .toList(),
+        selectedItemBuilder: (context) => _kelasList
+            .map((kelas) => Text(
+                  kelas.kode,
+                  style: TextStyle(color: Colors.white), // Teks yang tampil di field (terpilih)
                 ))
             .toList(),
         onChanged: (value) {
@@ -367,10 +372,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           });
         },
         validator: (value) => value == null ? 'Pilih kode kelas' : null,
-        dropdownColor: Color(0xFF004D40), // Warna dropdown
+        dropdownColor: Colors.white, // Background dropdown
+        iconEnabledColor: Colors.white, // Panah dropdown putih
       ),
     );
   }
+
+
 
   Widget _buildDatePicker() {
     return GestureDetector(
