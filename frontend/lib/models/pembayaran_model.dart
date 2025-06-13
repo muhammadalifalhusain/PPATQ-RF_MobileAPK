@@ -1,8 +1,6 @@
-// models/pembayaran_model.dart
 class Pembayaran {
-  final String namaSantri;
   final int noInduk;
-  final double jumlah;
+  final int jumlah;
   final String tanggalBayar;
   final int periode;
   final int tahun;
@@ -10,10 +8,10 @@ class Pembayaran {
   final String atasNama;
   final String noWa;
   final String? catatan;
-  final String? bukti;
+  final List<int> idJenisPembayaran; // Field baru
+  final List<String> jenisPembayaran; // Field baru
 
   Pembayaran({
-    required this.namaSantri,
     required this.noInduk,
     required this.jumlah,
     required this.tanggalBayar,
@@ -23,21 +21,70 @@ class Pembayaran {
     required this.atasNama,
     required this.noWa,
     this.catatan,
-    this.bukti,
+    required this.idJenisPembayaran,
+    required this.jenisPembayaran,
   });
+
+  Map<String, dynamic> toFormFields() {
+    return {
+      'noInduk': noInduk.toString(),
+      'jumlah': jumlah.toString(),
+      'tanggalBayar': tanggalBayar,
+      'periode': periode.toString(),
+      'tahun': tahun.toString(),
+      'bankPengirim': bankPengirim,
+      'atasNama': atasNama,
+      'noWa': noWa,
+      'catatan': catatan ?? '',
+      'idJenisPembayaran[]': idJenisPembayaran.map((id) => id.toString()).toList(),
+      'jenisPembayaran[]': jenisPembayaran.map((jenis) => jenis.toString()).toList(),
+    };
+  }
+}
+
+
+class JenisPembayaranModel {
+  final List<JenisPembayaran> data;
+
+  JenisPembayaranModel({required this.data});
+
+  factory JenisPembayaranModel.fromJson(Map<String, dynamic> json) {
+    return JenisPembayaranModel(
+      data: List<JenisPembayaran>.from(
+        json['data'].map((item) => JenisPembayaran.fromJson(item)),
+      ),
+    );
+  }
+}
+
+class JenisPembayaran {
+  final int id;
+  final String jenis;
+  final int urutan;
+  final int harga;
+
+  JenisPembayaran({
+    required this.id,
+    required this.jenis,
+    required this.urutan,
+    required this.harga,
+  });
+
+  factory JenisPembayaran.fromJson(Map<String, dynamic> json) {
+    return JenisPembayaran(
+      id: json['id'],
+      jenis: json['jenis'],
+      urutan: json['urutan'],
+      harga: json['harga'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
-      'nama_santri': namaSantri,
-      'no_induk': noInduk,
-      'jumlah': jumlah,
-      'tanggal_bayar': tanggalBayar,
-      'periode': periode,
-      'tahun': tahun,
-      'bank_pengirim': bankPengirim,
-      'atas_nama': atasNama,
-      'no_wa': noWa,
-      'catatan': catatan,
+      'id': id,
+      'jenis': jenis,
+      'urutan': urutan,
+      'harga': harga,
     };
   }
 }

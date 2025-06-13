@@ -11,7 +11,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 1;
 
   final List<Widget> _screens = [
-    ValidasiSantriScreen(),  // Index 0  // Index 1
+    ValidasiPembayaranScreen(),  // Index 0  // Index 1
     ProfileDashboard()
   ];
 
