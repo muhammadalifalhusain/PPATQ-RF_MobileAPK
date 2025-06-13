@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 import 'pembayaran_screen.dart';
 
 class ValidasiPembayaranScreen extends StatelessWidget {
@@ -54,12 +53,31 @@ class ValidasiPembayaranScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-            _buildConfirmationButton(
-              context,
-              title: 'Sudah Bayar',
-              icon: FontAwesomeIcons.check,
-              color: Colors.green,
-              onPressed: () => _handleConfirmation(context, true),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: FaIcon(FontAwesomeIcons.check, size: 20),
+                label: Text(
+                  'Sudah Bayar',
+                  style: GoogleFonts.poppins(fontSize: 16),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InputPembayaranScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.withOpacity(0.1),
+                  foregroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.green, width: 1.5),
+                  ),
+                  elevation: 0,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             _buildConfirmationButton(
@@ -67,12 +85,11 @@ class ValidasiPembayaranScreen extends StatelessWidget {
               title: 'Belum Bayar',
               icon: FontAwesomeIcons.clock,
               color: Colors.orange,
-              onPressed: () => InputPembayaranScreen(),
+              onPressed: () => _showDevelopmentDialog(context),
             ),
             const SizedBox(height: 24),
             TextButton(
               onPressed: () {
-                // Aksi untuk bantuan/tanya admin
                 _showHelpDialog(context);
               },
               child: Text(
@@ -119,43 +136,9 @@ class ValidasiPembayaranScreen extends StatelessWidget {
     );
   }
 
-  void _handleConfirmation(BuildContext context, bool isConfirmed) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          isConfirmed ? 'Sudah Bayar' : 'Belum Bayar',
-          style: GoogleFonts.poppins(),
-        ),
-        content: Text(
-          isConfirmed
-              ? 'Terima kasih telah mengkonfirmasi pembayaran. Kami akan segera memverifikasi pembayaran Anda.'
-              : 'Silakan lakukan pembayaran terlebih dahulu untuk melanjutkan.',
-          style: GoogleFonts.poppins(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              if (isConfirmed) {
-                // Navigasi ke screen verifikasi
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => InputPembayaranScreen(),
-                  ),
-                );
-              }
-            },
-            child: Text(
-              'OK',
-              style: GoogleFonts.poppins(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
+
+
 
   void _showHelpDialog(BuildContext context) {
     showDialog(
@@ -198,7 +181,6 @@ class ValidasiPembayaranScreen extends StatelessWidget {
                 },
               ),
             ),
-
           ],
         ),
         actions: [
@@ -213,38 +195,80 @@ class ValidasiPembayaranScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-// Screen verifikasi pembayaran (contoh sederhana)
-class PaymentVerificationScreen extends StatelessWidget {
-  const PaymentVerificationScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Verifikasi Pembayaran',
-          style: GoogleFonts.poppins(),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              FontAwesomeIcons.clockRotateLeft,
-              size: 60,
-              color: Colors.blue,
+  void _showDevelopmentDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 10),
+                )
+              ],
             ),
-            const SizedBox(height: 20),
-            Text(
-              'Pembayaran sedang diverifikasi...',
-              style: GoogleFonts.poppins(fontSize: 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.engineering,
+                  size: 60,
+                  color: Colors.orange,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Sedang Dalam Pengembangan',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 15),
+                Text(
+                  'Menu pembayaran sedang dalam tahap pengembangan. Kami akan segera meluncurkannya!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 25),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black, 
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  ),
+                  child: Text(
+                    'Mengerti',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

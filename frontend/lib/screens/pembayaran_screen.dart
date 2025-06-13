@@ -9,7 +9,7 @@ import '../services/pembayaran_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:developer';
+
 
 class InputPembayaranScreen extends StatefulWidget {
   @override
@@ -307,7 +307,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
 
   @override
   void dispose() {
-    // Dispose semua controllers
     _noIndukController.dispose();
     _tanggalBayarController.dispose();
     _periodeController.dispose();
@@ -322,311 +321,327 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
     super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.teal,
-        elevation: 1,
-        toolbarHeight: 48,
-        automaticallyImplyLeading: true,
-        iconTheme: const IconThemeData(
-          color: Colors.white, 
-        ),
-        centerTitle: false,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text(
-            'Lapor Bayar',
-            style: GoogleFonts.poppins( 
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.teal,
+      elevation: 1,
+      toolbarHeight: 48,
+      automaticallyImplyLeading: true,
+      iconTheme: const IconThemeData(
+        color: Colors.white, 
+      ),
+      centerTitle: false,
+      title: Padding(
+        padding: const EdgeInsets.only(left: 10.0),
+        child: Text(
+          'Lapor Bayar',
+          style: GoogleFonts.poppins( 
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Section: Data Siswa
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 16),
-                              TextFormField(
-                                controller: _tanggalBayarController,
-                                decoration: InputDecoration(
-                                  labelText: 'Tanggal Bayar',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.calendar_today),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.date_range),
-                                    onPressed: () => _selectDate(_tanggalBayarController),
-                                  ),
+    ),
+    body: _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Section: Tanggal Bayar
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Tanggal Pembayaran',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _tanggalBayarController,
+                              decoration: InputDecoration(
+                                labelText: 'Tanggal Bayar',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.calendar_today),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.date_range),
+                                  onPressed: () => _selectDate(_tanggalBayarController),
                                 ),
-                                readOnly: true,
-                                validator: (value) =>
-                                    value!.isEmpty ? 'Wajib diisi' : null,
-                              )                 
-                            ],
-                          ),
+                              ),
+                              readOnly: true,
+                              validator: (value) =>
+                                  value!.isEmpty ? 'Wajib diisi' : null,
+                            ),
+                          ],
                         ),
                       ),
-                      
-                      SizedBox(height: 16),
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Data Pengirim',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal,
-                                ),
+                    ),
+                    
+                    SizedBox(height: 16),
+                    
+                    // Section: Data Pengirim - PERBAIKAN DI SINI
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Data Pengirim',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
                               ),
-                              SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                value: _selectedBank,
-                                decoration: InputDecoration(
-                                  labelText: 'Bank Pengirim',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.account_balance),
-                                ),
-                                items: _banks.map((bank) {
-                                  return DropdownMenuItem<String>(
-                                    value: bank.id.toString(),
-                                    child: Text(bank.nama),
-                                  );
-                                }).toList(),
-                                onChanged: (value) =>
-                                    setState(() => _selectedBank = value),
-                                validator: (value) =>
-                                    value == null ? 'Wajib pilih bank' : null,
+                            ),
+                            SizedBox(height: 16),
+                            DropdownButtonFormField<String>(
+                              value: _selectedBank,
+                              decoration: InputDecoration(
+                                labelText: 'Bank Pengirim',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.account_balance),
                               ),
-                              SizedBox(height: 16),
-                              TextFormField(
-                                controller: _atasNamaController,
-                                decoration: InputDecoration(
-                                  labelText: 'Atas Nama',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.person_outline),
-                                ),
-                                validator: (value) =>
-                                    value!.isEmpty ? 'Wajib diisi' : null,
-                              ),
-                              SizedBox(height: 16),
-                              TextFormField(
-                                controller: _noWaController,
-                                decoration: InputDecoration(
-                                  labelText: 'No WhatsApp',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.phone),
-                                ),
-                                keyboardType: TextInputType.phone,
-                                validator: (value) =>
-                                    value!.isEmpty ? 'Wajib diisi' : null,
-                              ),
-                              SizedBox(height: 16),
-                              TextFormField(
-                                controller: _catatanController,
-                                decoration: InputDecoration(
-                                  labelText: 'Catatan (Opsional)',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.note),
-                                ),
-                                maxLines: 3,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),                    
-                      SizedBox(height: 16),
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Rincian Jenis Pembayaran',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              ..._jenisPembayaran.asMap().entries.map((entry) {
-                                int index = entry.key;
-                                JenisPembayaran jenis = entry.value;
-                                
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: TextFormField(
-                                    controller: _controllers[index],
-                                    decoration: InputDecoration(
-                                      labelText: jenis.jenis,
-                                      hintText: jenis.harga > 0
-                                          ? ' ${jenis.harga.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}'
-                                          : 'Masukkan nominal',
-                                      border: OutlineInputBorder(),
-                                      prefixIcon: Icon(Icons.payments),
-                                      prefixText: 'Rp ',
-                                    ),
-                                    keyboardType: TextInputType.number,
+                              isExpanded: true, // Ini yang penting untuk mencegah overflow
+                              menuMaxHeight: 300, // Batasi tinggi menu
+                              items: _banks.map((bank) {
+                                return DropdownMenuItem<String>(
+                                  value: bank.id.toString(),
+                                  child: Text(
+                                    bank.nama,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 );
                               }).toList(),
+                              onChanged: (value) => setState(() => _selectedBank = value),
+                              validator: (value) => value == null ? 'Wajib pilih bank' : null,
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _atasNamaController,
+                              decoration: InputDecoration(
+                                labelText: 'Atas Nama',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.person_outline),
+                              ),
+                              validator: (value) =>
+                                  value!.isEmpty ? 'Wajib diisi' : null,
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _noWaController,
+                              decoration: InputDecoration(
+                                labelText: 'No WhatsApp',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.phone),
+                              ),
+                              keyboardType: TextInputType.phone,
+                              validator: (value) =>
+                                  value!.isEmpty ? 'Wajib diisi' : null,
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _catatanController,
+                              decoration: InputDecoration(
+                                labelText: 'Catatan (Opsional)',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.note),
+                              ),
+                              maxLines: 3,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    SizedBox(height: 16),
+                    
+                    // Section: Rincian Jenis Pembayaran
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Rincian Jenis Pembayaran',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            ..._jenisPembayaran.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              JenisPembayaran jenis = entry.value;
                               
-                              // Total
-                              if (_totalJumlah > 0) ...[
-                                Divider(thickness: 2),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Total Pembayaran:',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Rp ${_totalJumlah.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ],
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: TextFormField(
+                                  controller: _controllers[index],
+                                  decoration: InputDecoration(
+                                    labelText: jenis.jenis,
+                                    hintText: jenis.harga > 0
+                                        ? ' ${jenis.harga.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}'
+                                        : 'Masukkan nominal',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.payments),
+                                    prefixText: 'Rp ',
+                                  ),
+                                  keyboardType: TextInputType.number,
                                 ),
-                              ],
+                              );
+                            }).toList(),
+                            
+                            // Total
+                            if (_totalJumlah > 0) ...[
+                              Divider(thickness: 2),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Total Pembayaran:',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rp ${_totalJumlah.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
-                          ),
+                          ],
                         ),
                       ),
-                      
-                      SizedBox(height: 16),
-                      
-                      // Section: Bukti Bayar
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Bukti Pembayaran',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal,
-                                ),
+                    ),
+                    
+                    SizedBox(height: 16),
+                    
+                    // Section: Bukti Bayar
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Bukti Pembayaran',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
                               ),
-                              SizedBox(height: 16),
-                              GestureDetector(
-                                onTap: _pickBuktiBayar,
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      style: BorderStyle.solid,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: _buktiBayar != null
-                                      ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(6),
-                                          child: Image.file(
-                                            _buktiBayar!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      : Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.cloud_upload,
-                                              size: 64,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(height: 16),
-                                            Text(
-                                              'Tap untuk pilih bukti bayar',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                              ),
-                              if (_buktiBayar != null) ...[
-                                SizedBox(height: 8),
-                                Text(
-                                  'Tap gambar untuk mengubah',
-                                  style: TextStyle(
+                            ),
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: _pickBuktiBayar,
+                              child: Container(
+                                width: double.infinity,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
                                     color: Colors.grey,
-                                    fontSize: 12,
+                                    style: BorderStyle.solid,
+                                    width: 2,
                                   ),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ],
+                                child: _buktiBayar != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Image.file(
+                                          _buktiBayar!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.cloud_upload,
+                                            size: 64,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(height: 16),
+                                          Text(
+                                            'Tap untuk pilih bukti bayar',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ),
+                            if (_buktiBayar != null) ...[
+                              SizedBox(height: 8),
+                              Text(
+                                'Tap gambar untuk mengubah',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
                             ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    SizedBox(height: 24),
+                    
+                    // Submit Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          'Kirim Pembayaran',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      
-                      SizedBox(height: 24),
-                      
-                      // Submit Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: _submit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(
-                            'Kirim Pembayaran',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      SizedBox(height: 16),
-                    ],
-                  ),
+                    ),
+                    
+                    SizedBox(height: 16),
+                  ],
                 ),
               ),
             ),
-    );
-  }
+          ),
+  );
+}
 }
