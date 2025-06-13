@@ -7,6 +7,10 @@ import '../models/kelas_model.dart';
 import '../services/get-kelas_service.dart';
 import '../models/kategori_keluhan_model.dart'; 
 import '../services/kategori_keluhan_service.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
+
 
 class KeluhanScreen extends StatefulWidget {
   final KeluhanService keluhanService;
@@ -58,40 +62,9 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSantriData();
-    _loadKelasData();
-    _loadKategoriKeluhan(); // Tambahkan ini
+    
+    _loadKategoriKeluhan();
     _searchController.addListener(_onSearchChanged);
-  }
-
-  Future<void> _loadSantriData() async {
-    setState(() => _isLoadingSantri = true);
-    try {
-      final response = await SantriService.fetchAllSantri();
-      setState(() {
-        _allSantri = response.data;
-        _filteredSantri = _allSantri;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memuat data santri: ${e.toString()}')),
-      );
-    } finally {
-      setState(() => _isLoadingSantri = false);
-    }
-  }
-
-  Future<void> _loadKelasData() async {
-    setState(() => _isLoadingKelas = true);
-    try {
-      _kelasList = await KelasService.fetchKelas();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memuat kelas: $e')),
-      );
-    } finally {
-      setState(() => _isLoadingKelas = false);
-    }
   }
 
   Future<void> _loadKategoriKeluhan() async { 
@@ -126,81 +99,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     });
   }
 
-  Widget _buildSantriSearchField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Cari Santri', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Cari nama / Nomor Induk',
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        _filteredSantri = _allSantri;
-                        _selectedSantri = null;
-                      });
-                    },
-                  )
-                : null,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          onTap: () => setState(() => _isSearching = true),
-        ),
-        if (_isSearching && _filteredSantri.isNotEmpty)
-          Container(
-            constraints: const BoxConstraints(maxHeight: 200),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _filteredSantri.length,
-              itemBuilder: (context, index) {
-                final santri = _filteredSantri[index];
-                return ListTile(
-                  title: Text(santri.nama),
-                  subtitle: Text(santri.noInduk ?? '-'),
-                  onTap: () => _selectSantri(santri),
-                );
-              },
-            ),
-          ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget _buildDropdownKelas() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: _isLoadingKelas
-          ? const CircularProgressIndicator()
-          : DropdownButtonFormField<String>(
-              value: _selectedKodeKelas,
-              decoration: InputDecoration(
-                labelText: 'Kode Kelas',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              items: _kelasList
-                  .map((kelas) => DropdownMenuItem(
-                        value: kelas.kode,
-                        child: Text(kelas.kode),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedKodeKelas = value;
-                });
-              },
-              validator: (value) => value == null ? 'Pilih kode kelas' : null,
-            ),
-    );
-  }
-
   Widget _buildDropdownKategoriKeluhan() { // Tambahkan ini
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -229,12 +127,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   }
   void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (_selectedSantri == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Harap pilih santri')),
-        );
-        return; 
-      }
 
       setState(() {
         _isLoading = true;
@@ -246,12 +138,17 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         curve: _animationCurve,
       );
 
+      // Ambil data login dari SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final loginJson = prefs.getString('login_data');
+      final loginData = loginJson != null ? json.decode(loginJson) : {};
+
       Keluhan keluhan = Keluhan(
         namaPelapor: _namaPelaporController.text.trim(),
         email: _emailController.text.trim(),
-        noHp: _noHpController.text.trim(),
-        idSantri: int.tryParse(_selectedSantri!.noInduk ?? '') ?? 0,
-        namaWaliSantri: _namaWaliSantriController.text.trim(),
+        noHp: loginData['noHp'] ?? _noHpController.text.trim(),
+        idSantri: prefs.getInt('no_induk') ?? 0,
+        namaWaliSantri: loginData['namaAyah'] ?? _namaWaliSantriController.text.trim(),
         idKategori: _selectedKategoriKeluhan?.id,
         masukan: _masukanController.text.trim(),
         saran: _saranController.text.trim(),
@@ -259,13 +156,14 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         jenis: _selectedJenis,
       );
 
+
       bool success = await widget.keluhanService.submitKeluhan(keluhan);
 
       setState(() {
         _isLoading = false;
         _isSubmitted = success;
       });
-      //reset field ke setelan pabrik bosQuuuu
+
       if (success) {
         Future.delayed(const Duration(seconds: 5), () {
           if (mounted) {
@@ -281,7 +179,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
               _idSantriController.clear();
               _searchController.clear();
 
-              // Reset semua dropdown dan nilai tambahan
               _rating = 5;
               _selectedJenis = 'Keluhan';
               _selectedSantri = null;
@@ -293,6 +190,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
       }
     }
   }
+
 
   @override
   void dispose() {
@@ -513,35 +411,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                                         return null;
                                       },
                                     ),
-                                    _buildTextField(
-                                      controller: _noHpController,
-                                      label: 'Nomor HP/WhatsApp',
-                                      keyboardType: TextInputType.phone,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text('Informasi Santri',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 16),
-                                    _buildSantriSearchField(),
-                                    _buildTextField(
-                                      controller: _namaWaliSantriController,
-                                      label: 'Nama Wali Santri',
-                                    ),
-                                    _buildDropdownKelas(),
                                   ],
                                 ),
                               ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../models/about_model.dart';
 import '../services/api_service.dart';
-import 'dart:ui';
 import '../widgets/footer_widget.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -43,13 +44,19 @@ class _AboutScreenState extends State<AboutScreen> {
         elevation: 1,
         toolbarHeight: 48,
         automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), 
-        title: const Text(
-          'Tentang',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            'PPATQ-RF ku',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
       ),

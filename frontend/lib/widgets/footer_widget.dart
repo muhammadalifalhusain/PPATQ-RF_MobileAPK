@@ -27,30 +27,6 @@ class FooterWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: const FaIcon(FontAwesomeIcons.tiktok, color: Colors.black),
-              tooltip: 'TikTok',
-              onPressed: () => _launchWithFallback(
-                "tiktok://user/@ppatq.raudlatulfalah", // URI scheme (jika app tersedia)
-                "https://www.tiktok.com/@ppatq.raudlatulfalah?lang=en", // Fallback ke browser
-              ),
-            ),
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.facebook, color: Colors.blue),
-              tooltip: 'Facebook',
-              onPressed: () => _launchWithFallback(
-                "fb://facewebmodal/f?href=https://www.facebook.com/pprtq.r.falah", // Facebook app
-                "https://www.facebook.com/pprtq.r.falah", // Fallback
-              ),
-            ),
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.instagram, color: Colors.purple),
-              tooltip: 'Instagram',
-              onPressed: () => _launchWithFallback(
-                "instagram://user?username=ppatq_raudlatulfalah", // Instagram app
-                "https://www.instagram.com/ppatq_raudlatulfalah", // Fallback
-              ),
-            ),
-            IconButton(
               icon: const FaIcon(FontAwesomeIcons.mapMarkerAlt, color: Colors.red),
               tooltip: 'Google Maps',
               onPressed: () => _launchWithFallback(

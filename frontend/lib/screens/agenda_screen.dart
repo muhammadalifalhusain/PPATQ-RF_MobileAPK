@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../services/api_service.dart';
 import '../models/agenda_model.dart';
 
@@ -221,13 +223,19 @@ class _AgendaScreenState extends State<AgendaScreen> {
         elevation: 1,
         toolbarHeight: 48,
         automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), 
-        title: const Text(
-          'Agenda',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            'Agenda',
+            style: GoogleFonts.poppins( // Menggunakan Poppins
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
       ),

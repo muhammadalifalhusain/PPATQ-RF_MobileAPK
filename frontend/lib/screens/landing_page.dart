@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/api_service.dart';
 import '../models/berita_model.dart';
 import '../widgets/app_header.dart';
@@ -15,6 +16,13 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   final ApiService apiService = ApiService();
   int _selectedIndex = 1;
+
+  Future<void> _launchPSBUrl() async {
+    final Uri url = Uri.parse('http://psb.ppatq-rf.id');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   void _showDevelopmentDialog(BuildContext context) {
     showDialog(
@@ -94,10 +102,8 @@ class _LandingPageState extends State<LandingPage> {
 
   void _onItemTapped(int index) {
     if (index == 0 || index == 2) {
-      // Tampilkan dialog pengembangan, tapi tidak ganti _selectedIndex agar tab tidak berubah
       _showDevelopmentDialog(context);
     } else {
-      // Hanya update index dan tampilkan snackbar untuk Profil
       setState(() {
         _selectedIndex = index;
       });
@@ -115,7 +121,7 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             Container(
-              color: Colors.white, // Background solid
+              color: Colors.white,
               child: AppHeader(
                 showAuthButtons: true,
                 showBackButton: false,
@@ -139,6 +145,63 @@ class _LandingPageState extends State<LandingPage> {
                     final beritaList = snapshot.data!;
                     return Column(
                       children: [
+                        // New PSB Registration Banner
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 5.0),
+                          child: GestureDetector(
+                          onTap: _launchPSBUrl,
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.teal, Colors.green],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
+                                  )
+                                ], // Ditambahkan penutup ] untuk boxShadow
+                              ), // Ditambahkan penutup ) untuk BoxDecoration
+                              child: Row(
+                                children: [
+                                  Icon(Icons.school, color: Colors.white, size: 40),
+                                  SizedBox(width: 13),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'PENDAFTARAN SANTRI BARU',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'Daftarkan putra/putri Anda sekarang! Klik di sini untuk informasi lebih lanjut.',
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(Icons.arrow_forward_ios, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                          )
+                        ),
+                        
                         BeritaUtama(berita: beritaList.first),
                         Divider(color: Colors.teal, thickness: 2, height: 20),
                         Text(

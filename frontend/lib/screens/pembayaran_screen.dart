@@ -6,8 +6,10 @@ import '../models/get_bank_model.dart';
 import '../services/get_bank_service.dart';
 import '../services/pembayaran_service.dart';
 
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:developer';
 
 class InputPembayaranScreen extends StatefulWidget {
   @override
@@ -80,17 +82,14 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
 
   Future<void> _loadJenisPembayaran() async {
     try {
-      // Tampilkan loading indicator
       setState(() {
         _isLoading = true;
       });
 
       _jenisPembayaran = await _pembayaranService.getJenisPembayaran();
       
-      // Sort berdasarkan urutan
       _jenisPembayaran.sort((a, b) => a.urutan.compareTo(b.urutan));
       
-      // Inisialisasi controllers
       _controllers = List.generate(
         _jenisPembayaran.length, 
         (index) {
@@ -108,20 +107,12 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
       setState(() {
         _isLoading = false;
       });
-      
-      // Tampilkan error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Gagal memuat jenis pembayaran'),
           backgroundColor: Colors.red,
         ),
       );
-      
-      // Log error untuk debugging
-      debugPrint('Error loading jenis pembayaran: $e');
-      debugPrintStack(stackTrace: StackTrace.current);
-      
-      // Re-throw error jika perlu ditangani di tempat lain
       throw e;
     }
   }
@@ -179,13 +170,14 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
       int totalJumlah = 0;
 
       for (int i = 0; i < _jenisPembayaran.length; i++) {
-        String value = _controllers[i].text.trim();
-        if (value.isNotEmpty && int.tryParse(value) != null) {
-          int nominal = int.parse(value);
-          totalJumlah += nominal;
-          idJenisPembayaran.add(_jenisPembayaran[i].id);
-          jenisPembayaran.add(value);
-        }
+          String value = _controllers[i].text.trim();
+          if (value.isNotEmpty && int.tryParse(value) != null) {
+              int nominal = int.parse(value);
+              print('🔍 Nominal untuk jenis pembayaran ${_jenisPembayaran[i].id}: $nominal');
+              totalJumlah += nominal;
+              idJenisPembayaran.add(_jenisPembayaran[i].id);
+              jenisPembayaran.add(value);
+          }
       }
 
       if (idJenisPembayaran.isEmpty) {
@@ -194,8 +186,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         );
         return;
       }
-
-      // Tampilkan loading
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -250,6 +240,9 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         if (idJenisPembayaran.isEmpty) {
           throw Exception("Pilih setidaknya satu jenis pembayaran");
         }
+        print('🔍 Total Jumlah: $totalJumlah');
+        print('🔍 ID Jenis Pembayaran: $idJenisPembayaran');
+        print('🔍 Jenis Pembayaran: $jenisPembayaran');
 
         Pembayaran pembayaran = Pembayaran(
           noInduk: noInduk,
@@ -265,20 +258,15 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
           jenisPembayaran: jenisPembayaran,
         );
 
-        // DEBUG: Tampilkan data yang akan dikirim
         debugPrint('Data Pembayaran yang akan dikirim:');
         debugPrint(pembayaran.toFormFields().toString());
         if (_buktiBayar != null) {
           debugPrint('Bukti Bayar: ${_buktiBayar!.path}');
         }
 
-        // Kirim data ke service
-        await _pembayaranService.postPembayaran(pembayaran, _buktiBayar);
+       await _pembayaranService.postPembayaran(pembayaran, _buktiBayar);
 
-        // Tutup loading dialog
         Navigator.of(context).pop(); 
-
-        // Tampilkan notifikasi sukses
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Pembayaran berhasil dikirim'),
@@ -286,15 +274,11 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
             duration: Duration(seconds: 3),
           ),
         );
-
-        // Kembali ke halaman sebelumnya
         Navigator.of(context).pop();
 
       } catch (error) {
-        // Tutup loading dialog
         Navigator.of(context).pop(); 
 
-        // Tampilkan error message yang lebih user-friendly
         String errorMessage = 'Gagal mengirim pembayaran';
         
         if (error.toString().contains('SocketException')) {
@@ -346,13 +330,19 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         elevation: 1,
         toolbarHeight: 48,
         automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), 
-        title: const Text(
-          'Lapor Bayar',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            'Lapor Bayar',
+            style: GoogleFonts.poppins( 
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
       ),
@@ -406,7 +396,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                  color: Colors.teal,
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -477,7 +467,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                  color: Colors.teal,
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -492,7 +482,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                     decoration: InputDecoration(
                                       labelText: jenis.jenis,
                                       hintText: jenis.harga > 0
-                                          ? 'Harga standar: Rp ${jenis.harga.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}'
+                                          ? ' ${jenis.harga.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}'
                                           : 'Masukkan nominal',
                                       border: OutlineInputBorder(),
                                       prefixIcon: Icon(Icons.payments),
@@ -546,7 +536,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                  color: Colors.teal,
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -615,7 +605,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                         child: ElevatedButton(
                           onPressed: _submit,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: Colors.teal,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),

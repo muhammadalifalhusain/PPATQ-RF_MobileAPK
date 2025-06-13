@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../services/keuangan_service.dart';
 import '../../models/keuangan_model.dart';
 
@@ -59,19 +61,24 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 1,
         toolbarHeight: 48,
         automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), 
-        title: const Text(
-          'Uang Keluar',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            'Saku Keluar',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
       ),

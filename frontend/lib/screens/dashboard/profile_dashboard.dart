@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 import '../../models/login_model.dart';
+
+import '../../services/keluhan_service.dart';
 
 import '../../providers/auth_provider.dart';
 
 import '../../screens/kesehatan_screen.dart';
+import '../../screens/keluhan_screen.dart';
 import '../landing_page.dart';
 import '../../screens/ketahfidzan_screen.dart';
 import 'saku_keluar.dart';
@@ -65,8 +70,8 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
 
   final List<Map<String, dynamic>> menuItems = [
     {'icon': FontAwesome.hospital_o, 'label': 'Kesehatan'},
-    {'icon': FontAwesome.money, 'label': 'Keuangan'},
     {'icon': FontAwesome.book, 'label': 'Tahfidz'},
+    {'icon': FontAwesome.comments, 'label': 'Saran'},
   ];
 
   @override
@@ -93,16 +98,17 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
       appBar: AppBar(
       backgroundColor: Colors.teal,
       elevation: 1,
-      toolbarHeight: 48, 
+      toolbarHeight: 48,
       automaticallyImplyLeading: false,
-      centerTitle: false, 
+      centerTitle: false,
       title: Padding(
-        padding: const EdgeInsets.only(left: 10.0), 
+        padding: const EdgeInsets.only(left: 10.0),
         child: Text(
           'Profile',
-          style: TextStyle(
+          style: GoogleFonts.poppins( // Menggunakan Poppins
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
       ),
@@ -454,6 +460,15 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                 MaterialPageRoute(
                                     builder: (_) => KetahfidzanScreen()),
                               );
+                              break;
+                            case 'Saran':
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => KeluhanScreen(keluhanService: KeluhanService()),
+                                ),
+                              );
+
                               break;
                             default:
                               print('Navigasi ke: $label');

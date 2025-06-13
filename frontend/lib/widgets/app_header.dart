@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/login_screen.dart';
 
-
-// import '../screens/register_screen.dart';
-
 class AppHeader extends StatelessWidget {
   final bool showBackButton;
   final bool showAuthButtons;
@@ -44,7 +41,7 @@ class AppHeader extends StatelessWidget {
           Text(
             'PPATQ RAUDLATUL FALAH',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.teal,
             ),
@@ -54,7 +51,7 @@ class AppHeader extends StatelessWidget {
 
           // Deskripsi
           Text(
-            'Pondok Pesantren Anak-anak Tahfidzul Qur\'an Raudlatul Falah – Pati',
+            'Pondok Pesantren Anak-anak Tahfidzul Qur\'an Raudlatul Falah - Pati',
             style: TextStyle(
               fontSize: 16,
               fontStyle: FontStyle.italic,
@@ -62,11 +59,11 @@ class AppHeader extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 5),
 
           if (showAuthButtons)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 25),
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.teal,
                 borderRadius: BorderRadius.circular(10),
@@ -74,8 +71,16 @@ class AppHeader extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.login, size: 23, color: Colors.white),
+                  TextButton.icon(
+                    icon: Icon(Icons.login, size: 15, color: Colors.white),
+                    label: Text(
+                      'Login',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -83,20 +88,11 @@ class AppHeader extends StatelessWidget {
                       );
                     },
                   ),
-                  // IconButton(
-                  //   icon: Icon(Icons.person_add, size: 23, color: Colors.white),
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (_) => RegisterScreen()),
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             )
           else
-            SizedBox(height: 45), // Placeholder untuk menjaga tinggi tetap (opsional)
+            SizedBox(height: 5),
         ],
       ),
     );

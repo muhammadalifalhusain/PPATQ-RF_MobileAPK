@@ -54,11 +54,8 @@ class MenuIkonWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => DakwahScreen()),
                 );
               }),
-              _buildMenuIkon(Icons.feedback, 'Saran', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => KeluhanScreen(keluhanService: KeluhanService(),)),
-                );
+              _buildMenuIkon(Icons.more, 'Lainnya', () {
+                _showDevelopmentDialog(context);
               }),
             ],
           ),

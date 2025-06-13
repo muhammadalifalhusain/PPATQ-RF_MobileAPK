@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+
 import 'pembayaran_screen.dart';
 
 class ValidasiPembayaranScreen extends StatelessWidget {
@@ -11,14 +14,25 @@ class ValidasiPembayaranScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          'Konfirmasi Pembayaran',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
+        backgroundColor: Colors.teal,
+        elevation: 1,
+        toolbarHeight: 48,
+        automaticallyImplyLeading: false,
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+        ),
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            'Konfirmasi',
+            style: GoogleFonts.poppins( 
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
-        centerTitle: true,
-        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -156,32 +170,35 @@ class ValidasiPembayaranScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hubungi admin melalui:',
+              'Tekan untuk lanjut ke WhatsApp :',
               style: GoogleFonts.poppins(),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(Icons.phone),
-              title: Text(
-                'Telepon: 0812-3456-7890',
-                style: GoogleFonts.poppins(),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12), 
               ),
-              onTap: () {
-                // Implementasi panggilan telepon
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.email),
-              title: Text(
-                'Email: admin@example.com',
-                style: GoogleFonts.poppins(),
+              child: ListTile(
+                leading: const Icon(Icons.phone, color: Colors.green),
+                title: Text(
+                  'Telepon: +6287767572025',
+                  style: GoogleFonts.poppins(
+                    color: Colors.green[900], 
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () async {
+                  final whatsappUrl = Uri.parse("https://wa.me/6287767572025");
+                  if (await canLaunchUrl(whatsappUrl)) {
+                    await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                  } else {
+                    throw 'Tidak dapat membuka WhatsApp';
+                  }
+                },
               ),
-              onTap: () {
-                // Implementasi pengiriman email
-                Navigator.pop(context);
-              },
             ),
+
           ],
         ),
         actions: [

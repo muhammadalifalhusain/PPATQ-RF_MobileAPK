@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+
 import '../../services/riwayat_bayar_service.dart';
 import '../../models/riwayat_bayar_model.dart';
 
@@ -24,9 +27,25 @@ class _RiwayatPembayaranScreenState extends State<RiwayatPembayaranScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Riwayat Pembayaran'),
-        centerTitle: true,
-        elevation: 0,
+        backgroundColor: Colors.teal,
+        elevation: 1,
+        toolbarHeight: 48,
+        automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+        ),
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            'Riwayat Pembayaran',
+            style: GoogleFonts.poppins( 
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
       ),
       body: FutureBuilder<RiwayatBayarResponse>(
         future: _riwayatFuture,
