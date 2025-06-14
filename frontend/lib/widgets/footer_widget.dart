@@ -45,7 +45,7 @@ class FooterWidget extends StatelessWidget {
           ),
         ),
         const Text(
-          'Copyright © 2025 All Rights Reserved',
+          'Copyright © 2025 All Rights Reserved-BETA',
           style: TextStyle(
             fontSize: 14,
             color: Colors.black54,

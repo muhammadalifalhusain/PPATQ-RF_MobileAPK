@@ -5,13 +5,70 @@ import '../screens/agenda_screen.dart';
 import '../screens/galeri_screen.dart';
 import '../screens/pegawai_screen.dart';
 import '../screens/dakwah_screen.dart';
-
+import '../screens/surah_list_screen.dart';
 import '../screens/keluhan_screen.dart';
+import '../screens/informasi_screen.dart';
 import '../services/keluhan_service.dart';
 
-class MenuIkonWidget extends StatelessWidget {
+class MenuIkonWidget extends StatefulWidget {
+  @override
+  _MenuIkonWidgetState createState() => _MenuIkonWidgetState();
+}
+
+class _MenuIkonWidgetState extends State<MenuIkonWidget> {
+  bool _showAllMenus = false;
+  final List<Map<String, dynamic>> _menus = [
+    {
+      'icon': Icons.info,
+      'label': 'PPATQ-RF ku',
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => AboutScreen())),
+    },
+    {
+      'icon': Icons.calendar_today,
+      'label': 'Agenda',
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => AgendaScreen())),
+    },
+    {
+      'icon': Icons.photo_library,
+      'label': 'Galeri',
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => GaleriScreen())),
+    },
+    {
+      'icon': Icons.people,
+      'label': 'Staff',
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => PegawaiDataScreen())),
+    },
+    {
+      'icon': Icons.record_voice_over,
+      'label': 'Dakwah',
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => DakwahScreen())),
+    },
+    {
+      'icon': Icons.book,
+      'label': 'AL-Quran',
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => QuranScreen())),
+    },
+    {
+      'icon': Icons.feedback,
+      'label': 'Lainnya',
+      'action': (BuildContext context) => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => KeluhanScreen(keluhanService: KeluhanService())),
+      )
+    },
+    {
+      'icon': Icons.location_on,
+      'label': 'Lokasi & Info',
+      'action': (BuildContext context) => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => InformasiScreen())),
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final displayedMenus = _showAllMenus ? _menus : _menus.take(5).toList();
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       padding: EdgeInsets.symmetric(horizontal: 13),
@@ -20,43 +77,17 @@ class MenuIkonWidget extends StatelessWidget {
           SizedBox(height: 5),
           GridView.count(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(), 
-            crossAxisCount: 3, 
-            childAspectRatio: 1, 
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 3,
+            childAspectRatio: 1,
             children: [
-              _buildMenuIkon(Icons.info, 'About', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AboutScreen()),
-                );
-              }),
-              _buildMenuIkon(Icons.calendar_today, 'Agenda', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AgendaScreen()),
-                );
-              }),
-              _buildMenuIkon(Icons.photo_library, 'Galeri', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => GaleriScreen()),
-                );
-              }),
-              _buildMenuIkon(Icons.people, 'Staff', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => PegawaiDataScreen()),
-                );
-              }),
-              _buildMenuIkon(Icons.record_voice_over, 'Dakwah', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DakwahScreen()),
-                );
-              }),
-              _buildMenuIkon(Icons.more, 'Lainnya', () {
-                _showDevelopmentDialog(context);
-              }),
+              ...displayedMenus.map((menu) => _buildMenuIkon(
+                menu['icon'],
+                menu['label'],
+                () => menu['action'](context),
+              )).toList(),
+              
+              if (!_showAllMenus) _buildMoreButton(),
             ],
           ),
         ],
@@ -75,8 +106,46 @@ class MenuIkonWidget extends StatelessWidget {
           Text(
             label,
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+
+  _buildMoreButton() {
+    return GestureDetector(
+      onTap: () => setState(() => _showAllMenus = true),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center( // Widget Center utama
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // Pusatkan vertikal
+            crossAxisAlignment: CrossAxisAlignment.center, // Pusatkan horizontal
+            children: [
+              Center( // Center khusus untuk ikon
+                child: Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 30,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(height: 5),
+              Text(
+                'Lainnya',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[700],
+                ),
+                textAlign: TextAlign.center, // Pusatkan teks
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -101,7 +170,7 @@ class MenuIkonWidget extends StatelessWidget {
                   color: Colors.black26,
                   blurRadius: 10,
                   offset: Offset(0, 10),
-                )
+                ),
               ],
             ),
             child: Column(
@@ -141,15 +210,9 @@ class MenuIkonWidget extends StatelessWidget {
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                   ),
-                  child: Text(
-                    'Mengerti',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  child: Text('Mengerti', style: TextStyle(fontSize: 16)),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
-
               ],
             ),
           ),

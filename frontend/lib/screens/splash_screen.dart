@@ -65,32 +65,47 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 35.0),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'from\n ',
-                    style: TextStyle(
-                      color: Colors.grey[400], 
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 1.0,
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'from\n',
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'PPATQ Raudlatul Falah',
+                        style: TextStyle(
+                          color: Color(0xFF00695C),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
                   ),
-                  TextSpan(
-                    text: 'PPATQ Raudlatul Falah',
-                    style: TextStyle(
-                      color: Color(0xFF00695C), // Warna hijau teal
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Beta Version',
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+
         ],
       ),
     );

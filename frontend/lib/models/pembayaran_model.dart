@@ -8,8 +8,8 @@ class Pembayaran {
   final String atasNama;
   final String noWa;
   final String? catatan;
-  final List<int> idJenisPembayaran; // Field baru
-  final List<String> jenisPembayaran; // Field baru
+  final List<int> idJenisPembayaran;
+  final List<String> jenisPembayaran;
 
   Pembayaran({
     required this.noInduk,
@@ -25,8 +25,9 @@ class Pembayaran {
     required this.jenisPembayaran,
   });
 
+  // PEMBARUAN: Method toFormFields yang sudah diperbaiki
   Map<String, dynamic> toFormFields() {
-    return {
+    Map<String, dynamic> fields = {
       'noInduk': noInduk.toString(),
       'jumlah': jumlah.toString(),
       'tanggalBayar': tanggalBayar,
@@ -36,9 +37,13 @@ class Pembayaran {
       'atasNama': atasNama,
       'noWa': noWa,
       'catatan': catatan ?? '',
-      'idJenisPembayaran[]': idJenisPembayaran.map((id) => id.toString()).toList(),
-      'jenisPembayaran[]': jenisPembayaran.map((jenis) => jenis.toString()).toList(),
     };
+
+    // PERBAIKAN: Menambahkan array sebagai multiple entries
+    fields['idJenisPembayaran[]'] = idJenisPembayaran.map((id) => id.toString()).toList();
+    fields['jenisPembayaran[]'] = jenisPembayaran;
+
+    return fields;
   }
 }
 

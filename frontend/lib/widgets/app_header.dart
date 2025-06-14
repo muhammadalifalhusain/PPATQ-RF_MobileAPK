@@ -63,7 +63,7 @@ class AppHeader extends StatelessWidget {
 
           if (showAuthButtons)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.teal,
                 borderRadius: BorderRadius.circular(10),
@@ -72,7 +72,7 @@ class AppHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton.icon(
-                    icon: Icon(Icons.login, size: 15, color: Colors.white),
+                    icon: Icon(Icons.login, size: 16, color: Colors.white),
                     label: Text(
                       'Login',
                       style: TextStyle(

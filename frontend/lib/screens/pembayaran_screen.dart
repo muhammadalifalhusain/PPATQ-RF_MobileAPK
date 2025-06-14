@@ -18,11 +18,10 @@ class InputPembayaranScreen extends StatefulWidget {
 
 class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   final _formKey = GlobalKey<FormState>();
-  final PembayaranService _pembayaranService = PembayaranService(
-    baseUrl: "https://api.ppatq-rf.id/api",
-    debugMode: false, // Set true untuk mode debug
-  );
+  
+  final PembayaranService _pembayaranService = PembayaranService();
   final BankService _bankService = BankService();
+  final NumberFormat currencyFormatter = NumberFormat("#,##0", "id_ID");
 
   List<Bank> _banks = [];
   List<JenisPembayaran> _jenisPembayaran = [];
@@ -158,152 +157,136 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      if (_buktiBayar == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bukti bayar wajib diupload')),
-        );
-        return;
-      }
+        if (_buktiBayar == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Bukti bayar wajib diupload')),
+            );
+            return;
+        }
 
-      List<int> idJenisPembayaran = [];
-      List<String> jenisPembayaran = [];
-      int totalJumlah = 0;
+        List<int> idJenisPembayaran = [];
+        List<String> jenisPembayaran = [];
+        int totalJumlah = 0;
 
-      for (int i = 0; i < _jenisPembayaran.length; i++) {
-          String value = _controllers[i].text.trim();
-          if (value.isNotEmpty && int.tryParse(value) != null) {
-              int nominal = int.parse(value);
-              print('🔍 Nominal untuk jenis pembayaran ${_jenisPembayaran[i].id}: $nominal');
-              totalJumlah += nominal;
-              idJenisPembayaran.add(_jenisPembayaran[i].id);
-              jenisPembayaran.add(value);
-          }
-      }
+        for (int i = 0; i < _jenisPembayaran.length; i++) {
+            String value = _controllers[i].text.trim();
+            if (value.isNotEmpty && int.tryParse(value) != null) {
+                int nominal = int.parse(value);
+                print('🔍 Nominal untuk jenis pembayaran ${_jenisPembayaran[i].id}: $nominal');
+                totalJumlah += nominal;
+                idJenisPembayaran.add(_jenisPembayaran[i].id);
+                jenisPembayaran.add(value);
+            }
+        }
 
-      if (idJenisPembayaran.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Masukkan minimal satu jenis pembayaran')),
-        );
-        return;
-      }
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Row(
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 20),
-                Text("Mengirim pembayaran..."),
-              ],
-            ),
-          );
-        },
-      );
-      try {
+        // Memeriksa apakah idJenisPembayaran kosong setelah pengisian
+        if (idJenisPembayaran.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Masukkan minimal satu jenis pembayaran')),
+            );
+            return;
+        }
+
         // Tampilkan loading dialog
         showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Center(child: CircularProgressIndicator()),
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => Center(child: CircularProgressIndicator()),
         );
 
-        final prefs = await SharedPreferences.getInstance();
-        final noInduk = prefs.getInt('no_induk') ?? 0;
+        try {
+            final prefs = await SharedPreferences.getInstance();
+            final noInduk = prefs.getInt('no_induk') ?? 0;
 
-        if (noInduk == 0) {
-          throw Exception("No induk tidak ditemukan di SharedPreferences");
+            if (noInduk == 0) {
+                throw Exception("No induk tidak ditemukan di SharedPreferences");
+            }
+
+            final now = DateTime.now();
+            final int periode = now.month;
+            final int tahun = now.year;
+
+            // Validasi input sebelum membuat objek Pembayaran
+            if (_tanggalBayarController.text.isEmpty) {
+                throw Exception("Tanggal bayar harus diisi");
+            }
+
+            if (_selectedBank == null || _selectedBank!.isEmpty) {
+                throw Exception("Bank pengirim harus dipilih");
+            }
+
+            if (_atasNamaController.text.isEmpty) {
+                throw Exception("Nama pemilik rekening harus diisi");
+            }
+
+            if (_noWaController.text.isEmpty) {
+                throw Exception("Nomor WhatsApp harus diisi");
+            }
+
+            print('🔍 Total Jumlah: $totalJumlah');
+            print('🔍 ID Jenis Pembayaran: $idJenisPembayaran');
+            print('🔍 Jenis Pembayaran: $jenisPembayaran');
+
+            // ✅ PERBAIKAN: Kirim semua data sekaligus dalam satu request
+            Pembayaran pembayaran = Pembayaran(
+                noInduk: noInduk,
+                jumlah: totalJumlah, // Total dari semua jenis pembayaran
+                tanggalBayar: _tanggalBayarController.text,
+                periode: periode,
+                tahun: tahun,
+                bankPengirim: _selectedBank!,
+                atasNama: _atasNamaController.text,
+                noWa: _noWaController.text,
+                catatan: _catatanController.text,
+                idJenisPembayaran: idJenisPembayaran, // ✅ Kirim semua ID sekaligus
+                jenisPembayaran: jenisPembayaran, // ✅ Kirim semua nominal sekaligus
+            );
+
+            debugPrint('Data Pembayaran yang akan dikirim:');
+            debugPrint(pembayaran.toFormFields().toString());
+
+            // ✅ PERBAIKAN: Hanya satu kali panggil service
+            await _pembayaranService.postPembayaran(pembayaran, _buktiBayar);
+
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text('Pembayaran berhasil dikirim'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 3),
+                ),
+            );
+            Navigator.of(context).pop();
+
+        } catch (error) {
+            Navigator.of(context).pop();
+
+            String errorMessage = 'Gagal mengirim pembayaran';
+
+            if (error.toString().contains('SocketException')) {
+                errorMessage = 'Tidak ada koneksi internet';
+            } else if (error.toString().contains('TimeoutException')) {
+                errorMessage = 'Server tidak merespons, coba lagi nanti';
+            } else if (error.toString().contains('FormatException')) {
+                errorMessage = 'Terjadi kesalahan format data';
+            } else {
+                errorMessage = error.toString();
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text(errorMessage),
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                ),
+            );
+
+            debugPrint('Error saat mengirim pembayaran: $error');
+            debugPrintStack(stackTrace: StackTrace.current);
         }
-
-        final now = DateTime.now();
-        final int periode = now.month;
-        final int tahun = now.year;
-
-        // Validasi input sebelum membuat objek Pembayaran
-        if (_tanggalBayarController.text.isEmpty) {
-          throw Exception("Tanggal bayar harus diisi");
-        }
-        
-        if (_selectedBank == null || _selectedBank!.isEmpty) {
-          throw Exception("Bank pengirim harus dipilih");
-        }
-
-        if (_atasNamaController.text.isEmpty) {
-          throw Exception("Nama pemilik rekening harus diisi");
-        }
-
-        if (_noWaController.text.isEmpty) {
-          throw Exception("Nomor WhatsApp harus diisi");
-        }
-
-        if (idJenisPembayaran.isEmpty) {
-          throw Exception("Pilih setidaknya satu jenis pembayaran");
-        }
-        print('🔍 Total Jumlah: $totalJumlah');
-        print('🔍 ID Jenis Pembayaran: $idJenisPembayaran');
-        print('🔍 Jenis Pembayaran: $jenisPembayaran');
-
-        Pembayaran pembayaran = Pembayaran(
-          noInduk: noInduk,
-          jumlah: totalJumlah,
-          tanggalBayar: _tanggalBayarController.text,
-          periode: periode,
-          tahun: tahun,
-          bankPengirim: _selectedBank!, 
-          atasNama: _atasNamaController.text,
-          noWa: _noWaController.text,
-          catatan: _catatanController.text,
-          idJenisPembayaran: idJenisPembayaran,
-          jenisPembayaran: jenisPembayaran,
-        );
-
-        debugPrint('Data Pembayaran yang akan dikirim:');
-        debugPrint(pembayaran.toFormFields().toString());
-        if (_buktiBayar != null) {
-          debugPrint('Bukti Bayar: ${_buktiBayar!.path}');
-        }
-
-       await _pembayaranService.postPembayaran(pembayaran, _buktiBayar);
-
-        Navigator.of(context).pop(); 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Pembayaran berhasil dikirim'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
-          ),
-        );
-        Navigator.of(context).pop();
-
-      } catch (error) {
-        Navigator.of(context).pop(); 
-
-        String errorMessage = 'Gagal mengirim pembayaran';
-        
-        if (error.toString().contains('SocketException')) {
-          errorMessage = 'Tidak ada koneksi internet';
-        } else if (error.toString().contains('TimeoutException')) {
-          errorMessage = 'Server tidak merespons, coba lagi nanti';
-        } else if (error.toString().contains('FormatException')) {
-          errorMessage = 'Terjadi kesalahan format data';
-        } else {
-          errorMessage = error.toString();
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
-          ),
-        );
-
-        debugPrint('Error saat mengirim pembayaran: $error');
-        debugPrintStack(stackTrace: StackTrace.current);
-      }   
     }
-  }
+}
+
 
   @override
   void dispose() {
@@ -489,7 +472,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                             ..._jenisPembayaran.asMap().entries.map((entry) {
                               int index = entry.key;
                               JenisPembayaran jenis = entry.value;
-                              
+
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 16.0),
                                 child: TextFormField(
@@ -497,17 +480,35 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                   decoration: InputDecoration(
                                     labelText: jenis.jenis,
                                     hintText: jenis.harga > 0
-                                        ? ' ${jenis.harga.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}'
+                                        ? currencyFormatter.format(jenis.harga)
                                         : 'Masukkan nominal',
                                     border: OutlineInputBorder(),
                                     prefixIcon: Icon(Icons.payments),
                                     prefixText: 'Rp ',
                                   ),
                                   keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    String newValue = value.replaceAll('.', '');
+                                    if (newValue.isEmpty) return;
+
+                                    final intVal = int.tryParse(newValue);
+                                    if (intVal == null) return;
+
+                                    // Update text dengan format 3 digit
+                                    final formatted = currencyFormatter.format(intVal);
+
+                                    _controllers[index].value = TextEditingValue(
+                                      text: formatted,
+                                      selection: TextSelection.collapsed(offset: formatted.length),
+                                    );
+
+                                    // Update model atau total jika perlu
+                                    // jenis.nominal = intVal;
+                                  },
                                 ),
                               );
                             }).toList(),
-                            
+
                             // Total
                             if (_totalJumlah > 0) ...[
                               Divider(thickness: 2),
@@ -522,7 +523,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Rp ${_totalJumlah.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
+                                    'Rp ${currencyFormatter.format(_totalJumlah)}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
