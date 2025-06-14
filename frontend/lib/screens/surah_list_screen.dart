@@ -494,15 +494,12 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProvid
                           ),
                         );
                       }
-
-                      // Hitung verse number yang akan ditampilkan
                       int verseNumber;
                       if (widget.surahNumber != 1 && widget.surahNumber != 9) {
                         verseNumber = index; // Karena index 0 adalah Basmala
                       } else {
                         verseNumber = index + 1; // Tidak ada Basmala, ayat dimulai dari index + 1
                       }
-
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         margin: const EdgeInsets.only(bottom: 20),
@@ -523,7 +520,6 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProvid
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                // Verse Number Badge + Action Buttons
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -564,10 +560,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProvid
                                     ),
                                   ],
                                 ),
-
                                 SizedBox(height: 20),
-
-                                // Arabic Text
                                 Text(
                                   quran.getVerse(
                                       widget.surahNumber, verseNumber),
@@ -579,9 +572,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProvid
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-
                                 SizedBox(height: 16),
-
                                 Container(
                                   height: 1,
                                   decoration: BoxDecoration(
@@ -594,10 +585,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProvid
                                     ),
                                   ),
                                 ),
-
                                 SizedBox(height: 12),
-
-                                // Verse Info
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

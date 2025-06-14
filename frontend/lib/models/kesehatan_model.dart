@@ -76,37 +76,35 @@ class RiwayatSakit {
       : null;
 }
 
-class Pemeriksaan {
-  final int tanggalPemeriksaan;
-  final int tinggiBadan;
-  final int beratBadan;
-  final int lingkarPinggul;
-  final int lingkarDada;
-  final String kondisiGigi;
+  class Pemeriksaan {
+    final int tanggalPemeriksaan;
+    final int tinggiBadan;
+    final int beratBadan;
+    final int? lingkarPinggul;
+    final int? lingkarDada;
+    final String? kondisiGigi;
 
-  Pemeriksaan({
-    required this.tanggalPemeriksaan,
-    required this.tinggiBadan,
-    required this.beratBadan,
-    required this.lingkarPinggul,
-    required this.lingkarDada,
-    required this.kondisiGigi,
-  });
+    Pemeriksaan({
+      required this.tanggalPemeriksaan,
+      required this.tinggiBadan,
+      required this.beratBadan,
+      this.lingkarPinggul,
+      this.lingkarDada,
+      this.kondisiGigi,
+    });
 
-  factory Pemeriksaan.fromJson(Map<String, dynamic> json) {
-    return Pemeriksaan(
-      tanggalPemeriksaan: json['tanggalPemeriksaan'],
-      tinggiBadan: json['tinggiBadan'],
-      beratBadan: json['beratBadan'],
-      lingkarPinggul: json['lingkarPinggul'],
-      lingkarDada: json['lingkarDada'],
-      kondisiGigi: json['kondisiGigi'],
-    );
+    factory Pemeriksaan.fromJson(Map<String, dynamic> json) {
+      return Pemeriksaan(
+        tanggalPemeriksaan: json['tanggalPemeriksaan'],
+        tinggiBadan: json['tinggiBadan'],
+        beratBadan: json['beratBadan'],
+        lingkarPinggul: json['lingkarPinggul'],
+        lingkarDada: json['lingkarDada'],
+        kondisiGigi: json['kondisiGigi'],
+      );
+    }
   }
 
-  DateTime get tanggalPemeriksaanDate =>
-      DateTime.fromMillisecondsSinceEpoch(tanggalPemeriksaan * 1000);
-}
 
 class RawatInap {
   final int tanggalMasuk;

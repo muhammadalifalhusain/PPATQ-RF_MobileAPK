@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend/screens/pembayaran_screen.dart';
+import 'package:frontend/screens/validasi_pembayaran.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -105,7 +108,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
         padding: const EdgeInsets.only(left: 10.0),
         child: Text(
           'Profile',
-          style: GoogleFonts.poppins( // Menggunakan Poppins
+          style: GoogleFonts.poppins( 
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -162,14 +165,128 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                     ],
                   ),
                 ),
-                SizedBox(height: 2),
+                SizedBox(height: 3),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: InkWell(
+                    onTap: () {
+                      // Navigate to history
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ValidasiPembayaranScreen(),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 25, horizontal: 27),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.teal.shade400,
+                            Colors.teal.shade600,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.teal.withOpacity(0.3),
+                            spreadRadius: 0,
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.receipt_long_rounded,
+                              color: Colors.white,
+                              size: 25,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            'Lapor Bayar',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 13),
+                Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: InkWell(
+                        onTap: () {
+                          // Navigate to history
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const RiwayatPembayaranScreen(),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.black.withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.history,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Riwayat Pembayaran Pondok',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: 8),
+
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                       child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(20),
+                        width: MediaQuery.of(context).size.width * 0.5, // Setengah layar
+                        padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
@@ -179,41 +296,42 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.teal.withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
                             ),
                           ],
                         ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Header dengan icon dan saldo
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(12),
+                                  padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Icon(
                                     Icons.account_balance_wallet,
                                     color: Colors.white,
-                                    size: 24,
+                                    size: 20,
                                   ),
                                 ),
-                                SizedBox(width: 16),
-                                Expanded(
+                                SizedBox(width: 8),
+                                Flexible(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Saldo',
+                                        'Saldo Uang Saku',
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           color: Colors.white.withOpacity(0.8),
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -221,7 +339,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       Text(
                                         currencyFormat.format(_loginData?.keuangan.saldo ?? 0),
                                         style: TextStyle(
-                                          fontSize: 24,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
@@ -231,60 +349,16 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                 ),
                               ],
                             ),
-                            
-                            SizedBox(height: 13),
-                            
-                            InkWell(
-                              onTap: () {
-                                // Navigate to history
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const RiwayatPembayaranScreen(),
-                                  ),
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.history,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'Riwayat Pembayaran Pondok',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
                     ),
-                    
-                    SizedBox(height: 16),
-                    
-                    // Action Buttons
+
+
+
+                    SizedBox(height: 8),
+
+                    // Action Buttons for Uang Masuk and Uang Keluar
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
@@ -300,10 +374,10 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               },
                               borderRadius: BorderRadius.circular(12),
                               child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding: EdgeInsets.symmetric(vertical: 14),
                                 decoration: BoxDecoration(
                                   color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                     color: Colors.green.shade100,
                                     width: 1,
@@ -320,7 +394,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(12),
+                                      padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: Colors.green.shade100,
                                         shape: BoxShape.circle,
@@ -328,14 +402,14 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       child: Icon(
                                         Icons.trending_up,
                                         color: Colors.green.shade700,
-                                        size: 24,
+                                        size: 18,
                                       ),
                                     ),
                                     SizedBox(height: 8),
                                     Text(
                                       'Uang Masuk',
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 10,
                                         color: Colors.green.shade800,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -345,9 +419,9 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ),
                           ),
-                          
-                          SizedBox(width: 12),
-                          
+
+                          SizedBox(width: 8),
+
                           // Uang Keluar
                           Expanded(
                             child: InkWell(
@@ -359,10 +433,10 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               },
                               borderRadius: BorderRadius.circular(12),
                               child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding: EdgeInsets.symmetric(vertical: 14),
                                 decoration: BoxDecoration(
                                   color: Colors.red.shade50,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                     color: Colors.red.shade100,
                                     width: 1,
@@ -379,7 +453,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(12),
+                                      padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: Colors.red.shade100,
                                         shape: BoxShape.circle,
@@ -387,14 +461,14 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       child: Icon(
                                         Icons.trending_down,
                                         color: Colors.red.shade700,
-                                        size: 24,
+                                        size: 18,
                                       ),
                                     ),
                                     SizedBox(height: 8),
                                     Text(
                                       'Uang Keluar',
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 10,
                                         color: Colors.red.shade800,
                                         fontWeight: FontWeight.w600,
                                       ),

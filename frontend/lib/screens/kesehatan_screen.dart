@@ -12,6 +12,10 @@ class KesehatanScreen extends StatefulWidget {
 class _KesehatanScreenState extends State<KesehatanScreen> {
   late Future<KesehatanResponse> _kesehatanFuture;
   final KesehatanService _service = KesehatanService();
+  String _displayValue(dynamic value) {
+  return (value == null || value.toString().isEmpty) ? '-' : value.toString();
+}
+
 
   @override
   void initState() {
@@ -243,99 +247,77 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   }
 
   Widget _buildPemeriksaanTab(List<Pemeriksaan> pemeriksaan) {
-    if (pemeriksaan.isEmpty) {
-      return _buildEmptyState(
-        icon: Icons.monitor_heart,
-        message: 'Tidak ada data pemeriksaan',
-      );
-    }
-
-    return ListView.separated(
-      padding: EdgeInsets.all(16),
-      itemCount: pemeriksaan.length,
-      separatorBuilder: (context, index) => SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        final periksa = pemeriksaan[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.green.shade100,
-                      child: Icon(Icons.assignment, color: Colors.green),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Pemeriksaan ${periksa.tanggalPemeriksaanDate.toLocal().toString().split(' ')[0]}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                _buildMeasurementCard(
-                  icon: Icons.height,
-                  title: 'Tinggi Badan',
-                  value: '${periksa.tinggiBadan} cm',
-                  color: Colors.blue,
-                ),
-                _buildMeasurementCard(
-                  icon: Icons.line_weight,
-                  title: 'Berat Badan',
-                  value: '${periksa.beratBadan} kg',
-                  color: Colors.green,
-                ),
-                _buildMeasurementCard(
-                  icon: Icons.straighten,
-                  title: 'Lingkar Pinggul',
-                  value: '${periksa.lingkarPinggul} cm',
-                  color: Colors.orange,
-                ),
-                _buildMeasurementCard(
-                  icon: Icons.straighten,
-                  title: 'Lingkar Dada',
-                  value: '${periksa.lingkarDada} cm',
-                  color: Colors.purple,
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Kondisi Gigi:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  periksa.kondisiGigi,
-                  style: TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+  if (pemeriksaan.isEmpty) {
+    return _buildEmptyState(
+      icon: Icons.monitor_heart,
+      message: 'Tidak ada data pemeriksaan',
     );
   }
+
+  return ListView.separated(
+    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+    itemCount: pemeriksaan.length,
+    separatorBuilder: (context, index) => SizedBox(height: 16),
+    itemBuilder: (context, index) {
+      final periksa = pemeriksaan[index];
+      return Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Tanggal: ${DateTime.fromMillisecondsSinceEpoch(periksa.tanggalPemeriksaan * 1000).toLocal().toString().split(" ")[0]}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 12),
+              _buildDetailRow('Tinggi Badan (cm)', _displayValue(periksa.tinggiBadan)),
+              _buildDetailRow('Berat Badan (kg)', _displayValue(periksa.beratBadan)),
+              _buildDetailRow('Lingkar Pinggul (cm)', _displayValue(periksa.lingkarPinggul)),
+              _buildDetailRow('Lingkar Dada (cm)', _displayValue(periksa.lingkarDada)),
+              _buildDetailRow('Kondisi Gigi', _displayValue(periksa.kondisiGigi)),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildDetailRow(String title, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black54,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildRawatInapTab(List<RawatInap> rawatInap) {
     if (rawatInap.isEmpty) {
@@ -352,52 +334,114 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
       itemBuilder: (context, index) {
         final rawat = rawatInap[index];
         return Container(
+          padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
                 color: Colors.black12,
-                blurRadius: 6,
-                offset: Offset(0, 2)),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
             ],
           ),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.red.shade100,
-              child: Icon(Icons.medical_services, color: Colors.red),
-            ),
-            title: Text(
-              rawat.keluhan,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 4),
-                Text(
-                  'Masuk: ${rawat.tanggalMasukDate.toLocal().toString().split(' ')[0]}',
-                  style: TextStyle(fontSize: 13),
-                ),
-                if (rawat.tanggalKeluar != null)
-                  Text(
-                    'Keluar: ${rawat.tanggalKeluarDate!.toLocal().toString().split(' ')[0]}',
-                    style: TextStyle(fontSize: 13),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Date information
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Tanggal Masuk',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        DateTime.fromMillisecondsSinceEpoch(rawat.tanggalMasuk * 1000)
+                            .toLocal()
+                            .toString()
+                            .split(" ")[0],
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-              ],
-            ),
-            trailing: Icon(Icons.chevron_right),
-            onTap: () {
-              _showRawatInapDetails(context, rawat);
-            },
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Tanggal Keluar',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        rawat.tanggalKeluar != null
+                            ? DateTime.fromMillisecondsSinceEpoch(rawat.tanggalKeluar! * 1000)
+                                .toLocal()
+                                .toString()
+                                .split(" ")[0]
+                            : '-',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 12),
+              
+              // Keluhan
+              Text(
+                'Keluhan',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+              Text(
+                _displayValue(rawat.keluhan),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 8),
+              
+              // Terapi
+              Text(
+                'Terapi',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+              Text(
+                _displayValue(rawat.terapi),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         );
       },
     );
   }
+
 
   Widget _buildEmptyState({required IconData icon, required String message}) {
     return Center(
@@ -418,29 +462,7 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$label: ',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey.shade700,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(color: Colors.grey.shade800),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildMeasurementCard({
     required IconData icon,

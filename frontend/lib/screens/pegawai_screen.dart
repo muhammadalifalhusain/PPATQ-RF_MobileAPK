@@ -426,11 +426,11 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       centerTitle: false,
       iconTheme: const IconThemeData(color: Colors.white),
       leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop(); // Selalu kembali ke halaman sebelumnya
-          },
-        ),
+        icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
+        onPressed: () {
+          Navigator.of(context).pop(); // Selalu kembali ke halaman sebelumnya
+        },
+      ),
       title: _isSearching
           ? null
           : const Text(

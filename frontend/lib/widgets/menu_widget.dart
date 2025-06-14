@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // Make sure to import this package
 import 'package:frontend/models/pegawai_model.dart';
 import '../screens/about_screen.dart';
 import '../screens/agenda_screen.dart';
@@ -15,209 +16,226 @@ class MenuIkonWidget extends StatefulWidget {
   _MenuIkonWidgetState createState() => _MenuIkonWidgetState();
 }
 
-class _MenuIkonWidgetState extends State<MenuIkonWidget> {
+class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStateMixin {
   bool _showAllMenus = false;
-  final List<Map<String, dynamic>> _menus = [
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  // Convert _menus to a getter to allow instance method access
+  List<Map<String, dynamic>> get _menus => [
     {
       'icon': Icons.info,
       'label': 'PPATQ-RF ku',
+      'color': Colors.blue,
       'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => AboutScreen())),
-    },
-    {
-      'icon': Icons.calendar_today,
-      'label': 'Agenda',
-      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => AgendaScreen())),
-    },
-    {
-      'icon': Icons.photo_library,
-      'label': 'Galeri',
-      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => GaleriScreen())),
     },
     {
       'icon': Icons.people,
       'label': 'Staff',
+      'color': Colors.teal,
       'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => PegawaiDataScreen())),
     },
     {
       'icon': Icons.record_voice_over,
       'label': 'Dakwah',
+      'color': Colors.green,
       'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => DakwahScreen())),
+    },
+    {
+      'icon': Icons.feedback,
+      'label': 'Informasi',
+      'color': Colors.red,
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => InformasiScreen())),
     },
     {
       'icon': Icons.book,
       'label': 'AL-Quran',
+      'color': Colors.indigo,
       'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => QuranScreen())),
     },
     {
-      'icon': Icons.feedback,
-      'label': 'Lainnya',
-      'action': (BuildContext context) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => KeluhanScreen(keluhanService: KeluhanService())),
-      )
+      'icon': Icons.location_on,
+      'label': 'Lokasi',
+      'color': Colors.amber,
+      'action': (BuildContext context) => _launchWithFallback(
+        "geo:0,0?q=PPATQ+Raudlatul+Falah", // Maps app
+        "https://maps.app.goo.gl/WJxpAMFN8htranSa8", // Fallback
+      ),
     },
     {
-      'icon': Icons.location_on,
-      'label': 'Lokasi & Info',
-      'action': (BuildContext context) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => InformasiScreen())),
+      'icon': Icons.calendar_today,
+      'label': 'Agenda',
+      'color': Colors.orange,
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => AgendaScreen())),
+    },
+    {
+      'icon': Icons.photo_library,
+      'label': 'Galeri',
+      'color': Colors.purple,
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => GaleriScreen())),
     },
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final displayedMenus = _showAllMenus ? _menus : _menus.take(5).toList();
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
-      padding: EdgeInsets.symmetric(horizontal: 13),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          SizedBox(height: 5),
-          GridView.count(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 3,
-            childAspectRatio: 1,
-            children: [
-              ...displayedMenus.map((menu) => _buildMenuIkon(
-                menu['icon'],
-                menu['label'],
-                () => menu['action'](context),
-              )).toList(),
-              
-              if (!_showAllMenus) _buildMoreButton(),
-            ],
-          ),
+          _buildMainMenuGrid(),
+          if (!_showAllMenus) ...[
+            SizedBox(height: 10),
+            _buildMoreButton(),
+          ],
+          if (_showAllMenus) ...[
+            SizedBox(height: 10),
+            _buildAdditionalMenuGrid(),
+            SizedBox(height: 10),
+            _buildLessButton(),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildMenuIkon(IconData ikon, String label, VoidCallback onTap) {
+  Widget _buildMainMenuGrid() {
+    final mainMenus = _menus.take(6).toList();
+
+    return GridView.count(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      childAspectRatio: 1.1,
+      mainAxisSpacing: 15,
+      crossAxisSpacing: 15,
+      children: mainMenus.map((menu) => _buildMenuIkon(
+        menu['icon'],
+        menu['label'],
+        menu['color'],
+        () => menu['action'](context),
+      )).toList(),
+    );
+  }
+
+  Widget _buildAdditionalMenuGrid() {
+    final additionalMenus = _menus.skip(6).toList();
+
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        crossAxisCount: 3,
+        childAspectRatio: 1.1,
+        mainAxisSpacing: 15,
+        crossAxisSpacing: 15,
+        children: additionalMenus.map((menu) => _buildMenuIkon(
+          menu['icon'],
+          menu['label'],
+          menu['color'],
+          () => menu['action'](context),
+        )).toList(),
+      ),
+    );
+  }
+
+  Widget _buildMenuIkon(IconData ikon, String label, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(ikon, size: 35, color: Colors.green),
-          SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  _buildMoreButton() {
-    return GestureDetector(
-      onTap: () => setState(() => _showAllMenus = true),
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center( // Widget Center utama
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Pusatkan vertikal
-            crossAxisAlignment: CrossAxisAlignment.center, // Pusatkan horizontal
-            children: [
-              Center( // Center khusus untuk ikon
-                child: Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 30,
-                  color: Colors.grey[600],
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              SizedBox(height: 5),
-              Text(
-                'Lainnya',
+              child: Icon(
+                ikon, 
+                size: 28, 
+                color: color,
+              ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                label,
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[700],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[800],
                 ),
-                textAlign: TextAlign.center, // Pusatkan teks
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _showDevelopmentDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.engineering,
-                  size: 60,
-                  color: Colors.orange,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Sedang Dalam Pengembangan',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 15),
-                Text(
-                  'Maaf, menu ini sedang dalam tahap pengembangan. Kami akan segera meluncurkannya!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 25),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black, 
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  ),
-                  child: Text('Mengerti', style: TextStyle(fontSize: 16)),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ),
-        );
+  Widget _buildMoreButton() {
+    return GestureDetector(
+      onTap: () {
+        setState(() => _showAllMenus = true);
+        _animationController.forward();
       },
+      child: Icon(
+        Icons.keyboard_arrow_down_rounded,
+        size: 30,
+        color: Colors.grey[600],
+      ),
     );
+  }
+
+  Widget _buildLessButton() {
+    return GestureDetector(
+      onTap: () {
+        _animationController.reverse().then((_) {
+          setState(() => _showAllMenus = false);
+        });
+      },
+      child: Icon(
+        Icons.keyboard_arrow_up_rounded,
+        size: 30,
+        color: Colors.grey[600],
+      ),
+    );
+  }
+
+  Future<void> _launchWithFallback(String uri, String fallbackUrl) async {
+    if (await canLaunch(uri)) {
+      await launch(uri);
+    } else {
+      await launch(fallbackUrl);
+    }
   }
 }

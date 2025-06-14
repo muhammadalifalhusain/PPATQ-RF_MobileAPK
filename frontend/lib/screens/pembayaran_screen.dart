@@ -307,26 +307,27 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      backgroundColor: Colors.teal,
-      elevation: 1,
-      toolbarHeight: 48,
-      automaticallyImplyLeading: true,
-      iconTheme: const IconThemeData(
-        color: Colors.white, 
-      ),
-      centerTitle: false,
-      title: Padding(
-        padding: const EdgeInsets.only(left: 10.0),
-        child: Text(
-          'Lapor Bayar',
-          style: GoogleFonts.poppins( 
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+        backgroundColor: Colors.teal,
+        elevation: 2,
+        toolbarHeight: 56,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Lapor Bayar',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
           ),
         ),
       ),
-    ),
     body: _isLoading
         ? Center(child: CircularProgressIndicator())
         : Padding(

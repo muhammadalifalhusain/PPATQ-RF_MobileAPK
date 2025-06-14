@@ -8,6 +8,8 @@ import '../services/get-kelas_service.dart';
 import '../models/kategori_keluhan_model.dart'; 
 import '../services/kategori_keluhan_service.dart'; 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'dart:convert';
 
 
@@ -351,16 +353,23 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        elevation: 1,
-        toolbarHeight: 48,
+        elevation: 2,
+        toolbarHeight: 56,
         automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), 
-        title: const Text(
-          'Sumbang Saran',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Sumbang Saran',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
           ),
         ),
       ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/ketahfidzan_service.dart';
 import '../models/ketahfidzan_model.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class KetahfidzanScreen extends StatefulWidget {
   const KetahfidzanScreen({Key? key}) : super(key: key);
@@ -57,16 +59,23 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        elevation: 1,
-        toolbarHeight: 48,
+        elevation: 2,
+        toolbarHeight: 56,
         automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), // <-- warna ikon back
-        title: const Text(
-          'Ketahfidzan',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Ketahfidzan',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
           ),
         ),
       ),
@@ -79,89 +88,28 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(
+          children: const [
+            CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               'Memuat data...',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[700],
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),
       );
     }
-
 
     if (_errorMessage.isNotEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: Colors.red[400],
-                size: 48,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Terjadi Kesalahan',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red[400],
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage,
-                style: TextStyle(color: Colors.grey[700]),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1565C0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: _fetchKetahfidzanData,
-                child: const Text('Coba Lagi'),
-              ),
-            ],
-          ),
-        ),
-      );
+      return _buildErrorMessage();
     }
 
-    if (_ketahfidzanData == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.info_outline,
-              color: Colors.blue[400],
-              size: 48,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Tidak ada data ketahfidzan',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      );
+    final data = _ketahfidzanData?.data.ketahfidzan;
+
+    if (_ketahfidzanData == null || data == null || data.isEmpty) {
+      return _buildEmptyDataMessage();
     }
 
     return SingleChildScrollView(
@@ -171,9 +119,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center( 
-              child: _buildSantriInfo(),
-            ),
+            Center(child: _buildSantriInfo()),
             const SizedBox(height: 24),
             _buildKetahfidzanData(),
           ],
@@ -182,6 +128,90 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
     );
   }
 
+
+  Widget _buildErrorMessage() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: Colors.red[400],
+              size: 48,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Terjadi Kesalahan',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.red[400],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _errorMessage,
+              style: TextStyle(color: Colors.grey[700]),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1565C0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: _fetchKetahfidzanData,
+              child: const Text('Coba Lagi'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyDataMessage() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Colors.blue[400],
+              size: 60,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Data Ketahfidzan Kosong',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Saat ini tidak ada catatan hafalan untuk santri ini. '
+              'Silakan periksa kembali nanti atau hubungi pihak pengelola jika Anda merasa ini adalah kesalahan.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
   Widget _buildSantriInfo() {
     final imageUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/$_photo';
 
@@ -189,9 +219,9 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(15),
       child: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,     
-      crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,     
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 60,
@@ -223,7 +253,6 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       ),
     );
   }
-
 
   Widget _buildKetahfidzanData() {
     final ketahfidzan = _ketahfidzanData!.data.ketahfidzan;
@@ -298,11 +327,23 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Column(
-                              children: monthEntry.value.map((entry) {
-                                return _buildHafalanCard(entry);
-                              }).toList(),
-                            ),
+                            child: monthEntry.value.isEmpty
+                                ? const Padding(
+                                    padding: EdgeInsets.only(bottom: 12.0),
+                                    child: Text(
+                                      'Belum ada hafalan yang tercatat untuk bulan ini.',
+                                      style: TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.grey,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                                : Column(
+                                  children: monthEntry.value.map((entry) {
+                                    return _buildHafalanCard(entry);
+                                  }).toList(),
+                                ),
                           ),
                         ],
                       ),

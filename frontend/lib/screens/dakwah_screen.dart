@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/dakwah_model.dart';
 import '../services/dakwah_service.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class DakwahScreen extends StatefulWidget {
   const DakwahScreen({Key? key}) : super(key: key);
@@ -30,16 +32,23 @@ class _DakwahScreenState extends State<DakwahScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        elevation: 1,
-        toolbarHeight: 48,
+        elevation: 2,
+        toolbarHeight: 56,
         automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white), 
-        title: const Text(
-          'Dakwah',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Dakwah',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
           ),
         ),
       ),

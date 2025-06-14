@@ -41,20 +41,21 @@ class _AboutScreenState extends State<AboutScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        elevation: 1,
-        toolbarHeight: 48,
+        elevation: 2,
+        toolbarHeight: 56,
         automaticallyImplyLeading: true,
-        iconTheme: const IconThemeData(
-          color: Colors.white, 
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: false,
         title: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
+          padding: const EdgeInsets.only(left: 8.0),
           child: Text(
             'PPATQ-RF ku',
             style: GoogleFonts.poppins(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               fontSize: 20,
             ),
           ),
