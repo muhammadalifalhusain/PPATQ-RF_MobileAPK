@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:frontend/screens/pembayaran_screen.dart';
 import 'package:frontend/screens/validasi_pembayaran.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -13,11 +11,8 @@ import '../../models/login_model.dart';
 import '../../services/keluhan_service.dart';
 
 import '../../providers/auth_provider.dart';
-
-import '../../screens/kesehatan_screen.dart';
-import '../../screens/keluhan_screen.dart';
 import '../landing_page.dart';
-import '../../screens/ketahfidzan_screen.dart';
+import '../../widgets/menu_dashboard_widget.dart';
 import 'saku_keluar.dart';
 import 'saku_masuk.dart';
 import 'riwayat_bayar_screen.dart';
@@ -71,12 +66,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     );
   }
 
-  final List<Map<String, dynamic>> menuItems = [
-    {'icon': FontAwesome.hospital_o, 'label': 'Kesehatan'},
-    {'icon': FontAwesome.book, 'label': 'Tahfidz'},
-    {'icon': FontAwesome.comments, 'label': 'Saran'},
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -121,7 +110,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
         : SingleChildScrollView(
             child: Column(
               children: [
-                // Bagian profil
                 Container(
                   margin: EdgeInsets.all(10),
                   padding: EdgeInsets.all(15),
@@ -166,185 +154,249 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                   ),
                 ),
                 SizedBox(height: 3),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: InkWell(
-                    onTap: () {
-                      // Navigate to history
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ValidasiPembayaranScreen(),
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 25, horizontal: 27),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.teal.shade400,
-                            Colors.teal.shade600,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.teal.withOpacity(0.3),
-                            spreadRadius: 0,
-                            blurRadius: 8,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.receipt_long_rounded,
-                              color: Colors.white,
-                              size: 25,
-                            ),
-                          ),
-                          SizedBox(width: 12),
-                          Text(
-                            'Lapor Bayar',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 13),
-                Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: InkWell(
-                        onTap: () {
-                          // Navigate to history
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RiwayatPembayaranScreen(),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.black.withOpacity(0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.history,
-                                color: Colors.black,
-                                size: 20,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Riwayat Pembayaran Pondok',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  SizedBox(height: 8),
-
                 Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.5, // Setengah layar
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.teal.shade300,
-                              Colors.teal.shade600,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.teal.withOpacity(0.3),
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RiwayatPembayaranScreen(),
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.grey.shade200,
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Icon(
-                                    Icons.account_balance_wallet,
-                                    color: Colors.white,
-                                    size: 20,
+                                Icon(
+                                  Icons.history,
+                                  color: Colors.grey.shade600,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Riwayat Pembayaran Pondok',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(width: 8),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Saldo Uang Saku',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white.withOpacity(0.8),
-                                          fontWeight: FontWeight.w500,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 24),
+
+                      // Balance and Action Buttons Section
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: [
+                            // Balance Card - Improved layout and sizing
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.teal.shade300,
+                                    Colors.teal.shade400,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.teal.withOpacity(0.2),
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.25),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Icon(
+                                      Icons.account_balance_wallet,
+                                      color: Colors.white,
+                                      size: 28,
+                                    ),
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Saldo Uang Saku',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white.withOpacity(0.85),
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        currencyFormat.format(_loginData?.keuangan.saldo ?? 0),
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                        SizedBox(height: 4),
+                                        Text(
+                                          currencyFormat.format(_loginData?.keuangan.saldo ?? 0),
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
                                         ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 20),
+
+                            // Action Buttons Row - Enhanced spacing and design
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SakuMasukScreen()),
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.shade50,
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(
+                                          color: Colors.green.shade200,
+                                          width: 1.5,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.green.withOpacity(0.08),
+                                            blurRadius: 8,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(14),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green.shade100,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              Icons.trending_up,
+                                              color: Colors.green.shade600,
+                                              size: 24,
+                                            ),
+                                          ),
+                                          SizedBox(height: 12),
+                                          Text(
+                                            'Uang Masuk',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.green.shade700,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(width: 16),
+
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SakuKeluarScreen()),
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.shade50,
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(
+                                          color: Colors.red.shade200,
+                                          width: 1.5,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.red.withOpacity(0.08),
+                                            blurRadius: 8,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(14),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.shade100,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              Icons.trending_down,
+                                              color: Colors.red.shade600,
+                                              size: 24,
+                                            ),
+                                          ),
+                                          SizedBox(height: 12),
+                                          Text(
+                                            'Uang Keluar',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.red.shade700,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -352,207 +404,9 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                           ],
                         ),
                       ),
-                    ),
-
-
-
-                    SizedBox(height: 8),
-
-                    // Action Buttons for Uang Masuk and Uang Keluar
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        children: [
-                          // Uang Masuk
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SakuMasukScreen()),
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 14),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.green.shade100,
-                                    width: 1,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.green.withOpacity(0.1),
-                                      blurRadius: 4,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.green.shade100,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.trending_up,
-                                        color: Colors.green.shade700,
-                                        size: 18,
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Uang Masuk',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.green.shade800,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(width: 8),
-
-                          // Uang Keluar
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SakuKeluarScreen()),
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 14),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade50,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.red.shade100,
-                                    width: 1,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.red.withOpacity(0.1),
-                                      blurRadius: 4,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red.shade100,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.trending_down,
-                                        color: Colors.red.shade700,
-                                        size: 18,
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Uang Keluar',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.red.shade800,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.teal,  
-                        width: 2.0,          
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    'Menu',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0), 
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5,
-                    ),
-                    itemCount: menuItems.length,
-                    itemBuilder: (context, index) {
-                      return _buildMenuCard(
-                        menuItems[index]['icon'],
-                        menuItems[index]['label'],
-                        () {
-                          String label = menuItems[index]['label'];
-                          switch (label) {
-                            case 'Kesehatan':
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => KesehatanScreen()),
-                              );
-                              break;
-                            case 'Tahfidz':
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => KetahfidzanScreen()),
-                              );
-                              break;
-                            case 'Saran':
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => KeluhanScreen(keluhanService: KeluhanService()),
-                                ),
-                              );
-
-                              break;
-                            default:
-                              print('Navigasi ke: $label');
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-
+                    ],
+                  ),              
+                MenuGrid(),
                 Padding(
                   padding: EdgeInsets.all(15), 
                   child: Column(
