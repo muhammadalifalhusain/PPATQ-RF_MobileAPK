@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../models/pembayaran_model.dart';
-import '../models/get_bank_model.dart';
-import '../services/get_bank_service.dart';
-import '../services/pembayaran_service.dart';
+import '../../models/pembayaran_model.dart';
+import '../../models/get_bank_model.dart';
+import '../../services/get_bank_service.dart';
+import '../../services/pembayaran_service.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';

@@ -3,11 +3,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../screens/kesehatan_screen.dart';
-import '../screens/ketahfidzan_screen.dart';
+import '../screens/dashboard/ketahfidzan_screen.dart';
 import '../screens/keluhan_screen.dart';
 import '../screens/dashboard/perilaku_screen.dart';
 import '../screens/dashboard/kelengkapan_screen.dart';
-import '../screens/validasi_pembayaran.dart';
+import '../screens/dashboard/validasi_pembayaran.dart';
 import '../services/keluhan_service.dart';
 
 class MenuGrid extends StatelessWidget {

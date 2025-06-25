@@ -16,8 +16,6 @@ class AuthProvider with ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-
-  // Auth Service
   final LoginService _loginService = LoginService();
 
   AuthProvider() {
@@ -69,10 +67,9 @@ class AuthProvider with ChangeNotifier {
       
       return true;
   } catch (e) {
-      _setError(e.toString().replaceAll('Exception: ', ''));
-      _setLoading(false);
-      return false;
-    }
+    _setLoading(false);
+    rethrow;
+  }
   }
 
   Future<void> _saveLoginData(LoginResponse response) async {
@@ -95,8 +92,6 @@ class AuthProvider with ChangeNotifier {
   Future<void> logout() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
-      // Clear all saved data
       await prefs.remove('no_induk');
       await prefs.remove('kode');
       await prefs.remove('nama');
@@ -105,7 +100,7 @@ class AuthProvider with ChangeNotifier {
       await prefs.remove('login_data');
       await prefs.setBool('is_logged_in', false);
       
-      // Clear state
+      
       _loginResponse = null;
       _isLoggedIn = false;
       _errorMessage = null;

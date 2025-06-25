@@ -145,7 +145,6 @@ class _LandingPageState extends State<LandingPage> {
                     final beritaList = snapshot.data!;
                     return Column(
                       children: [
-                        // New PSB Registration Banner
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 5.0),
                           child: GestureDetector(
@@ -166,8 +165,8 @@ class _LandingPageState extends State<LandingPage> {
                                     blurRadius: 6,
                                     offset: Offset(0, 3),
                                   )
-                                ], // Ditambahkan penutup ] untuk boxShadow
-                              ), // Ditambahkan penutup ) untuk BoxDecoration
+                                ], 
+                              ), 
                               child: Row(
                                 children: [
                                   Icon(Icons.school, color: Colors.white, size: 40),

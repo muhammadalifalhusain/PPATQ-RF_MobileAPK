@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../services/ketahfidzan_service.dart';
-import '../models/ketahfidzan_model.dart';
+import '../../services/ketahfidzan_service.dart';
+import '../../models/ketahfidzan_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -360,61 +360,102 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
 
   Widget _buildHafalanCard(KetahfidzanEntry entry) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      elevation: 1,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header dengan tanggal dan indikator visual
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  Icons.date_range,
-                  color: Colors.blue[600],
-                  size: 16,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
+                      color: Colors.blue[700],
+                      size: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      entry.tanggalTahfidzan,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'Tanggal:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _getScoreColor(entry.hafalan),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  entry.tanggalTahfidzan,
-                  style: TextStyle(
-                    color: Colors.grey[800],
+                  child: Text(
+                    entry.hafalan,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
+            
+            const SizedBox(height: 12),
+            
+            // Informasi Juz
+            _buildInfoRow(
+              icon: Icons.book,
+              label: 'Juz',
+              value: entry.nmJuz,
+            ),
+            
+            const Divider(height: 24, thickness: 0.5),
+            
+            // Grid untuk nilai-nilai
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              childAspectRatio: 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
               children: [
-                Icon(
-                  Icons.library_books,
-                  color: Colors.blue[600],
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Juz:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  entry.nmJuz,
-                  style: TextStyle(
-                    color: Colors.grey[800],
+                _buildScoreItem('Hafalan', entry.hafalan),
+                _buildScoreItem('Tilawah', entry.tilawah),
+                _buildScoreItem('Kefasihan', entry.kefasihan),
+                _buildScoreItem('Daya Ingat', entry.dayaIngat),
+                _buildScoreItem('Kelancaran', entry.kelancaran),
+                _buildScoreItem('Tajwid', entry.praktekTajwid),
+              ],
+            ),
+            
+            const SizedBox(height: 8),
+            
+            // Detail tambahan (bisa di-expand)
+            ExpansionTile(
+              title: const Text(
+                'Detail Tambahan',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                  child: Column(
+                    children: [
+                      _buildDetailRow('Makhroj', entry.makhroj),
+                      _buildDetailRow('Tanafus', entry.tanafus),
+                      _buildDetailRow('Waqof & Wasol', entry.waqofWasol),
+                      _buildDetailRow('Ghorib', entry.ghorib),
+                      _buildDetailRow('Tanggal Sistem', entry.tanggal),
+                    ],
                   ),
                 ),
               ],
@@ -423,5 +464,102 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
         ),
       ),
     );
+  }
+  Widget _buildInfoRow({required IconData icon, required String label, required String value}) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: Colors.grey[600]),
+        const SizedBox(width: 8),
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[700],
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildScoreItem(String label, String value) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: _getScoreColor(value),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: TextStyle(color: Colors.grey[600], fontSize: 13),
+            ),  // <-- Tambahkan koma di sini
+          ),
+          const Text(': ', style: TextStyle(color: Colors.grey)),
+          Expanded(
+            child: Text(
+              value, 
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Color _getScoreColor(String score) {
+    switch (score) {
+      case 'A':
+        return Colors.green;
+      case 'B':
+        return Colors.lightGreen;
+      case 'C':
+        return Colors.orange;
+      case 'D':
+        return Colors.orangeAccent;
+      case 'E':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 }

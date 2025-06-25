@@ -23,19 +23,6 @@ class FooterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.mapMarkerAlt, color: Colors.red),
-              tooltip: 'Google Maps',
-              onPressed: () => _launchWithFallback(
-                "geo:0,0?q=PPATQ+Raudlatul+Falah", // Maps app
-                "https://maps.app.goo.gl/WJxpAMFN8htranSa8", // Fallback
-              ),
-            ),
-          ],
-        ),
         const Text(
           'PPATQ RAUDLATUL FALAH',
           style: TextStyle(

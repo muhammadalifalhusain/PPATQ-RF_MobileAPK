@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../validasi_pembayaran.dart';
+import 'validasi_pembayaran.dart';
 import 'profile_dashboard.dart';
 
 class MainScreen extends StatefulWidget {

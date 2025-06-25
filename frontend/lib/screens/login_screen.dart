@@ -134,7 +134,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         );
       }
     } catch (e) {
-      _showError(e.toString());
+    final message = e.toString().replaceFirst('Exception: ', '');
+    _showError(message);
     }
   }
 
@@ -357,14 +358,14 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   value: kelas.kode,
                   child: Text(
                     kelas.kode,
-                    style: TextStyle(color: Colors.black), // Teks saat dropdown dibuka
+                    style: TextStyle(color: Colors.black), 
                   ),
                 ))
             .toList(),
         selectedItemBuilder: (context) => _kelasList
             .map((kelas) => Text(
                   kelas.kode,
-                  style: TextStyle(color: Colors.white), // Teks yang tampil di field (terpilih)
+                  style: TextStyle(color: Colors.white), 
                 ))
             .toList(),
         onChanged: (value) {
@@ -373,14 +374,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           });
         },
         validator: (value) => value == null ? 'Pilih kode kelas' : null,
-        dropdownColor: Colors.white, // Background dropdown
-        iconEnabledColor: Colors.white, // Panah dropdown putih
+        dropdownColor: Colors.white, 
+        iconEnabledColor: Colors.white, 
       ),
     );
   }
-
-
-
   Widget _buildDatePicker() {
     return GestureDetector(
       onTap: _pickDate,
