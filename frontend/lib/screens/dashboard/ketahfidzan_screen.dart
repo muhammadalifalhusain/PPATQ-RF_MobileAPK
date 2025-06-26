@@ -4,7 +4,6 @@ import '../../services/ketahfidzan_service.dart';
 import '../../models/ketahfidzan_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class KetahfidzanScreen extends StatefulWidget {
   const KetahfidzanScreen({Key? key}) : super(key: key);
 
@@ -57,24 +56,37 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        elevation: 2,
-        toolbarHeight: 56,
+        elevation: 0,
+        toolbarHeight: 64,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, size: 24, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: false,
         title: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: const EdgeInsets.only(left: 4.0),
           child: Text(
             'Ketahfidzan',
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.w600,
-              fontSize: 20,
+              fontSize: 22,
+            ),
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.teal,
+                Colors.teal.shade700,
+              ],
             ),
           ),
         ),
@@ -88,14 +100,19 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+              strokeWidth: 3,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
-              'Memuat data...',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              'Memuat data ketahfidzan...',
+              style: GoogleFonts.poppins(
+                fontSize: 16, 
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -112,60 +129,79 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       return _buildEmptyDataMessage();
     }
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(child: _buildSantriInfo()),
-            const SizedBox(height: 24),
-            _buildKetahfidzanData(),
-          ],
+    return RefreshIndicator(
+      onRefresh: _fetchKetahfidzanData,
+      color: Colors.teal,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildKetahfidzanData(),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
 
-
   Widget _buildErrorMessage() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.red[400],
-              size: 48,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                color: Colors.red.shade400,
+                size: 48,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             Text(
               'Terjadi Kesalahan',
-              style: TextStyle(
-                fontSize: 18,
+              style: GoogleFonts.poppins(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.red[400],
+                color: Colors.red.shade400,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Text(
               _errorMessage,
-              style: TextStyle(color: Colors.grey[700]),
+              style: GoogleFonts.poppins(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+              ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1565C0),
+                backgroundColor: Colors.teal,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                elevation: 2,
               ),
               onPressed: _fetchKetahfidzanData,
-              child: const Text('Coba Lagi'),
+              icon: const Icon(Icons.refresh),
+              label: Text(
+                'Coba Lagi',
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+              ),
             ),
           ],
         ),
@@ -176,80 +212,44 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   Widget _buildEmptyDataMessage() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.info_outline,
-              color: Colors.blue[400],
-              size: 60,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.teal.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.menu_book_outlined,
+                color: Colors.teal.shade400,
+                size: 64,
+              ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Data Ketahfidzan Kosong',
-              style: TextStyle(
-                fontSize: 20,
+            const SizedBox(height: 24),
+            Text(
+              'Belum Ada Data Ketahfidzan',
+              style: GoogleFonts.poppins(
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: Colors.grey.shade800,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
-            const Text(
-              'Saat ini tidak ada catatan hafalan untuk santri ini. '
-              'Silakan periksa kembali nanti atau hubungi pihak pengelola jika Anda merasa ini adalah kesalahan.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
+            const SizedBox(height: 16),
+            Text(
+              'Saat ini belum ada catatan hafalan untuk santri ini. Silakan periksa kembali nanti atau hubungi pihak pengelola.',
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                color: Colors.grey.shade600,
+                height: 1.5,
               ),
               textAlign: TextAlign.center,
             ),
           ],
         ),
-      ),
-    );
-  }
-
-
-  Widget _buildSantriInfo() {
-    final imageUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/$_photo';
-
-    return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(15),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,     
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 60,
-            backgroundColor: Colors.white,
-            backgroundImage: _photo.isNotEmpty ? NetworkImage(imageUrl) : null,
-            child: _photo.isEmpty
-                ? Icon(Icons.person, size: 40, color: Colors.grey[400])
-                : null,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            _nama.isNotEmpty ? _nama : 'Nama Tidak Tersedia',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Kelas: ${_kelas.isNotEmpty ? _kelas : '-'} | No. Induk: ${_noInduk.isNotEmpty ? _noInduk : '-'}',
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -260,97 +260,180 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(
-              Icons.book,
-              color: Colors.blue[800],
-              size: 24,
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.teal.shade50,
+                Colors.teal.shade100,
+              ],
             ),
-            const SizedBox(width: 8),
-            Text(
-              'Progress Tahfidz',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue[800],
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.teal.shade200),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.teal,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.menu_book,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        ...ketahfidzan.entries.map((yearEntry) {
-          return Card(
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'Tahun ${yearEntry.key}',
-                      style: TextStyle(
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Progress Tahfidz',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.blue[800],
+                        color: Colors.teal.shade800,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  ...yearEntry.value.entries.map((monthEntry) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[200]!),
-                        borderRadius: BorderRadius.circular(8),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Catatan hafalan Al-Qur\'an',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.teal.shade600,
                       ),
-                      child: ExpansionTile(
-                        tilePadding: const EdgeInsets.symmetric(horizontal: 12),
-                        leading: Icon(
-                          Icons.calendar_today,
-                          color: Colors.blue[600],
-                          size: 20,
-                        ),
-                        title: Text(
-                          monthEntry.key,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: monthEntry.value.isEmpty
-                                ? const Padding(
-                                    padding: EdgeInsets.only(bottom: 12.0),
-                                    child: Text(
-                                      'Belum ada hafalan yang tercatat untuk bulan ini.',
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.grey,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )
-                                : Column(
-                                  children: monthEntry.value.map((entry) {
-                                    return _buildHafalanCard(entry);
-                                  }).toList(),
-                                ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ],
+                    ),
+                  ],
+                ),
               ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        ...ketahfidzan.entries.map((yearEntry) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.teal.shade600,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Tahun ${yearEntry.key}',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: yearEntry.value.entries.map((monthEntry) {
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            dividerColor: Colors.transparent,
+                          ),
+                          child: ExpansionTile(
+                            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            leading: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.teal.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.date_range,
+                                color: Colors.teal.shade600,
+                                size: 20,
+                              ),
+                            ),
+                            title: Text(
+                              monthEntry.key,
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade800,
+                                fontSize: 16,
+                              ),
+                            ),
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                child: monthEntry.value.isEmpty
+                                    ? Container(
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade50,
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          'Belum ada hafalan yang tercatat untuk bulan ini.',
+                                          style: GoogleFonts.poppins(
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.grey.shade600,
+                                            fontSize: 14,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    : Column(
+                                        children: monthEntry.value.map((entry) {
+                                          return _buildHafalanCard(entry);
+                                        }).toList(),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
           );
         }).toList(),
@@ -359,207 +442,314 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   }
 
   Widget _buildHafalanCard(KetahfidzanEntry entry) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header dengan tanggal dan indikator visual
-            Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.teal.shade400,
+                  Colors.teal.shade500,
+                ],
+              ),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: Colors.blue[700],
-                      size: 18,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      entry.tanggalTahfidzan,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+                const SizedBox(width: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: _getScoreColor(entry.hafalan),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _getScoreColor(entry.hafalan).withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
-                    entry.hafalan,
-                    style: const TextStyle(
+                    'Rata-rata : ${entry.hafalan}',
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      fontSize: 12,
                     ),
                   ),
                 ),
               ],
             ),
-            
-            const SizedBox(height: 12),
-            
-            // Informasi Juz
-            _buildInfoRow(
-              icon: Icons.book,
-              label: 'Juz',
-              value: entry.nmJuz,
-            ),
-            
-            const Divider(height: 24, thickness: 0.5),
-            
-            // Grid untuk nilai-nilai
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              childAspectRatio: 3,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildScoreItem('Hafalan', entry.hafalan),
-                _buildScoreItem('Tilawah', entry.tilawah),
-                _buildScoreItem('Kefasihan', entry.kefasihan),
-                _buildScoreItem('Daya Ingat', entry.dayaIngat),
-                _buildScoreItem('Kelancaran', entry.kelancaran),
-                _buildScoreItem('Tajwid', entry.praktekTajwid),
-              ],
-            ),
-            
-            const SizedBox(height: 8),
-            
-            // Detail tambahan (bisa di-expand)
-            ExpansionTile(
-              title: const Text(
-                'Detail Tambahan',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                  child: Column(
+                _buildInfoRow(
+                  icon: Icons.menu_book,
+                  label: 'Juz',
+                  value: entry.nmJuz,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Penilaian Detail',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _buildScoreItem('Hafalan', entry.hafalan, constraints.maxWidth),
+                        _buildScoreItem('Tilawah', entry.tilawah, constraints.maxWidth),
+                        _buildScoreItem('Kefasihan', entry.kefasihan, constraints.maxWidth),
+                        _buildScoreItem('Daya Ingat', entry.dayaIngat, constraints.maxWidth),
+                        _buildScoreItem('Kelancaran', entry.kelancaran, constraints.maxWidth),
+                        _buildScoreItem('Tajwid', entry.praktekTajwid, constraints.maxWidth),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    tilePadding: const EdgeInsets.all(0),
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 18,
+                          color: Colors.teal.shade600,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Detail Tambahan',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.teal.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
                     children: [
-                      _buildDetailRow('Makhroj', entry.makhroj),
-                      _buildDetailRow('Tanafus', entry.tanafus),
-                      _buildDetailRow('Waqof & Wasol', entry.waqofWasol),
-                      _buildDetailRow('Ghorib', entry.ghorib),
-                      _buildDetailRow('Tanggal Sistem', entry.tanggal),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            _buildDetailRow('Makhroj', entry.makhroj),
+                            _buildDetailRow('Tanafus', entry.tanafus),
+                            _buildDetailRow('Waqof & Wasol', entry.waqofWasol),
+                            _buildDetailRow('Ghorib', entry.ghorib),
+                            _buildDetailRow('Tanggal Sistem', entry.tanggal),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+
   Widget _buildInfoRow({required IconData icon, required String label, required String value}) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.grey[600]),
-        const SizedBox(width: 8),
-        Text(
-          '$label: ',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.black87,
-          ),
-        ),
-      ],
-    );
-  }
-  Widget _buildScoreItem(String label, String value) {
     return Container(
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.teal.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.teal.shade200),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Row(
         children: [
+          Icon(icon, size: 18, color: Colors.teal.shade700),
+          const SizedBox(width: 12),
+          Text(
+            '$label: ',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              color: Colors.teal.shade700,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.poppins(
+                color: Colors.grey.shade800,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScoreItem(String label, String value, double maxWidth) {
+    // Calculate width to fit 2 items per row with proper spacing
+    double itemWidth = (maxWidth - 8) / 2;
+    
+    return Container(
+      width: itemWidth,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.05),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           Container(
-            width: 24,
-            height: 24,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: _getScoreColor(value),
               shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: _getScoreColor(value).withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Center(
               child: Text(
                 value,
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 14,
                 ),
               ),
             ),
           ),
           const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 13),
-          ),
-        ],
-      ),
-    );
-  }
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: TextStyle(color: Colors.grey[600], fontSize: 13),
-            ),  // <-- Tambahkan koma di sini
-          ),
-          const Text(': ', style: TextStyle(color: Colors.grey)),
           Expanded(
             child: Text(
-              value, 
-              style: const TextStyle(fontSize: 13),
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade700,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110,
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                color: Colors.grey.shade700,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),  
+          ),
+          Text(
+            ': ',
+            style: GoogleFonts.poppins(
+              color: Colors.grey.shade600,
+              fontSize: 13,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value.isEmpty ? '-' : value,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                color: Colors.grey.shade800,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Color _getScoreColor(String score) {
-    switch (score) {
+    switch (score.toUpperCase()) {
       case 'A':
-        return Colors.green;
+        return Colors.green.shade600;
       case 'B':
-        return Colors.lightGreen;
+        return Colors.lightGreen.shade600;
       case 'C':
-        return Colors.orange;
+        return Colors.orange.shade600;
       case 'D':
-        return Colors.orangeAccent;
+        return Colors.deepOrange.shade600;
       case 'E':
-        return Colors.red;
+        return Colors.red.shade600;
       default:
-        return Colors.grey;
+        return Colors.grey.shade600;
     }
   }
 }

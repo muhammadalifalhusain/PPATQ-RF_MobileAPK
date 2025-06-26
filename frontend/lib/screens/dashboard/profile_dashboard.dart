@@ -110,50 +110,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
         : SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(1),
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 60,
-                              backgroundColor: Colors.white,
-                              backgroundImage:
-                                  (_loginData?.photo.isNotEmpty ?? false)
-                                      ? NetworkImage(
-                                          'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${_loginData?.photo}')
-                                      : null,
-                              child: (_loginData?.photo.isEmpty ?? true)
-                                  ? Icon(Icons.person,
-                                      size: 35, color: Colors.grey[400])
-                                  : null,
-                            ),
-                            SizedBox(height: 12),
-                            Text(_loginData?.nama ?? 'Nama Tidak Tersedia',
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87)),
-                            SizedBox(height: 8),
-                            Text(
-                              'Kelas: ${_loginData?.kelas ?? 'Kelas Tidak Tersedia'} | No.Induk: ${_loginData?.noInduk ?? 'No. Induk Tidak Tersedia'}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 3),
                 Column(
                     children: [
                     Padding(
@@ -161,70 +117,155 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                       child: Column(
                         children: [
                           Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(20),
+                            margin: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.teal.shade300,
-                                  Colors.teal.shade400,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.teal.withOpacity(0.2),
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4),
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
                                 ),
                               ],
                             ),
-                            child: Row(
+                            child: Column(
                               children: [
+                                // Header section dengan warna custom
                                 Container(
-                                  padding: EdgeInsets.all(12),
+                                  height: 50,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.25),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Icon(
-                                    Icons.account_balance_wallet,
-                                    color: Colors.white,
-                                    size: 28,
+                                    color: const Color.fromARGB(255, 132, 123, 123),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12),
+                                      topRight: Radius.circular(12),
+                                    ),
                                   ),
                                 ),
-                                SizedBox(width: 16),
-                                Expanded(
+                                
+                                // Profile section - image ditarik ke atas
+                                Transform.translate(
+                                  offset: Offset(0, -25), // Menarik avatar ke atas
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'Saldo Uang Saku',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white.withOpacity(0.85),
-                                          fontWeight: FontWeight.w500,
+                                      // Avatar dengan border dan shadow (lebih kecil)
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 3,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.2),
+                                              spreadRadius: 1,
+                                              blurRadius: 8,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        currencyFormat.format(_loginData?.keuangan.saldo ?? 0),
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                        child: CircleAvatar(
+                                          radius: 45, // Diperkecil dari 60 ke 45
+                                          backgroundColor: Colors.grey.shade100,
+                                          backgroundImage: (_loginData?.photo.isNotEmpty ?? false)
+                                              ? NetworkImage(
+                                                  'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${_loginData?.photo}')
+                                              : null,
+                                          child: (_loginData?.photo.isEmpty ?? true)
+                                              ? Icon(
+                                                  Icons.person,
+                                                  size: 32,
+                                                  color: Colors.grey[400],
+                                                )
+                                              : null,
                                         ),
+                                      ),                                      
+                                      SizedBox(height: 8),
+                                      Text(
+                                        _loginData?.nama ?? 'Nama Tidak Tersedia',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.grey.shade800,
+                                          letterSpacing: 0.3,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
+                                  ),
+                                ),
+                                Transform.translate(
+                                  offset: Offset(0, -15), 
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 15),
+                                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade50,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.grey.shade200,
+                                        width: 1,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.08),
+                                          spreadRadius: 1,
+                                          blurRadius: 4,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.class_,
+                                              size: 14,
+                                              color: Colors.grey.shade600,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              'Kelas: ${_loginData?.kelas ?? 'Tidak Tersedia'}',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey.shade700,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.badge_outlined,
+                                              size: 14,
+                                              color: Colors.grey.shade600,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              'No.Induk: ${_loginData?.noInduk ?? 'Tidak Tersedia'}',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey.shade700,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-
-                          SizedBox(height: 10),
+                          SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(
@@ -320,10 +361,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ],
                           ),
-
-                          SizedBox(height: 20),
-
-                          // ✅ Riwayat Pembayaran (DIPINDAH KE SINI)
+                          SizedBox(height: 8),
                           InkWell(
                             onTap: () {
                               Navigator.push(

@@ -12,89 +12,92 @@ class AppHeader extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          // BAGIAN ATAS: Logo + Back button
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Center(
-                child: Image.asset('assets/images/logo.png', height: 80),
+Widget build(BuildContext context) {
+  return Padding(
+    padding: EdgeInsets.all(18),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Spacer(),
+            Text(
+              'V.25.6',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
               ),
-              if (showBackButton)
-                Positioned(
-                  top: 0,
-                  left: -10,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black, size: 25),
-                    onPressed: () => Navigator.pop(context),
-                  ),
+            ),
+          ],
+        ),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Center(
+              child: Image.asset('assets/images/logo.png', height: 80),
+            ),
+            if (showBackButton)
+              Positioned(
+                top: 0,
+                left: -10,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black, size: 25),
+                  onPressed: () => Navigator.pop(context),
                 ),
-            ],
+              ),
+          ],
+        ),
+        Text(
+          'PPATQ RAUDLATUL FALAH',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.teal,
           ),
-          SizedBox(height: 10),
-
-          // Judul
-          Text(
-            'PPATQ RAUDLATUL FALAH',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          'Pondok Pesantren Anak-anak Tahfidzul Qur\'an Raudlatul Falah - Pati',
+          style: TextStyle(
+            fontSize: 16,
+            fontStyle: FontStyle.italic,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        if (showAuthButtons)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+            decoration: BoxDecoration(
               color: Colors.teal,
+              borderRadius: BorderRadius.circular(10),
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 5),
-
-          // Deskripsi
-          Text(
-            'Pondok Pesantren Anak-anak Tahfidzul Qur\'an Raudlatul Falah - Pati',
-            style: TextStyle(
-              fontSize: 16,
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 5),
-
-          if (showAuthButtons)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.teal,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton.icon(
-                    icon: Icon(Icons.login, size: 16, color: Colors.white),
-                    label: Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton.icon(
+                  icon: Icon(Icons.login, size: 16, color: Colors.white),
+                  label: Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => LoginScreen()),
-                      );
-                    },
                   ),
-                ],
-              ),
-            )
-          else
-            SizedBox(height: 5),
-        ],
-      ),
-    );
-  }
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                    );
+                  },
+                ),
+              ],
+            ),
+          )
+        else
+          SizedBox(height: 5),
+      ],
+    ),
+  );
+}
 }

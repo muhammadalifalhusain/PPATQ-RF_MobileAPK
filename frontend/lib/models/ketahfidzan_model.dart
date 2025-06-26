@@ -40,21 +40,25 @@ class SantriData {
         .map((e) => DetailSantri.fromJson(e))
         .toList();
 
-    final rawKetahfidzan = json['ketahfidzan'] as Map<String, dynamic>;
+    final rawKetahfidzan = json['ketahfidzan'];
 
-    final parsedKetahfidzan = rawKetahfidzan.map(
-      (year, months) => MapEntry(
-        year,
-        (months as Map<String, dynamic>).map(
-          (month, entries) => MapEntry(
-            month,
-            (entries as List)
-                .map((e) => KetahfidzanEntry.fromJson(e))
-                .toList(),
+    Map<String, Map<String, List<KetahfidzanEntry>>> parsedKetahfidzan = {};
+
+    if (rawKetahfidzan is Map<String, dynamic>) {
+      parsedKetahfidzan = rawKetahfidzan.map(
+        (year, months) => MapEntry(
+          year,
+          (months as Map<String, dynamic>).map(
+            (month, entries) => MapEntry(
+              month,
+              (entries as List)
+                  .map((e) => KetahfidzanEntry.fromJson(e))
+                  .toList(),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
 
     return SantriData(
       detailSantri: detailSantriList,
