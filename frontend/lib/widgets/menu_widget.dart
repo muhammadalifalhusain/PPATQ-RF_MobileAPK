@@ -58,8 +58,8 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
       'label': 'Lokasi',
       'color': Colors.amber,
       'action': (BuildContext context) => _launchWithFallback(
-        "geo:0,0?q=PPATQ+Raudlatul+Falah", // Maps app
-        "https://maps.app.goo.gl/WJxpAMFN8htranSa8", // Fallback
+        "geo:0,0?q=PPATQ+Raudlatul+Falah", 
+        "https://maps.app.goo.gl/WJxpAMFN8htranSa8", 
       ),
     },
     {
@@ -107,13 +107,13 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
         children: [
           _buildMainMenuGrid(),
           if (!_showAllMenus) ...[
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             _buildMoreButton(),
           ],
           if (_showAllMenus) ...[
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             _buildAdditionalMenuGrid(),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             _buildLessButton(),
           ],
         ],

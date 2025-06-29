@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FooterWidget extends StatelessWidget {
@@ -28,11 +27,11 @@ class FooterWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
-            color: Colors.green,
+            color: Colors.teal,
           ),
         ),
         const Text(
-          'Copyright © 2025 All Rights Reserved-BETA',
+          'Copyright © 2025 All Rights Reserved-V.25.6',
           style: TextStyle(
             fontSize: 14,
             color: Colors.black54,

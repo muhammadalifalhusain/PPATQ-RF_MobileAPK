@@ -185,7 +185,7 @@ class _LandingPageState extends State<LandingPage> {
                                         ),
                                         SizedBox(height: 2),
                                         Text(
-                                          'Daftarkan putra/putri Anda sekarang! Klik di sini untuk informasi lebih lanjut.',
+                                          'Daftarkan putra/putri Anda sekarang! Klik untuk informasi lebih lanjut.',
                                           style: TextStyle(
                                             color: Colors.white.withOpacity(0.9),
                                             fontSize: 12,

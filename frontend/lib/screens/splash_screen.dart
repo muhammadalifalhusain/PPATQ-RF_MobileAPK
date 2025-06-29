@@ -45,10 +45,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Background putih
+      backgroundColor: Colors.white, 
       body: Column(
         children: [
-          // Area utama dengan logo di center
           Expanded(
             child: Center(
               child: ScaleTransition(

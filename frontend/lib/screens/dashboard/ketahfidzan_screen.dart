@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/ketahfidzan_service.dart';
 import '../../models/ketahfidzan_model.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,27 +15,14 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   KetahfidzanResponse? _ketahfidzanData;
   bool _isLoading = true;
   String _errorMessage = '';
-  String _nama = '';
-  String _noInduk = '';
-  String _photo = '';
-  String _kelas = '';
 
   @override
   void initState() {
-    super.initState();
-    _loadSantriInfo(); 
+    super.initState(); 
     _fetchKetahfidzanData();
   }
 
-  Future<void> _loadSantriInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _nama = prefs.getString('nama') ?? '';
-      _noInduk = prefs.getInt('no_induk')?.toString() ?? '';
-      _photo = prefs.getString('photo') ?? '';
-      _kelas = prefs.getString('kelas') ?? '';
-    });
-  }
+  
 
   Future<void> _fetchKetahfidzanData() async {
     try {
@@ -109,7 +95,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
             Text(
               'Memuat data ketahfidzan...',
               style: GoogleFonts.poppins(
-                fontSize: 16, 
+                fontSize: 16,
                 color: Colors.grey.shade600,
                 fontWeight: FontWeight.w500,
               ),
@@ -135,7 +121,8 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0), 
+          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -261,7 +248,9 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -315,10 +304,11 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         ...ketahfidzan.entries.map((yearEntry) {
           return Container(
-            margin: const EdgeInsets.only(bottom: 20),
+            margin: const EdgeInsets.only(bottom: 12, left: 4, right: 4),
+            
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -336,7 +326,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.teal.shade600,
                     borderRadius: const BorderRadius.only(
@@ -364,11 +354,12 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(8.0), 
+                  
                   child: Column(
                     children: yearEntry.value.entries.map((monthEntry) {
                       return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
+                        margin: const EdgeInsets.only(bottom: 8),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey.shade200),
                           borderRadius: BorderRadius.circular(12),
@@ -378,7 +369,8 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                             dividerColor: Colors.transparent,
                           ),
                           child: ExpansionTile(
-                            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            tilePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), 
+                            
                             leading: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -402,7 +394,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                             children: [
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                                 child: monthEntry.value.isEmpty
                                     ? Container(
                                         padding: const EdgeInsets.all(20),
@@ -440,10 +432,10 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       ],
     );
   }
-
+  
   Widget _buildHafalanCard(KetahfidzanEntry entry) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -462,7 +454,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -478,9 +470,16 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
               ),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
               children: [
-                const SizedBox(width: 10),
+                Text(
+                  '${entry.tanggal}',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
@@ -496,7 +495,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                     ],
                   ),
                   child: Text(
-                    'Rata-rata : ${entry.hafalan}',
+                    'Rata-rata: ${entry.hafalan}',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -508,16 +507,16 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildInfoRow(
                   icon: Icons.menu_book,
-                  label: 'Juz',
+                  label: '',
                   value: entry.nmJuz,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 Text(
                   'Penilaian Detail',
                   style: GoogleFonts.poppins(
@@ -526,68 +525,20 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
                     color: Colors.grey.shade800,
                   ),
                 ),
-                const SizedBox(height: 12),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _buildScoreItem('Hafalan', entry.hafalan, constraints.maxWidth),
-                        _buildScoreItem('Tilawah', entry.tilawah, constraints.maxWidth),
-                        _buildScoreItem('Kefasihan', entry.kefasihan, constraints.maxWidth),
-                        _buildScoreItem('Daya Ingat', entry.dayaIngat, constraints.maxWidth),
-                        _buildScoreItem('Kelancaran', entry.kelancaran, constraints.maxWidth),
-                        _buildScoreItem('Tajwid', entry.praktekTajwid, constraints.maxWidth),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                Theme(
-                  data: Theme.of(context).copyWith(
-                    dividerColor: Colors.transparent,
-                  ),
-                  child: ExpansionTile(
-                    tilePadding: const EdgeInsets.all(0),
-                    title: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          size: 18,
-                          color: Colors.teal.shade600,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Detail Tambahan',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.teal.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            _buildDetailRow('Makhroj', entry.makhroj),
-                            _buildDetailRow('Tanafus', entry.tanafus),
-                            _buildDetailRow('Waqof & Wasol', entry.waqofWasol),
-                            _buildDetailRow('Ghorib', entry.ghorib),
-                            _buildDetailRow('Tanggal Sistem', entry.tanggal),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 8),
+                Column(
+                  children: [
+                    _buildScoreItem('Hafalan', entry.hafalan),
+                    _buildScoreItem('Tilawah', entry.tilawah),
+                    _buildScoreItem('Kefasihan', entry.kefasihan),
+                    _buildScoreItem('Daya Ingat', entry.dayaIngat),
+                    _buildScoreItem('Kelancaran', entry.kelancaran),
+                    _buildScoreItem('Tajwid', entry.praktekTajwid),
+                    _buildScoreItem('Makhroj', entry.makhroj),
+                    _buildScoreItem('Tanafus', entry.tanafus),
+                    _buildScoreItem('Waqof & Wasol', entry.waqofWasol),
+                    _buildScoreItem('Ghorib', entry.ghorib),
+                  ],
                 ),
               ],
             ),
@@ -596,48 +547,11 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
       ),
     );
   }
-
-  Widget _buildInfoRow({required IconData icon, required String label, required String value}) {
+  Widget _buildScoreItem(String label, String value) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.teal.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.teal.shade200),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.teal.shade700),
-          const SizedBox(width: 12),
-          Text(
-            '$label: ',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              color: Colors.teal.shade700,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: GoogleFonts.poppins(
-                color: Colors.grey.shade800,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildScoreItem(String label, String value, double maxWidth) {
-    // Calculate width to fit 2 items per row with proper spacing
-    double itemWidth = (maxWidth - 8) / 2;
-    
-    return Container(
-      width: itemWidth,
-      padding: const EdgeInsets.all(12),
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 6), 
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), 
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.grey.shade300),
@@ -652,7 +566,6 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
         ],
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 32,
@@ -680,16 +593,15 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               label,
               style: GoogleFonts.poppins(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey.shade700,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -697,36 +609,32 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+
+  Widget _buildInfoRow({required IconData icon, required String label, required String value}) {
+    return Container(
+      padding: const EdgeInsets.all(10), 
+      decoration: BoxDecoration(
+        color: Colors.teal.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.teal.shade200),
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 110,
-            child: Text(
-              label,
-              style: GoogleFonts.poppins(
-                color: Colors.grey.shade700,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
-            ),  
-          ),
+          Icon(icon, size: 18, color: Colors.teal.shade700),
+          const SizedBox(width: 12),
           Text(
-            ': ',
+            '$label: ',
             style: GoogleFonts.poppins(
-              color: Colors.grey.shade600,
-              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.teal.shade700,
             ),
           ),
           Expanded(
             child: Text(
-              value.isEmpty ? '-' : value,
+              value,
               style: GoogleFonts.poppins(
-                fontSize: 13,
                 color: Colors.grey.shade800,
+                fontWeight: FontWeight.w500,
               ),
               overflow: TextOverflow.ellipsis,
             ),

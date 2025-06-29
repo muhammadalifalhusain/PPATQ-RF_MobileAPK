@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:frontend/screens/dashboard/validasi_pembayaran.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
 import '../../models/login_model.dart';
-
-import '../../services/keluhan_service.dart';
-
 import '../../providers/auth_provider.dart';
+
 import '../landing_page.dart';
 import '../../widgets/menu_dashboard_widget.dart';
 import 'saku_keluar.dart';
@@ -31,7 +27,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     decimalDigits: 0,
   );
 
-  
   Widget _buildTextRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16), 
@@ -71,7 +66,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     super.initState();
     _loadLoginData();
   }
-
   Future<void> _loadLoginData() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     try {
@@ -82,7 +76,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
       print('Error loading login data: $e');
     }
   }
-
   @override
   
   Widget build(BuildContext context) {
@@ -93,16 +86,32 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
       toolbarHeight: 48,
       automaticallyImplyLeading: false,
       centerTitle: false,
-      title: Padding(
-        padding: const EdgeInsets.only(left: 10.0),
-        child: Text(
-          'Profile',
-          style: GoogleFonts.poppins( 
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+      title: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Text(
+              'Profile',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
           ),
-        ),
+          Spacer(), 
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Text(
+              'V.25.6',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 97, 95, 95),
+              ),
+            ),
+          ),
+        ],
       ),
     ),
     body: _loginData == null
@@ -273,18 +282,18 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (_) => SakuMasukScreen()));
                                   },
-                                  borderRadius: BorderRadius.circular(18),
+                                  borderRadius: BorderRadius.circular(12), // lebih kecil
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    padding: EdgeInsets.symmetric(vertical: 12), // lebih kecil
                                     decoration: BoxDecoration(
                                       color: Colors.green.shade50,
-                                      borderRadius: BorderRadius.circular(18),
-                                      border: Border.all(color: Colors.green.shade200, width: 1.5),
+                                      borderRadius: BorderRadius.circular(12), // lebih kecil
+                                      border: Border.all(color: Colors.green.shade200, width: 1.2),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.green.withOpacity(0.08),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 3),
+                                          color: Colors.green.withOpacity(0.05),
+                                          blurRadius: 4, // lebih kecil
+                                          offset: Offset(0, 2),
                                         ),
                                       ],
                                     ),
@@ -292,20 +301,20 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          padding: EdgeInsets.all(14),
+                                          padding: EdgeInsets.all(10), // lebih kecil
                                           decoration: BoxDecoration(
                                             color: Colors.green.shade100,
                                             shape: BoxShape.circle,
                                           ),
-                                          child: Icon(Icons.trending_up, color: Colors.green.shade600, size: 24),
+                                          child: Icon(Icons.trending_up, color: Colors.green.shade600, size: 20), // lebih kecil
                                         ),
-                                        SizedBox(height: 12),
+                                        SizedBox(height: 8), 
                                         Text(
-                                          'Uang Masuk',
+                                          'Saku Masuk',
                                           style: TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 11,
                                             color: Colors.green.shade700,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],
@@ -313,24 +322,24 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 12), 
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (_) => SakuKeluarScreen()));
                                   },
-                                  borderRadius: BorderRadius.circular(18),
+                                  borderRadius: BorderRadius.circular(12),
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    padding: EdgeInsets.symmetric(vertical: 12),
                                     decoration: BoxDecoration(
                                       color: Colors.red.shade50,
-                                      borderRadius: BorderRadius.circular(18),
-                                      border: Border.all(color: Colors.red.shade200, width: 1.5),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: Colors.red.shade200, width: 1.2),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.red.withOpacity(0.08),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 3),
+                                          color: Colors.red.withOpacity(0.05),
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2),
                                         ),
                                       ],
                                     ),
@@ -338,20 +347,20 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          padding: EdgeInsets.all(14),
+                                          padding: EdgeInsets.all(10),
                                           decoration: BoxDecoration(
                                             color: Colors.red.shade100,
                                             shape: BoxShape.circle,
                                           ),
-                                          child: Icon(Icons.trending_down, color: Colors.red.shade600, size: 24),
+                                          child: Icon(Icons.trending_down, color: Colors.red.shade600, size: 20),
                                         ),
-                                        SizedBox(height: 12),
+                                        SizedBox(height: 8),
                                         Text(
-                                          'Uang Keluar',
+                                          'Saku Keluar',
                                           style: TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 11,
                                             color: Colors.red.shade700,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],
@@ -361,6 +370,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ],
                           ),
+
                           SizedBox(height: 8),
                           InkWell(
                             onTap: () {

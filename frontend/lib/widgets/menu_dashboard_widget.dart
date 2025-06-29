@@ -78,7 +78,6 @@ class MenuGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Judul Tengah + Divider
         Padding(
           padding: const EdgeInsets.only(top: 16),
           child: Column(
@@ -114,8 +113,6 @@ class MenuGrid extends StatelessWidget {
             ],
           ),
         ),
-
-        // Grid Menu
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: GridView.builder(
@@ -172,9 +169,8 @@ class MenuGrid extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon container dengan background colorful
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -184,7 +180,7 @@ class MenuGrid extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
                     color: color.withOpacity(0.3),
@@ -201,10 +197,8 @@ class MenuGrid extends StatelessWidget {
             ),
             
             const SizedBox(height: 12),
-            
-            // Label dengan Poppins font
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 label,
                 textAlign: TextAlign.center,
@@ -213,7 +207,7 @@ class MenuGrid extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF374151), // gray-700
+                  color: const Color(0xFF374151), 
                   height: 1.3,
                 ),
               ),

@@ -9,7 +9,6 @@ import '../services/get-santri_service.dart';
 import '../models/get-santri_model.dart';
 import '../models/kelas_model.dart';
 import '../services/get-kelas_service.dart';
-import '../screens/dashboard/profile_dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -229,17 +228,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               child: Column(
                                 children: [
                                   _buildSantriSearch(),
-                                  if (selectedSantri != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        "No. Induk: ${selectedSantri!.noInduk}",
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ),
+                                    
                                   SizedBox(height: 20),
                                   _buildDropdownKelas(),
-                                  SizedBox(height: 20),
+                                  SizedBox(height: 5),
                                   _buildDatePicker(),
                                   SizedBox(height: 24),
                                   _buildLoginButton(auth),
@@ -313,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           onEditingComplete: onEditingComplete,
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            labelText: 'Cari Nama Santri',
+            labelText: 'Masukkan Nama Santri',
             labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
             prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.8)),
             filled: true,

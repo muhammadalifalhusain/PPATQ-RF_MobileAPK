@@ -4,12 +4,12 @@ class Pembayaran {
   final String tanggalBayar;
   final int periode;
   final int tahun;
-  final String bankPengirim;
+  final int bankPengirim;
   final String atasNama;
   final String noWa;
   final String? catatan;
   final List<int> idJenisPembayaran;
-  final List<String> jenisPembayaran;
+  final List<int> jenisPembayaran; // ✅ harus int, bukan string
 
   Pembayaran({
     required this.noInduk,
@@ -25,27 +25,29 @@ class Pembayaran {
     required this.jenisPembayaran,
   });
 
-  // PEMBARUAN: Method toFormFields yang sudah diperbaiki
-  Map<String, dynamic> toFormFields() {
-    Map<String, dynamic> fields = {
+  /// Untuk Multipart Form
+  Map<String, String> toFormFields() {
+    final Map<String, String> fields = {
       'noInduk': noInduk.toString(),
       'jumlah': jumlah.toString(),
       'tanggalBayar': tanggalBayar,
       'periode': periode.toString(),
       'tahun': tahun.toString(),
-      'bankPengirim': bankPengirim,
+      'bankPengirim': bankPengirim.toString(),
       'atasNama': atasNama,
       'noWa': noWa,
       'catatan': catatan ?? '',
     };
 
-    // PERBAIKAN: Menambahkan array sebagai multiple entries
-    fields['idJenisPembayaran[]'] = idJenisPembayaran.map((id) => id.toString()).toList();
-    fields['jenisPembayaran[]'] = jenisPembayaran;
+    for (int i = 0; i < idJenisPembayaran.length; i++) {
+      fields['idJenisPembayaran[$i]'] = idJenisPembayaran[i].toString();
+      fields['jenisPembayaran[$i]'] = jenisPembayaran[i].toString();
+    }
 
     return fields;
   }
 }
+
 
 
 class JenisPembayaranModel {
