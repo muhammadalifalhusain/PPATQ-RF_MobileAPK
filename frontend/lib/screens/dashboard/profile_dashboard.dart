@@ -21,12 +21,10 @@ class ProfileDashboard extends StatefulWidget {
 class _ProfileDashboardState extends State<ProfileDashboard> {
   LoginResponse? _loginData;
 
-  final currencyFormat = NumberFormat.currency(
-    locale: 'id_ID',
-    symbol: 'Rp ',
-    decimalDigits: 0,
-  );
-
+  String _formatRupiah(int amount) {
+    return amount.toString().replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
+  }
   Widget _buildTextRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16), 
@@ -76,6 +74,13 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
       print('Error loading login data: $e');
     }
   }
+
+  String formatKosong(String? value) {
+    final cleaned = value?.replaceAll(',', '').trim() ?? '';
+    return cleaned.isNotEmpty ? value!.trim() : '-';
+  }
+
+
   @override
   
   Widget build(BuildContext context) {
@@ -117,9 +122,9 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     body: _loginData == null
         ? Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
-            child: Column(
-              children: [
-                Column(
+              child: Column(
+                children: [
+                  Column(
                     children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -141,7 +146,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                             ),
                             child: Column(
                               children: [
-                                // Header section dengan warna custom
                                 Container(
                                   height: 50,
                                   decoration: BoxDecoration(
@@ -153,12 +157,10 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   ),
                                 ),
                                 
-                                // Profile section - image ditarik ke atas
                                 Transform.translate(
-                                  offset: Offset(0, -25), // Menarik avatar ke atas
+                                  offset: Offset(0, -25), 
                                   child: Column(
                                     children: [
-                                      // Avatar dengan border dan shadow (lebih kecil)
                                       Container(
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
@@ -206,21 +208,21 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: Offset(0, -15), 
+                                  offset: Offset(0, -18), 
                                   child: Container(
                                     margin: EdgeInsets.symmetric(horizontal: 15),
-                                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                                     decoration: BoxDecoration(
                                       color: Colors.grey.shade50,
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                        color: Colors.grey.shade200,
-                                        width: 1,
+                                        color: Color.fromARGB(255, 132, 123, 123),
+                                        width: 2.5,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.grey.withOpacity(0.08),
-                                          spreadRadius: 1,
+                                          color: const Color.fromARGB(255, 131, 51, 51).withOpacity(0.08),
+                                          spreadRadius: 4,
                                           blurRadius: 4,
                                           offset: Offset(0, 1),
                                         ),
@@ -274,7 +276,98 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 8),
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.teal.shade600,
+                                  Colors.teal.shade700,
+                                  Colors.teal.shade800,
+                                ],
+                                stops: const [0.0, 0.5, 1.0],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: -30,
+                                  right: -30,
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withOpacity(0.08),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: -20,
+                                  left: -20,
+                                  child: Container(
+                                    width: 80,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withOpacity(0.05),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.15),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: const Icon(
+                                          Icons.account_balance_wallet_rounded,
+                                          color: Colors.white,
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Saldo Uang Saku',
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            'Rp ${_formatRupiah(_loginData?.keuangan.saldo ?? 0)}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: -0.5,
+                                              height: 1.2,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),                        
+                          const SizedBox(height: 5),
                           Row(
                             children: [
                               Expanded(
@@ -282,17 +375,17 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (_) => SakuMasukScreen()));
                                   },
-                                  borderRadius: BorderRadius.circular(12), // lebih kecil
+                                  borderRadius: BorderRadius.circular(12), 
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 12), // lebih kecil
+                                    padding: EdgeInsets.symmetric(vertical: 12), 
                                     decoration: BoxDecoration(
                                       color: Colors.green.shade50,
-                                      borderRadius: BorderRadius.circular(12), // lebih kecil
+                                      borderRadius: BorderRadius.circular(12), 
                                       border: Border.all(color: Colors.green.shade200, width: 1.2),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.green.withOpacity(0.05),
-                                          blurRadius: 4, // lebih kecil
+                                          blurRadius: 4, 
                                           offset: Offset(0, 2),
                                         ),
                                       ],
@@ -301,12 +394,12 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          padding: EdgeInsets.all(10), // lebih kecil
+                                          padding: EdgeInsets.all(10), 
                                           decoration: BoxDecoration(
                                             color: Colors.green.shade100,
                                             shape: BoxShape.circle,
                                           ),
-                                          child: Icon(Icons.trending_up, color: Colors.green.shade600, size: 20), // lebih kecil
+                                          child: Icon(Icons.trending_up, color: Colors.green.shade600, size: 20), 
                                         ),
                                         SizedBox(height: 8), 
                                         Text(
@@ -370,7 +463,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ],
                           ),
-
                           SizedBox(height: 8),
                           InkWell(
                             onTap: () {
@@ -418,8 +510,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                       ),
                     ),
                   ],
-
-                  ),              
+                ),              
                 MenuGrid(),
                 Padding(
                   padding: EdgeInsets.all(15), 
@@ -444,19 +535,27 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       _buildInfoItem(
-                          Icons.person,
-                          'Murroby',
-                          '${_loginData?.namaMurroby ?? 'Tidak Tersedia'} - Kamar: ${_loginData?.kamar ?? 'Tidak Tersedia'}'),
+                        Icons.person,
+                        'Murroby',
+                        '${formatKosong(_loginData?.namaMurroby)} - Kamar : ${formatKosong(_loginData?.kamar)}',
+                      ),
                       _buildInfoItem(
-                          Icons.person,
-                          'Ustadz',
-                          '${_loginData?.namaUstadTahfidz ?? 'Tidak Tersedia'} - ${_loginData?.kelasTahfidz ?? 'Tidak Tersedia'}'),
-                      _buildInfoItem(Icons.home, 'Alamat',
-                          _loginData?.alamat ?? 'Tidak Tersedia'),
-                      _buildInfoItem(Icons.calendar_month, 'Tgl-Lahir',
-                          _loginData?.tanggalLahir ?? 'Tidak Tersedia'),
+                        Icons.person,
+                        'Ustadz',
+                        '${formatKosong(_loginData?.namaUstadTahfidz)} - ${formatKosong(_loginData?.kelasTahfidz)}',
+                      ),
+                      _buildInfoItem(
+                        Icons.home,
+                        'Alamat',
+                        formatKosong(_loginData?.alamat),
+                      ),
+                      _buildInfoItem(
+                        Icons.calendar_month,
+                        'Tgl-Lahir',
+                        formatKosong(_loginData?.tanggalLahir),
+                      ),
                     ],
                   ),
                 ),
@@ -475,13 +574,13 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                       ),
                       childrenPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 5), 
                       children: [
-                        _buildTextRow('Nama Ayah', _loginData?.namaAyah ?? 'Tidak Tersedia'),
-                        _buildTextRow('Pendidikan', _loginData?.pendidikanAyah ?? 'Tidak Tersedia'),
-                        _buildTextRow('Pekerjaan', _loginData?.pekerjaanAyah ?? 'Tidak Tersedia'),
-                        _buildTextRow('Nama Ibu', _loginData?.namaIbu ?? 'Tidak Tersedia'),
-                        _buildTextRow('Pendidikan', _loginData?.pendidikanIbu ?? 'Tidak Tersedia'), 
-                        _buildTextRow('Pekerjaan', _loginData?.pekerjaanIbu ?? 'Tidak Tersedia'), 
-                        _buildTextRow('No Ortu', _loginData?.noHp ?? 'Tidak Tersedia'),
+                        _buildTextRow('Nama Ayah', formatKosong(_loginData?.namaAyah)),
+                        _buildTextRow('Pendidikan', formatKosong(_loginData?.pendidikanAyah)),
+                        _buildTextRow('Pekerjaan', formatKosong(_loginData?.pekerjaanAyah)),
+                        _buildTextRow('Nama Ibu', formatKosong(_loginData?.namaIbu)),
+                        _buildTextRow('Pendidikan', formatKosong(_loginData?.pendidikanIbu)),
+                        _buildTextRow('Pekerjaan', formatKosong(_loginData?.pekerjaanIbu)),
+                        _buildTextRow('No Ortu', formatKosong(_loginData?.noHp)),
                       ],
                     ),
                   ),
@@ -570,35 +669,4 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
           ),
         );
       }
-
-  Widget _buildMenuCard(IconData icon, String label, VoidCallback onTap) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 30, color: Colors.teal),
-              SizedBox(height: 8),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

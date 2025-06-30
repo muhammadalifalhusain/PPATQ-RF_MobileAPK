@@ -75,7 +75,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> _saveLoginData(LoginResponse response) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('no_induk', response.noInduk);
+      await prefs.setInt('noInduk', response.noInduk);
       await prefs.setString('kode', response.kode);
       await prefs.setString('nama', response.nama);
       await prefs.setString('photo', response.photo);
@@ -84,6 +84,12 @@ class AuthProvider with ChangeNotifier {
       
       await prefs.setString('login_data', json.encode(response.toJson()));
       
+
+        print('Session disimpan:');
+        print('noInduk: ${prefs.getInt('noInduk')}');
+        print('kode: ${prefs.getString('kode')}');
+        print('nama: ${prefs.getString('nama')}');
+        print('kelas: ${prefs.getString('kelas')}');
     } catch (e) {
       print('Error saving login data: $e');
     }
