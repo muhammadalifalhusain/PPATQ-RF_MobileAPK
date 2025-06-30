@@ -76,7 +76,6 @@ class AuthProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('noInduk', response.noInduk);
-      await prefs.setString('kode', response.kode);
       await prefs.setString('nama', response.nama);
       await prefs.setString('photo', response.photo);
       await prefs.setString('kelas', response.kelas);
@@ -87,7 +86,6 @@ class AuthProvider with ChangeNotifier {
 
         print('Session disimpan:');
         print('noInduk: ${prefs.getInt('noInduk')}');
-        print('kode: ${prefs.getString('kode')}');
         print('nama: ${prefs.getString('nama')}');
         print('kelas: ${prefs.getString('kelas')}');
     } catch (e) {

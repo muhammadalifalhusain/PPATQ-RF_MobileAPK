@@ -20,7 +20,6 @@ class _MainScreenState extends State<MainScreen> {
       // Jika tap pada Payment, tampilkan dialog
       _showDevelopmentDialog(context);
     } else {
-      // Untuk menu lain, ganti screen normal
       setState(() {
         _selectedIndex = index;
       });
@@ -106,12 +105,12 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex], // Menampilkan screen berdasarkan index
+      body: _screens[_selectedIndex], 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.teal, // Warna item yang dipilih
-        unselectedItemColor: Colors.grey, // Warna item yang tidak dipilih
+        selectedItemColor: Colors.teal, 
+        unselectedItemColor: Colors.grey, 
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

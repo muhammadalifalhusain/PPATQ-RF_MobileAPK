@@ -22,10 +22,11 @@ class AppHeader extends StatelessWidget {
             children: [
               Spacer(),
               Text(
-                'V.25.6',
+                'V.01.7a',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
+                  fontWeight: FontWeight.w600
                 ),
               ),
             ],
@@ -34,7 +35,7 @@ class AppHeader extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Center(
-                child: Image.asset('assets/images/logo.png', height: 60), // Mengurangi tinggi logo
+                child: Image.asset('assets/images/logo.png', height: 60), 
               ),
               if (showBackButton)
                 Positioned(

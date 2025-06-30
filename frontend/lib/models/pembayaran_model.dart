@@ -9,7 +9,7 @@ class Pembayaran {
   final String noWa;
   final String? catatan;
   final List<int> idJenisPembayaran;
-  final List<int> jenisPembayaran; // ✅ harus int, bukan string
+  final List<int> jenisPembayaran;
 
   Pembayaran({
     required this.noInduk,

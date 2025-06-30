@@ -432,7 +432,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           Text('PPATQ RAUDLATUL FALAH', 
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8))),
           SizedBox(height: 4),
-          Text('Copyright © 2025 All Rights Reserved-BETA', 
+          Text('Copyright © 2025 All Rights Reserved', 
               style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.6))),
         ],
       ),

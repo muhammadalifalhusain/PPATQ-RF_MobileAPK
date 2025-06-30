@@ -11,9 +11,11 @@ class KesehatanResponse {
 
   factory KesehatanResponse.fromJson(Map<String, dynamic> json) {
     return KesehatanResponse(
-      status: json['status'],
-      message: json['message'],
-      data: KesehatanData.fromJson(json['data']),
+      status: json['status'] ?? 0,
+      message: json['message'] ?? '',
+      data: json['data'] != null
+          ? KesehatanData.fromJson(json['data'])
+          : KesehatanData.empty(),
     );
   }
 }
@@ -31,12 +33,26 @@ class KesehatanData {
 
   factory KesehatanData.fromJson(Map<String, dynamic> json) {
     return KesehatanData(
-      riwayatSakit: List<RiwayatSakit>.from(
-          json['riwayatSakit'].map((x) => RiwayatSakit.fromJson(x))),
-      pemeriksaan: List<Pemeriksaan>.from(
-          json['pemeriksaan'].map((x) => Pemeriksaan.fromJson(x))),
-      rawatInap: List<RawatInap>.from(
-          json['rawatInap'].map((x) => RawatInap.fromJson(x))),
+      riwayatSakit: (json['riwayatSakit'] as List?)
+              ?.map((x) => RiwayatSakit.fromJson(x))
+              .toList() ??
+          [],
+      pemeriksaan: (json['pemeriksaan'] as List?)
+              ?.map((x) => Pemeriksaan.fromJson(x))
+              .toList() ??
+          [],
+      rawatInap: (json['rawatInap'] as List?)
+              ?.map((x) => RawatInap.fromJson(x))
+              .toList() ??
+          [],
+    );
+  }
+
+  factory KesehatanData.empty() {
+    return KesehatanData(
+      riwayatSakit: [],
+      pemeriksaan: [],
+      rawatInap: [],
     );
   }
 }
@@ -60,10 +76,10 @@ class RiwayatSakit {
 
   factory RiwayatSakit.fromJson(Map<String, dynamic> json) {
     return RiwayatSakit(
-      keluhan: json['keluhan'],
-      tanggalSakit: json['tanggalSakit'],
+      keluhan: json['keluhan'] ?? '',
+      tanggalSakit: json['tanggalSakit'] ?? 0,
       tanggalSembuh: json['tanggalSembuh'],
-      keteranganSakit: json['keteranganSakit'],
+      keteranganSakit: json['keteranganSakit'] ?? '',
       keteranganSembuh: json['keteranganSembuh'],
       tindakan: json['tindakan'],
     );
@@ -71,40 +87,40 @@ class RiwayatSakit {
 
   DateTime get tanggalSakitDate =>
       DateTime.fromMillisecondsSinceEpoch(tanggalSakit * 1000);
+
   DateTime? get tanggalSembuhDate => tanggalSembuh != null
       ? DateTime.fromMillisecondsSinceEpoch(tanggalSembuh! * 1000)
       : null;
 }
 
-  class Pemeriksaan {
-    final int tanggalPemeriksaan;
-    final int tinggiBadan;
-    final int beratBadan;
-    final int? lingkarPinggul;
-    final int? lingkarDada;
-    final String? kondisiGigi;
+class Pemeriksaan {
+  final int tanggalPemeriksaan;
+  final int tinggiBadan;
+  final int beratBadan;
+  final int? lingkarPinggul;
+  final int? lingkarDada;
+  final String? kondisiGigi;
 
-    Pemeriksaan({
-      required this.tanggalPemeriksaan,
-      required this.tinggiBadan,
-      required this.beratBadan,
-      this.lingkarPinggul,
-      this.lingkarDada,
-      this.kondisiGigi,
-    });
+  Pemeriksaan({
+    required this.tanggalPemeriksaan,
+    required this.tinggiBadan,
+    required this.beratBadan,
+    this.lingkarPinggul,
+    this.lingkarDada,
+    this.kondisiGigi,
+  });
 
-    factory Pemeriksaan.fromJson(Map<String, dynamic> json) {
-      return Pemeriksaan(
-        tanggalPemeriksaan: json['tanggalPemeriksaan'],
-        tinggiBadan: json['tinggiBadan'],
-        beratBadan: json['beratBadan'],
-        lingkarPinggul: json['lingkarPinggul'],
-        lingkarDada: json['lingkarDada'],
-        kondisiGigi: json['kondisiGigi'],
-      );
-    }
+  factory Pemeriksaan.fromJson(Map<String, dynamic> json) {
+    return Pemeriksaan(
+      tanggalPemeriksaan: json['tanggalPemeriksaan'] ?? 0,
+      tinggiBadan: json['tinggiBadan'] ?? 0,
+      beratBadan: json['beratBadan'] ?? 0,
+      lingkarPinggul: json['lingkarPinggul'],
+      lingkarDada: json['lingkarDada'],
+      kondisiGigi: json['kondisiGigi'],
+    );
   }
-
+}
 
 class RawatInap {
   final int tanggalMasuk;
@@ -121,15 +137,16 @@ class RawatInap {
 
   factory RawatInap.fromJson(Map<String, dynamic> json) {
     return RawatInap(
-      tanggalMasuk: json['tanggalMasuk'],
-      keluhan: json['keluhan'],
-      terapi: json['terapi'],
+      tanggalMasuk: json['tanggalMasuk'] ?? 0,
+      keluhan: json['keluhan'] ?? '',
+      terapi: json['terapi'] ?? '',
       tanggalKeluar: json['tanggalKeluar'],
     );
   }
 
   DateTime get tanggalMasukDate =>
       DateTime.fromMillisecondsSinceEpoch(tanggalMasuk * 1000);
+
   DateTime? get tanggalKeluarDate => tanggalKeluar != null
       ? DateTime.fromMillisecondsSinceEpoch(tanggalKeluar! * 1000)
       : null;

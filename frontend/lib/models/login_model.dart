@@ -19,10 +19,10 @@ class SakuMasuk {
   }
 
   Map<String, dynamic> toJson() => {
-        'uangAsal': uangAsal,
-        'jumlah': jumlah,
-        'tanggal': tanggal,
-      };
+    'uangAsal': uangAsal,
+    'jumlah': jumlah,
+    'tanggal': tanggal,
+  };
 }
 
 class SakuKeluar {
@@ -49,11 +49,11 @@ class SakuKeluar {
   }
 
   Map<String, dynamic> toJson() => {
-        'nama': nama,
-        'jumlah': jumlah,
-        'note': note,
-        'tanggal': tanggal,
-      };
+    'nama': nama,
+    'jumlah': jumlah,
+    'note': note,
+    'tanggal': tanggal,
+  };
 }
 
 class Keuangan {
@@ -77,15 +77,14 @@ class Keuangan {
   }
 
   Map<String, dynamic> toJson() => {
-        'saldo': saldo,
-        'sakuMasuk': sakuMasuk.map((e) => e.toJson()).toList(),
-        'sakuKeluar': sakuKeluar.map((e) => e.toJson()).toList(),
-      };
+    'saldo': saldo,
+    'sakuMasuk': sakuMasuk.map((e) => e.toJson()).toList(),
+    'sakuKeluar': sakuKeluar.map((e) => e.toJson()).toList(),
+  };
 }
 
 class LoginResponse {
   final int noInduk;
-  final String kode;
   final String nama;
   final String photo;
   final String kelas;
@@ -110,7 +109,6 @@ class LoginResponse {
 
   LoginResponse({
     required this.noInduk,
-    required this.kode,
     required this.nama,
     required this.photo,
     required this.kelas,
@@ -137,7 +135,6 @@ class LoginResponse {
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
       noInduk: _parseInt(json['noInduk']),
-      kode: _parseString(json['kode']),
       nama: _parseString(json['nama']),
       photo: _parseString(json['photo']),
       kelas: _parseString(json['kelas']),
@@ -165,30 +162,29 @@ class LoginResponse {
   }
 
   Map<String, dynamic> toJson() => {
-        'noInduk': noInduk,
-        'kode': kode,
-        'nama': nama,
-        'photo': photo,
-        'kelas': kelas,
-        'kelasTahfidz': kelasTahfidz,
-        'tempatLahir': tempatLahir,
-        'tanggalLahir': tanggalLahir,
-        'jenisKelamin': jenisKelamin,
-        'alamat': alamat,
-        'namaAyah': namaAyah,
-        'pendidikanAyah': pendidikanAyah,
-        'pekerjaanAyah': pekerjaanAyah,
-        'namaIbu': namaIbu,
-        'pendidikanIbu': pendidikanIbu,
-        'pekerjaanIbu': pekerjaanIbu,
-        'noHp': noHp,
-        'kamar': kamar,
-        'namaMurroby': namaMurroby,
-        'fotoMurroby': fotoMurroby,
-        'namaUstadTahfidz': namaUstadTahfidz,
-        'fotoUstadTahfidz': fotoUstadTahfidz,
-        'keuangan': keuangan.toJson(),
-      };
+    'noInduk': noInduk,
+    'nama': nama,
+    'photo': photo,
+    'kelas': kelas,
+    'kelasTahfidz': kelasTahfidz,
+    'tempatLahir': tempatLahir,
+    'tanggalLahir': tanggalLahir,
+    'jenisKelamin': jenisKelamin,
+    'alamat': alamat,
+    'namaAyah': namaAyah,
+    'pendidikanAyah': pendidikanAyah,
+    'pekerjaanAyah': pekerjaanAyah,
+    'namaIbu': namaIbu,
+    'pendidikanIbu': pendidikanIbu,
+    'pekerjaanIbu': pekerjaanIbu,
+    'noHp': noHp,
+    'kamar': kamar,
+    'namaMurroby': namaMurroby,
+    'fotoMurroby': fotoMurroby,
+    'namaUstadTahfidz': namaUstadTahfidz,
+    'fotoUstadTahfidz': fotoUstadTahfidz,
+    'keuangan': keuangan.toJson(),
+  };
 }
 
 class ApiResponse<T> {

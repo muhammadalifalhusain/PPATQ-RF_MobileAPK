@@ -247,76 +247,147 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   }
 
   Widget _buildPemeriksaanTab(List<Pemeriksaan> pemeriksaan) {
-  if (pemeriksaan.isEmpty) {
-    return _buildEmptyState(
-      icon: Icons.monitor_heart,
-      message: 'Tidak ada data pemeriksaan',
+    if (pemeriksaan.isEmpty) {
+      return _buildEmptyState(
+        icon: Icons.monitor_heart,
+        message: 'Tidak ada data pemeriksaan',
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      itemCount: pemeriksaan.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
+      itemBuilder: (context, index) {
+        final periksa = pemeriksaan[index];
+        return Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.grey[50]!,
+                  Colors.white,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header dengan tanggal
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.teal[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.teal[100]!,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: Colors.teal[400],
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          DateTime.fromMillisecondsSinceEpoch(periksa.tanggalPemeriksaan * 1000)
+                              .toLocal()
+                              .toString()
+                              .split(" ")[0],
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: Colors.teal[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailRow('Tinggi Badan (cm)', _displayValue(periksa.tinggiBadan)),
+                        const SizedBox(height: 8),
+                        _buildDetailRow('Berat Badan (kg)', _displayValue(periksa.beratBadan)),
+                        const SizedBox(height: 8),
+                        _buildDetailRow('Lingkar Pinggul (cm)', _displayValue(periksa.lingkarPinggul)),
+                        const SizedBox(height: 8),
+                        _buildDetailRow('Lingkar Dada (cm)', _displayValue(periksa.lingkarDada)),
+                        const SizedBox(height: 8),
+                        _buildDetailRow('Kondisi Gigi', _displayValue(periksa.kondisiGigi)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  return ListView.separated(
-    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-    itemCount: pemeriksaan.length,
-    separatorBuilder: (context, index) => SizedBox(height: 16),
-    itemBuilder: (context, index) {
-      final periksa = pemeriksaan[index];
-      return Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tanggal: ${DateTime.fromMillisecondsSinceEpoch(periksa.tanggalPemeriksaan * 1000).toLocal().toString().split(" ")[0]}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              SizedBox(height: 12),
-              _buildDetailRow('Tinggi Badan (cm)', _displayValue(periksa.tinggiBadan)),
-              _buildDetailRow('Berat Badan (kg)', _displayValue(periksa.beratBadan)),
-              _buildDetailRow('Lingkar Pinggul (cm)', _displayValue(periksa.lingkarPinggul)),
-              _buildDetailRow('Lingkar Dada (cm)', _displayValue(periksa.lingkarDada)),
-              _buildDetailRow('Kondisi Gigi', _displayValue(periksa.kondisiGigi)),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
 
-Widget _buildDetailRow(String title, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
+        Expanded(
+          flex: 2,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
+        const SizedBox(width: 8),
         Text(
-          value,
+          ':',
           style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            fontSize: 13,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          flex: 2,
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],
-    ),
-  );
-}
+    );
+  }
 
 
   Widget _buildRawatInapTab(List<RawatInap> rawatInap) {
@@ -459,110 +530,6 @@ Widget _buildDetailRow(String title, String value) {
           ),
         ],
       ),
-    );
-  }
-
-  
-
-  Widget _buildMeasurementCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 4),
-      elevation: 0,
-      color: color.withOpacity(0.1),
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: color),
-            SizedBox(width: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Spacer(),
-            Text(
-              value,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showRawatInapDetails(BuildContext context, RawatInap rawat) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                rawat.keluhan,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16),
-              _buildDetailRow(
-                'Tanggal Masuk',
-                rawat.tanggalMasukDate.toLocal().toString().split(' ')[0],
-              ),
-              if (rawat.tanggalKeluar != null)
-                _buildDetailRow(
-                  'Tanggal Keluar',
-                  rawat.tanggalKeluarDate!.toLocal().toString().split(' ')[0],
-                ),
-              _buildDetailRow('Terapi', rawat.terapi),
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text('Tutup'),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-              SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
     );
   }
 }

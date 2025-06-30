@@ -108,7 +108,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: Text(
-              'V.25.6',
+              'V.30.6',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

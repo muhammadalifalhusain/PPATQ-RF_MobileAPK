@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart'; // Make sure to import this package
-import 'package:frontend/models/pegawai_model.dart';
+import 'package:frontend/screens/informasi_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../screens/about_screen.dart';
 import '../screens/agenda_screen.dart';
 import '../screens/galeri_screen.dart';
 import '../screens/pegawai_screen.dart';
 import '../screens/dakwah_screen.dart';
 import '../screens/surah_list_screen.dart';
-import '../screens/keluhan_screen.dart';
-import '../screens/informasi_screen.dart';
-import '../services/keluhan_service.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   @override
@@ -45,7 +42,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
       'icon': Icons.feedback,
       'label': 'Informasi',
       'color': Colors.red,
-      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => InformasiScreen())),
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => TutorialPembayaranScreen())),
     },
     {
       'icon': Icons.book,

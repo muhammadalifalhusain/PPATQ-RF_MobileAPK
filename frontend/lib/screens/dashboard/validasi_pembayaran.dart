@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../dashboard/main.dart';
 
 import 'pembayaran_screen.dart';
 
@@ -35,7 +36,7 @@ class ValidasiPembayaranScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -44,7 +45,16 @@ class ValidasiPembayaranScreen extends StatelessWidget {
               size: 120,
               color: Colors.blue.shade300,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 10),
+            Text(
+              '" Lapor bukti bayar ini adalah Upaya memudahkan pemetaan data bayar sesuai dengan keperuntukannya sekaligus double check antara Lembaga pondok dengan wali santri "',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 70),
             Text(
               'Apakah Anda sudah melakukan pembayaran?',
               style: GoogleFonts.poppins(
@@ -53,7 +63,7 @@ class ValidasiPembayaranScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -86,7 +96,12 @@ class ValidasiPembayaranScreen extends StatelessWidget {
               title: 'Belum Bayar',
               icon: FontAwesomeIcons.clock,
               color: Colors.orange,
-              onPressed: () => _showDevelopmentDialog(context),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                );
+              },
             ),
             const SizedBox(height: 24),
             TextButton(
@@ -194,82 +209,6 @@ class ValidasiPembayaranScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showDevelopmentDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 10),
-                )
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.engineering,
-                  size: 60,
-                  color: Colors.orange,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Sedang Dalam Pengembangan',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 15),
-                Text(
-                  'Menu pembayaran sedang dalam tahap pengembangan. Kami akan segera meluncurkannya!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 25),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black, 
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  ),
-                  child: Text(
-                    'Mengerti',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

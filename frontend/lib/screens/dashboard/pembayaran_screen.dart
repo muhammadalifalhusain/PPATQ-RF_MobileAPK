@@ -211,7 +211,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
 
       try {
         final prefs = await SharedPreferences.getInstance();
-        final noInduk = prefs.getInt('no_induk') ?? 0;
+        final noInduk = prefs.getInt('noInduk') ?? 0;
 
         if (noInduk == 0) throw Exception("No induk tidak ditemukan di SharedPreferences");
 
@@ -406,28 +406,23 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               color: Colors.teal,
                             ),
                           ),
-                          SizedBox(height: 16),
                           TextFormField(
                             controller: _tanggalBayarController,
+                            readOnly: true, 
+                            onTap: () => _selectDate(_tanggalBayarController), 
                             decoration: InputDecoration(
-                              labelText: 'Tanggal Bayar',
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.calendar_today),
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.date_range),
-                                onPressed: () => _selectDate(_tanggalBayarController),
-                              ),
                             ),
-                            readOnly: true,
-                            validator: (value) =>
-                                value!.isEmpty ? 'Wajib diisi' : null,
+                            validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
                           ),
+
                         ],
                       ),
                     ),
                   ),
                   
-                  SizedBox(height: 16),
+                  SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -459,7 +454,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Header dengan icon dan title
                             Row(
                               children: [
                                 Container(
@@ -474,7 +468,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                     size: 24,
                                   ),
                                 ),
-                                SizedBox(width: 16),
+                                SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -502,9 +496,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               ],
                             ),
                             
-                            SizedBox(height: 32),
-                            
-                            // Bank Dropdown dengan styling modern
+                            SizedBox(height: 15),
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
@@ -553,7 +545,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                       size: 20,
                                     ),
                                   ),
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                                 ),
                                 isExpanded: true,
                                 menuMaxHeight: 300,
@@ -577,9 +569,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               ),
                             ),
 
-                            SizedBox(height: 24),
-                            
-                            // Text Fields dengan styling konsisten
+                            SizedBox(height: 10),
                             _buildModernTextField(
                               controller: _atasNamaController,
                               labelText: 'Atas Nama',
@@ -587,7 +577,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
                             ),
                             
-                            SizedBox(height: 24),
+                            SizedBox(height: 10),
                             
                             _buildModernTextField(
                               controller: _noWaController,
@@ -598,7 +588,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               hintText: 'Contoh: 08123456789',
                             ),
                             
-                            SizedBox(height: 24),
+                            SizedBox(height: 10),
                             
                             _buildModernTextField(
                               controller: _catatanController,
@@ -632,6 +622,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                           ..._jenisPembayaran.asMap().entries.map((entry) {
                             int index = entry.key;
                             JenisPembayaran jenis = entry.value;
+                            
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
@@ -640,7 +631,9 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                 decoration: InputDecoration(
                                   labelText: jenis.jenis,
                                   hintText: jenis.harga > 0
-                                      ? currencyFormatter.format(jenis.harga)
+                                      ? (jenis.id == 5
+                                          ? '${currencyFormatter.format(jenis.harga)} (Kecuali kelas 6)'
+                                          : currencyFormatter.format(jenis.harga))
                                       : 'Masukkan nominal',
                                   border: OutlineInputBorder(),
                                   prefixIcon: Icon(Icons.payments),
@@ -691,7 +684,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                     ),
                   ),
                   
-                  SizedBox(height: 16),
+                  SizedBox(height: 10),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -701,17 +694,17 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                           Text(
                             'Bukti Pembayaran',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.teal,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 8),
                           GestureDetector(
                             onTap: _pickBuktiBayar,
                             child: Container(
                               width: double.infinity,
-                              height: 200,
+                              height: 120,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: Colors.grey,
@@ -738,7 +731,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                         ),
                                         SizedBox(height: 16),
                                         Text(
-                                          'Tap untuk pilih bukti bayar',
+                                          'Tekan untuk pilih bukti bayar',
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 16,
@@ -777,7 +770,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                         ),
                       ),
                       child: Text(
-                        'Kirim Pembayaran',
+                        'Kirim Konfirmasi Pembayaran',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
