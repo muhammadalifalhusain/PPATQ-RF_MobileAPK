@@ -100,6 +100,7 @@ class LoginResponse {
   final String pendidikanIbu;
   final String pekerjaanIbu;
   final String noHp;
+  final String noVa;
   final String kamar;
   final String namaMurroby;
   final String fotoMurroby;
@@ -124,6 +125,7 @@ class LoginResponse {
     required this.pendidikanIbu,
     required this.pekerjaanIbu,
     required this.noHp,
+    required this.noVa,
     required this.kamar,
     required this.namaMurroby,
     required this.fotoMurroby,
@@ -150,6 +152,7 @@ class LoginResponse {
       pendidikanIbu: _parseString(json['pendidikanIbu']),
       pekerjaanIbu: _parseString(json['pekerjaanIbu']),
       noHp: _parseString(json['noHp']),
+      noVa: _parseString(json['noVa']),
       kamar: _parseString(json['kamar']),
       namaMurroby: _parseString(json['namaMurroby']),
       fotoMurroby: _parseString(json['fotoMurroby']),
@@ -178,6 +181,7 @@ class LoginResponse {
     'pendidikanIbu': pendidikanIbu,
     'pekerjaanIbu': pekerjaanIbu,
     'noHp': noHp,
+    'noVa': noVa,
     'kamar': kamar,
     'namaMurroby': namaMurroby,
     'fotoMurroby': fotoMurroby,

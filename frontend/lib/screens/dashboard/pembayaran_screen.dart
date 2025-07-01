@@ -29,6 +29,8 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   int? _selectedBank; 
   File? _buktiBayar;
   bool _isLoading = true;
+  bool _isNominalSesuai = false;
+  String _validationMessage = '';
   int _totalJumlah = 0;
 
   // Form controllers
@@ -39,10 +41,13 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   final TextEditingController _atasNamaController = TextEditingController();
   final TextEditingController _noWaController = TextEditingController();
   final TextEditingController _catatanController = TextEditingController();
+  final TextEditingController _nominalTransferController = TextEditingController();
+
 
   @override
   void initState() {
     super.initState();
+    _nominalTransferController.addListener(_cekKecocokanNominal);
     _loadInitialData();
   }
 
@@ -66,6 +71,26 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
       });
     }
   }
+
+  void _cekKecocokanNominal() {
+    final input = _nominalTransferController.text.replaceAll('.', '').replaceAll(',', '');
+    final nominalTransfer = int.tryParse(input) ?? 0;
+    
+    setState(() {
+      _isNominalSesuai = nominalTransfer == _totalJumlah;
+      
+      if (_nominalTransferController.text.isEmpty) {
+        _validationMessage = '';
+      } else if (_totalJumlah == 0) {
+        _validationMessage = 'Masukkan detail pembayaran terlebih dahulu';
+      } else if (_isNominalSesuai) {
+        _validationMessage = 'Nominal transfer sesuai dengan total pembayaran';
+      } else {
+        _validationMessage = 'Nominal transfer tidak sesuai dengan total pembayaran (Rp ${currencyFormatter.format(_totalJumlah)})';
+      }
+    });
+  }
+
 
   Future<void> _loadBanks() async {
     try {
@@ -119,15 +144,22 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   void _calculateTotal() {
     int total = 0;
     for (int i = 0; i < _controllers.length; i++) {
-      String value = _controllers[i].text.trim();
+      String value = _controllers[i].text
+          .replaceAll('.', '')
+          .replaceAll('Rp', '')
+          .replaceAll(',', '')
+          .replaceAll(' ', '');
+
       if (value.isNotEmpty && int.tryParse(value) != null) {
         total += int.parse(value);
       }
     }
-    
+
     setState(() {
       _totalJumlah = total;
     });
+
+    _cekKecocokanNominal();
   }
 
   Future<void> _pickBuktiBayar() async {
@@ -164,12 +196,24 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         return;
       }
 
+      // Validasi nominal transfer
+      if (_nominalTransferController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Total transfer wajib diisi')),
+        );
+        return;
+      }
+
+      final nominalTransfer = int.tryParse(
+        _nominalTransferController.text.replaceAll('.', '').replaceAll(',', '')
+      ) ?? 0;
+
       List<int> idJenisPembayaran = [];
       List<int> jenisPembayaran = [];
       int totalJumlah = 0;
-
       bool adaInputTidakValid = false;
 
+      // Hitung total dari jenis pembayaran
       for (int i = 0; i < _jenisPembayaran.length; i++) {
         String value = _controllers[i].text.replaceAll('.', '').trim();
 
@@ -186,6 +230,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         }
       }
 
+      // Validasi input jenis pembayaran
       if (adaInputTidakValid) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -203,6 +248,18 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         return;
       }
 
+      // Validasi kesesuaian total transfer dengan jumlah pembayaran
+      if (nominalTransfer != totalJumlah) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Total transfer (Rp ${currencyFormatter.format(nominalTransfer)}) tidak sesuai dengan total pembayaran (Rp ${currencyFormatter.format(totalJumlah)})'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Tampilkan loading indicator
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -421,7 +478,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                       ),
                     ),
                   ),
-                  
                   SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
@@ -602,7 +658,71 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                       ),
                     ),
                   ),
-                  
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Total Transfer',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          TextFormField(
+                            controller: _nominalTransferController,
+                            decoration: InputDecoration(
+                              labelText: 'Masukkan total yang ditransfer',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.payment),
+                              prefixText: 'Rp ',
+                              suffixIcon: _isNominalSesuai 
+                                  ? Icon(Icons.check_circle, color: Colors.green)
+                                  : _nominalTransferController.text.isNotEmpty 
+                                      ? Icon(Icons.error, color: Colors.red)
+                                      : null,
+                            ),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              String newValue = value.replaceAll('.', '');
+                              if (newValue.isEmpty) return;
+
+                              final intVal = int.tryParse(newValue);
+                              if (intVal == null) return;
+                              final formatted = currencyFormatter.format(intVal);
+
+                              _nominalTransferController.value = TextEditingValue(
+                                text: formatted,
+                                selection: TextSelection.collapsed(offset: formatted.length),
+                              );
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) return 'Wajib diisi';
+                              if (!_isNominalSesuai && _totalJumlah > 0) {
+                                return 'Nominal tidak sesuai dengan total pembayaran';
+                              }
+                              return null;
+                            },
+                          ),
+                          if (_validationMessage.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                _validationMessage,
+                                style: TextStyle(
+                                  color: _isNominalSesuai ? Colors.green : Colors.red,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),          
                   SizedBox(height: 16),
                   Card(
                     child: Padding(

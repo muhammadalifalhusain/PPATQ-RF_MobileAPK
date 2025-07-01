@@ -506,6 +506,51 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 3),
+                          InkWell(
+                            onTap: () async {
+                              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                              await authProvider.logout();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => LandingPage()),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 236, 26, 26),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.grey.shade200, width: 1.5),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.04),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.logout, color: Colors.white, size: 20),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Keluar dari akun ${_loginData?.nama ?? ''}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
                         ],
                       ),
                     ),
@@ -582,51 +627,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                         _buildTextRow('Pekerjaan', formatKosong(_loginData?.pekerjaanIbu)),
                         _buildTextRow('No Ortu', formatKosong(_loginData?.noHp)),
                       ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                      await authProvider.logout();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => LandingPage()), 
-                      );
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 7),
-                      decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromARGB(255, 212, 97, 97), 
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.logout, color: Colors.white),
-                          SizedBox(width: 10),
-                          Text(
-                            'Logout',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
                 ),

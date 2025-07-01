@@ -79,15 +79,17 @@ class AuthProvider with ChangeNotifier {
       await prefs.setString('nama', response.nama);
       await prefs.setString('photo', response.photo);
       await prefs.setString('kelas', response.kelas);
+      await prefs.setString('noVa', response.noVa);
       await prefs.setBool('is_logged_in', true);
       
       await prefs.setString('login_data', json.encode(response.toJson()));
       
 
-        print('Session disimpan:');
-        print('noInduk: ${prefs.getInt('noInduk')}');
-        print('nama: ${prefs.getString('nama')}');
-        print('kelas: ${prefs.getString('kelas')}');
+        // print('Session disimpan:');
+        // print('noInduk: ${prefs.getInt('noInduk')}');
+        // print('nama: ${prefs.getString('nama')}');
+        // print('kelas: ${prefs.getString('kelas')}');
+        // print('kelas: ${prefs.getString('noVa')}');
     } catch (e) {
       print('Error saving login data: $e');
     }
