@@ -78,16 +78,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
     
     setState(() {
       _isNominalSesuai = nominalTransfer == _totalJumlah;
-      
-      if (_nominalTransferController.text.isEmpty) {
-        _validationMessage = '';
-      } else if (_totalJumlah == 0) {
-        _validationMessage = 'Masukkan detail pembayaran terlebih dahulu';
-      } else if (_isNominalSesuai) {
-        _validationMessage = 'Nominal transfer sesuai dengan total pembayaran';
-      } else {
-        _validationMessage = 'Nominal transfer tidak sesuai dengan total pembayaran (Rp ${currencyFormatter.format(_totalJumlah)})';
-      }
     });
   }
 
@@ -196,7 +186,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         return;
       }
 
-      // Validasi nominal transfer
+      // 2. Validasi nominal transfer
       if (_nominalTransferController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Total transfer wajib diisi')),
@@ -204,16 +194,17 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         return;
       }
 
+      // 3. Parse nominal transfer
       final nominalTransfer = int.tryParse(
         _nominalTransferController.text.replaceAll('.', '').replaceAll(',', '')
       ) ?? 0;
 
+      // 4. Hitung total dari jenis pembayaran
       List<int> idJenisPembayaran = [];
       List<int> jenisPembayaran = [];
       int totalJumlah = 0;
       bool adaInputTidakValid = false;
 
-      // Hitung total dari jenis pembayaran
       for (int i = 0; i < _jenisPembayaran.length; i++) {
         String value = _controllers[i].text.replaceAll('.', '').trim();
 
@@ -230,7 +221,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         }
       }
 
-      // Validasi input jenis pembayaran
+      // 5. Validasi input
       if (adaInputTidakValid) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -248,18 +239,19 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         return;
       }
 
-      // Validasi kesesuaian total transfer dengan jumlah pembayaran
-      if (nominalTransfer != totalJumlah) {
+      // 6. Validasi kecocokan nominal (diubah untuk konsistensi dengan tampilan)
+      if (!_isNominalSesuai) {
+        // Tidak perlu menampilkan detail lagi karena sudah ada di UI
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Total transfer (Rp ${currencyFormatter.format(nominalTransfer)}) tidak sesuai dengan total pembayaran (Rp ${currencyFormatter.format(totalJumlah)})'),
+            content: Text('Total transfer tidak sesuai dengan rincian pembayaran'),
             backgroundColor: Colors.red,
           ),
         );
         return;
       }
 
-      // Tampilkan loading indicator
+      // 7. Tampilkan loading
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -303,7 +295,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
+            content: Text('Gagal mengirim pembayaran: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -676,15 +668,10 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                           TextFormField(
                             controller: _nominalTransferController,
                             decoration: InputDecoration(
-                              labelText: 'Masukkan total yang ditransfer',
+                              labelText: 'Masukkan nominal transfer',
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.payment),
                               prefixText: 'Rp ',
-                              suffixIcon: _isNominalSesuai 
-                                  ? Icon(Icons.check_circle, color: Colors.green)
-                                  : _nominalTransferController.text.isNotEmpty 
-                                      ? Icon(Icons.error, color: Colors.red)
-                                      : null,
                             ),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
@@ -702,23 +689,9 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                             },
                             validator: (value) {
                               if (value!.isEmpty) return 'Wajib diisi';
-                              if (!_isNominalSesuai && _totalJumlah > 0) {
-                                return 'Nominal tidak sesuai dengan total pembayaran';
-                              }
                               return null;
                             },
                           ),
-                          if (_validationMessage.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                _validationMessage,
-                                style: TextStyle(
-                                  color: _isNominalSesuai ? Colors.green : Colors.red,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
                         ],
                       ),
                     ),
@@ -743,7 +716,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                             int index = entry.key;
                             JenisPembayaran jenis = entry.value;
                             
-
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: TextFormField(
@@ -793,10 +765,21 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.green,
+                                    color: _isNominalSesuai ? Colors.green : Colors.red,
                                   ),
                                 ),
                               ],
+                            ),
+                            if (_nominalTransferController.text.isNotEmpty && !_isNominalSesuai)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'Total rincian tidak sama dengan total lapor bayar / transfer(Rp ${currencyFormatter.format(int.tryParse(_nominalTransferController.text.replaceAll('.', '')) ?? 0)})',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
                           ],
                         ],

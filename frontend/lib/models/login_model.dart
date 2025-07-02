@@ -107,6 +107,8 @@ class LoginResponse {
   final String namaUstadTahfidz;
   final String fotoUstadTahfidz;
   final Keuangan keuangan;
+  final String accessToken;
+  final int expiresIn;
 
   LoginResponse({
     required this.noInduk,
@@ -132,6 +134,8 @@ class LoginResponse {
     required this.namaUstadTahfidz,
     required this.fotoUstadTahfidz,
     required this.keuangan,
+    required this.accessToken,
+    required this.expiresIn,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
@@ -161,6 +165,8 @@ class LoginResponse {
       keuangan: json['keuangan'] is Map<String, dynamic>
           ? Keuangan.fromJson(json['keuangan'])
           : Keuangan(saldo: 0, sakuMasuk: [], sakuKeluar: []),
+      accessToken: _parseString(json['accessToken']),
+      expiresIn: (json['expiresIn']),
     );
   }
 
@@ -188,8 +194,37 @@ class LoginResponse {
     'namaUstadTahfidz': namaUstadTahfidz,
     'fotoUstadTahfidz': fotoUstadTahfidz,
     'keuangan': keuangan.toJson(),
+    'accessToken': accessToken,
+    'expiresIn': expiresIn,
   };
 }
+
+class LogoutResponse {
+  final int status;
+  final String message;
+
+  LogoutResponse({
+    required this.status,
+    required this.message,
+  });
+
+  factory LogoutResponse.fromJson(Map<String, dynamic> json) {
+    return LogoutResponse(
+      status: json['status'] ?? 0, 
+      message: json['message'] ?? '', 
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'message': message,
+    };
+  }
+}
+
+
+
 
 class ApiResponse<T> {
   final T data;

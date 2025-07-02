@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:provider/provider.dart'; // Impor Provider
-import 'screens/splash_screen.dart';
-import 'providers/auth_provider.dart'; // Impor AuthProvider
+import 'package:provider/provider.dart';
+
+import './screens/dashboard/main.dart';
+import 'screens/landing_page.dart'; 
+import 'providers/auth_provider.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
   runApp(
     ChangeNotifierProvider(
-      create: (context) => AuthProvider(), // Menyediakan AuthProvider
+      create: (context) => AuthProvider(), 
       child: const MyApp(),
     ),
   );
@@ -42,7 +44,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PPATQ RAUDLATUL FALAH',
       theme: appTheme,
-      home: SplashScreen(),
+      home: Consumer<AuthProvider>(
+        builder: (context, authProvider, child) {
+          if (authProvider.isLoading) {
+            return Center(child: CircularProgressIndicator()); 
+          } else if (authProvider.isLoggedIn) {
+            return MainScreen();
+          } else {
+            return LandingPage(); 
+          }
+        },
+      ),
     );
   }
 }

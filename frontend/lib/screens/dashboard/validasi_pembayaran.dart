@@ -69,8 +69,8 @@ class ValidasiPembayaranScreen extends StatelessWidget {
             Text(
               'Apakah Anda sudah melakukan pembayaran?',
               style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
@@ -100,19 +100,6 @@ class ValidasiPembayaranScreen extends StatelessWidget {
                   elevation: 0,
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            _buildConfirmationButton(
-              context,
-              title: 'Belum Bayar',
-              icon: FontAwesomeIcons.clock,
-              color: Colors.orange,
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainScreen()),
-                );
-              },
             ),
             const SizedBox(height: 10),
             FutureBuilder<Map<String, String>>(

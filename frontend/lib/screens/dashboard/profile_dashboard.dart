@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
 import '../../models/login_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/login_service.dart';
 
 import '../landing_page.dart';
 import '../../widgets/menu_dashboard_widget.dart';
@@ -509,12 +509,48 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                           SizedBox(height: 3),
                           InkWell(
                             onTap: () async {
+                              final scaffoldMessenger = ScaffoldMessenger.of(context);
                               final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                              await authProvider.logout();
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (_) => LandingPage()),
-                              );
+                              
+                              try {
+                                // Tampilkan loading indicator
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (context) => Center(child: CircularProgressIndicator()),
+                                );
+                                await authProvider.logout();
+                                
+                                // Tutup loading indicator
+                                Navigator.of(context).pop();
+                                
+                                // Navigasi ke halaman landing
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => LandingPage()),
+                                  (route) => false, // Hapus semua route sebelumnya
+                                );
+                                
+                                // Tampilkan pesan sukses
+                                scaffoldMessenger.showSnackBar(
+                                  SnackBar(
+                                    content: Text('Logout berhasil'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                
+                              } catch (e) {
+                                // Tutup loading indicator jika ada error
+                                Navigator.of(context).pop();
+                                
+                                // Tampilkan pesan error
+                                scaffoldMessenger.showSnackBar(
+                                  SnackBar(
+                                    content: Text('Gagal logout: ${e.toString()}'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
                             },
                             borderRadius: BorderRadius.circular(16),
                             child: Container(
@@ -538,7 +574,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   Icon(Icons.logout, color: Colors.white, size: 20),
                                   SizedBox(width: 10),
                                   Text(
-                                    'Keluar dari akun ${_loginData?.nama ?? ''}',
+                                    'Keluar dari akun',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
