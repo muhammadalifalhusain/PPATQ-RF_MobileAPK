@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/berita_model.dart';
-import '../widgets/footer_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DetailBeritaPage extends StatelessWidget {
   final Berita berita;
@@ -12,32 +12,31 @@ class DetailBeritaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Colors.teal,
+        elevation: 2,
+        toolbarHeight: 56,
+        automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.share, color: Colors.black),
-            onPressed: () {
-              print('Berbagi berita: ${berita.judul}');
-            },
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Detail Berita',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
           ),
-          IconButton(
-            icon: Icon(Icons.bookmark, color: Colors.black),
-            onPressed: () {
-              print('Menyimpan berita: ${berita.judul}');
-            },
-          ),
-        ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 80.0, left: 16.0, right: 16.0, bottom: 16.0), // Padding atas ditambah
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -46,6 +45,7 @@ class DetailBeritaPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
                   color: Colors.teal[800],
                   shadows: [
                     Shadow(
@@ -56,25 +56,7 @@ class DetailBeritaPage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 8.0),
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-                  const SizedBox(width: 5),
-                  Text(
-                    '12 Oktober 2023', 
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(width: 10),
-                  Icon(Icons.person, size: 16, color: Colors.grey),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Admin', 
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16.0),
+              SizedBox(height: 16),
               Html(
                 data: berita.isiBerita,
                 onLinkTap: (url, attributes, element) async {
@@ -93,6 +75,10 @@ class DetailBeritaPage extends StatelessWidget {
                     lineHeight: LineHeight.number(1.5),
                     padding: HtmlPaddings.zero,
                     margin: Margins.zero,
+                    fontFamily: 'Poppins',
+                  ),
+                  "body": Style(
+                    fontFamily: 'Poppins',
                   ),
                 },
               ),

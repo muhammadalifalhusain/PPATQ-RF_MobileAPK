@@ -67,7 +67,7 @@ class _AboutScreenState extends State<AboutScreen> {
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.only(
-                  top: 25,
+                  top: 15,
                   left: 16,
                   right: 16,
                 ),

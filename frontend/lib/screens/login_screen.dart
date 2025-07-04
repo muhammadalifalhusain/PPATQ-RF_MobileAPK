@@ -108,33 +108,29 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       return;
     }
 
-    try {
-      final tanggalLahirFormatted = DateFormat('yyyy-MM-dd').format(selectedDate!);
-      
-      final noInduk = int.parse(selectedSantri!.noInduk); 
+    final tanggalLahirFormatted = DateFormat('yyyy-MM-dd').format(selectedDate!);
+    final noInduk = int.parse(selectedSantri!.noInduk);
 
-      final success = await auth.login(
-        noInduk: noInduk,
-        kode: _selectedKodeKelas!, 
-        tanggalLahir: tanggalLahirFormatted,
+    final success = await auth.login(
+      noInduk: noInduk,
+      kode: _selectedKodeKelas!,
+      tanggalLahir: tanggalLahirFormatted,
+    );
+
+    if (success) {
+      _showSuccess('Login berhasil! Selamat datang');
+      await Future.delayed(Duration(milliseconds: 500));
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => MainScreen(),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
       );
-
-      if (success) {
-        _showSuccess('Login berhasil! Selamat datang');
-        await Future.delayed(Duration(milliseconds: 500));
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => MainScreen(),
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-          ),
-        );
-      }
-    } catch (e) {
-    final message = e.toString().replaceFirst('Exception: ', '');
-    _showError(message);
+    } else {
+      _showError(auth.errorMessage ?? 'Terjadi kesalahan saat login.');
     }
   }
 
@@ -145,13 +141,20 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           children: [
             Icon(Icons.error_outline, color: Colors.white),
             SizedBox(width: 8),
-            Text(message),
+            Expanded( 
+              child: Text(
+                message,
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
+            ),
           ],
         ),
         backgroundColor: Colors.red,
       ),
     );
   }
+
 
   void _showSuccess(String message) {
     ScaffoldMessenger.of(context).showSnackBar(

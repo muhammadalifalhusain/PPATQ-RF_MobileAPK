@@ -14,7 +14,6 @@ class Berita {
   factory Berita.fromJson(Map<String, dynamic> json) {
     final rawThumbnail = json['thumbnail']?.toString() ?? '';
     
-    // Gunakan baseUrl yang sudah didefinisikan di ApiService
     final formattedThumbnail = rawThumbnail.startsWith('http')
         ? rawThumbnail
         : "${ApiService.fotoGaleriBaseUrl}${rawThumbnail.trim()}";
