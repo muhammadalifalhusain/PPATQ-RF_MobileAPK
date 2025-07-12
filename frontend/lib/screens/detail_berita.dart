@@ -5,7 +5,7 @@ import '../models/berita_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DetailBeritaPage extends StatelessWidget {
-  final Berita berita;
+  final BeritaItem berita; 
 
   const DetailBeritaPage({super.key, required this.berita});
 
@@ -18,7 +18,7 @@ class DetailBeritaPage extends StatelessWidget {
         toolbarHeight: 56,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: false,
@@ -35,55 +35,53 @@ class DetailBeritaPage extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                berita.judul,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Poppins',
-                  color: Colors.teal[800],
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withOpacity(0.2),
-                      offset: Offset(2, 2),
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              berita.judul,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Poppins',
+                color: Colors.teal[800],
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
-              SizedBox(height: 16),
-              Html(
-                data: berita.isiBerita,
-                onLinkTap: (url, attributes, element) async {
-                  if (url != null) {
-                    final Uri uri = Uri.parse(url);
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
-                    } else {
-                      print("Tidak dapat membuka link: $url");
-                    }
+            ),
+            const SizedBox(height: 16),
+            Html(
+              data: berita.isiBerita,
+              onLinkTap: (url, attributes, element) async {
+                if (url != null) {
+                  final uri = Uri.parse(url);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    print("Tidak dapat membuka link: $url");
                   }
-                },
-                style: {
-                  "p": Style(
-                    fontSize: FontSize.medium,
-                    lineHeight: LineHeight.number(1.5),
-                    padding: HtmlPaddings.zero,
-                    margin: Margins.zero,
-                    fontFamily: 'Poppins',
-                  ),
-                  "body": Style(
-                    fontFamily: 'Poppins',
-                  ),
-                },
-              ),
-            ],
-          ),
+                }
+              },
+              style: {
+                "p": Style(
+                  fontSize: FontSize.medium,
+                  lineHeight: LineHeight.number(1.5),
+                  padding: HtmlPaddings.zero,
+                  margin: Margins.zero,
+                  fontFamily: 'Poppins',
+                ),
+                "body": Style(
+                  fontFamily: 'Poppins',
+                ),
+              },
+            ),
+          ],
         ),
       ),
     );

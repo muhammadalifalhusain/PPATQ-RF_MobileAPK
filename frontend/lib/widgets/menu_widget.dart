@@ -42,7 +42,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
       'icon': Icons.feedback,
       'label': 'Informasi',
       'color': Colors.red,
-      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => TutorialPembayaranScreen())),
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => InformasiScreen())),
     },
     {
       'icon': Icons.book,

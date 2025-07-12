@@ -5,14 +5,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:frontend/models/tutorial_pembayaran_model.dart';
 import 'package:frontend/services/tutorial_pembayaran_service.dart';
 
-class TutorialPembayaranScreen extends StatefulWidget {
-  const TutorialPembayaranScreen({Key? key}) : super(key: key);
+class InformasiScreen extends StatefulWidget {
+  const InformasiScreen({Key? key}) : super(key: key);
 
   @override
-  State<TutorialPembayaranScreen> createState() => _TutorialPembayaranScreenState();
+  State<InformasiScreen> createState() => _InformasiScreenState();
 }
 
-class _TutorialPembayaranScreenState extends State<TutorialPembayaranScreen> {
+class _InformasiScreenState extends State<InformasiScreen> {
   List<TutorialPembayaran> tutorialList = [];
   bool isLoading = true;
   String errorMessage = '';

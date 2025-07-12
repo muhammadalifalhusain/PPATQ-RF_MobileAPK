@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/dakwah_model.dart';
 import '../services/dakwah_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 
 class DakwahScreen extends StatefulWidget {
@@ -87,31 +88,56 @@ class _DakwahScreenState extends State<DakwahScreen> {
                         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                       ),
                       builder: (_) => Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: MediaQuery.of(context).viewInsets,
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                dakwah.judul,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                              Center(
+                                child: Container(
+                                  width: 40,
+                                  height: 4,
+                                  margin: const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                formatTanggal(dakwah.createdAt),
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
+                              // Konten utama
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      dakwah.judul,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      formatTanggal(dakwah.createdAt),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const Divider(height: 24),
+                                    Html(
+                                      data: dakwah.isiDakwah,
+                                      style: {
+                                        "body": Style(
+                                          fontSize: FontSize(16.0),
+                                          lineHeight: LineHeight.number(1.5),
+                                          color: Colors.black87,
+                                        ),
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              const Divider(height: 24),
-                              Text(
-                                dakwah.isiDakwah,
-                                style: const TextStyle(fontSize: 16, height: 1.5),
                               ),
                             ],
                           ),
@@ -132,11 +158,18 @@ class _DakwahScreenState extends State<DakwahScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          dakwah.isiDakwah.length > 100
+                        Html(
+                          data: dakwah.isiDakwah.length > 100
                               ? '${dakwah.isiDakwah.substring(0, 100)}...'
                               : dakwah.isiDakwah,
-                          style: const TextStyle(color: Colors.black87),
+                          style: {
+                            "body": Style(
+                              color: Colors.black87,
+                              fontSize: FontSize(14),
+                              maxLines: 3,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
                         ),
                         const SizedBox(height: 12),
                         Row(
@@ -146,7 +179,7 @@ class _DakwahScreenState extends State<DakwahScreen> {
                             Text(
                               formatTanggal(dakwah.createdAt),
                               style: const TextStyle(fontSize: 12, color: Colors.grey),
-                            )
+                            ),
                           ],
                         )
                       ],
@@ -156,6 +189,7 @@ class _DakwahScreenState extends State<DakwahScreen> {
               );
             },
           );
+
         },
       ),
     );

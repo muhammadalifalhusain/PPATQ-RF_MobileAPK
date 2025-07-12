@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../services/api_service.dart';
+import '../services/berita_service.dart';
 import '../models/berita_model.dart';
 import '../widgets/app_header.dart';
 import '../widgets/berita_utama.dart';
@@ -14,7 +14,7 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  final ApiService apiService = ApiService();
+  final BeritaService beritaService = BeritaService();
   int _selectedIndex = 1;
 
   Future<void> _launchPSBUrl() async {
@@ -50,11 +50,7 @@ class _LandingPageState extends State<LandingPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.engineering,
-                  size: 60,
-                  color: Colors.orange,
-                ),
+                Icon(Icons.engineering, size: 60, color: Colors.orange),
                 SizedBox(height: 20),
                 Text(
                   'Sedang Dalam Pengembangan',
@@ -67,7 +63,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
                 SizedBox(height: 15),
                 Text(
-                  'This feature is currently under development. We will launch it as soon as possible!',
+                  'Fitur ini sedang dalam proses pengembangan. Akan segera tersedia!',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -84,13 +80,8 @@ class _LandingPageState extends State<LandingPage> {
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                   ),
-                  child: Text(
-                    'Got it',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  child: Text('Got it', style: TextStyle(fontSize: 16)),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
@@ -107,10 +98,8 @@ class _LandingPageState extends State<LandingPage> {
       setState(() {
         _selectedIndex = index;
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Menu Profil dipilih')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Menu Profil dipilih')));
     }
   }
 
@@ -129,99 +118,106 @@ class _LandingPageState extends State<LandingPage> {
             ),
             Expanded(
               child: SingleChildScrollView(
-                child: FutureBuilder<List<Berita>>(
-                  future: apiService.fetchBeritaFromHosting(),
+                child: FutureBuilder<BeritaResponse>(
+                  future: beritaService.fetchBerita(),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('Tidak ada berita tersedia.'));
-                    }
-
-                    final beritaList = snapshot.data!;
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 5.0),
-                          child: GestureDetector(
+                    List<Widget> children = [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 5.0),
+                        child: GestureDetector(
                           onTap: _launchPSBUrl,
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [Colors.teal, Colors.green],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 6,
-                                    offset: Offset(0, 3),
-                                  )
-                                ], 
-                              ), 
-                              child: Row(
-                                children: [
-                                  Icon(Icons.school, color: Colors.white, size: 40),
-                                  SizedBox(width: 13),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'PENDAFTARAN SANTRI BARU',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          'Daftarkan putra/putri Anda sekarang! Klik untuk informasi lebih lanjut.',
-                                          style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Icon(Icons.arrow_forward_ios, color: Colors.white),
-                                ],
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.teal, Colors.green],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 3),
+                                )
+                              ],
                             ),
-                          )
+                            child: Row(
+                              children: [
+                                Icon(Icons.school, color: Colors.white, size: 40),
+                                SizedBox(width: 13),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'PENDAFTARAN SANTRI BARU',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2),
+                                      Text(
+                                        'Daftarkan putra/putri Anda sekarang! Klik untuk informasi lebih lanjut.',
+                                        style: TextStyle(
+                                          color: Colors.white.withOpacity(0.9),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(Icons.arrow_forward_ios, color: Colors.white),
+                              ],
+                            ),
+                          ),
                         ),
-                        
+                      ),
+                    ];
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      children.add(Center(child: CircularProgressIndicator()));
+                    } else if (snapshot.hasError) {
+                      children.add(Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Berita gagal dimuat. Menampilkan menu lain.',
+                          style: TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                      )));
+                    } else if (snapshot.hasData && snapshot.data!.data.data.isNotEmpty) {
+                      final beritaList = snapshot.data!.data.data;
+
+                      children.addAll([
                         BeritaUtama(berita: beritaList.first),
                         Divider(color: Colors.teal, thickness: 2, height: 20),
                         Text(
                           'Menu',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                         ),
                         SizedBox(height: 5),
                         MenuIkonWidget(),
                         Text(
                           'Berita Lainnya',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                         ),
                         SizedBox(height: 15),
-                        BeritaSlider(beritaList: beritaList.sublist(1)),
-                        FooterWidget(),
-                      ],
-                    );
+                        if (beritaList.length > 1)
+                          BeritaSlider(beritaList: beritaList.sublist(1)),
+                      ]);
+                    } else {
+                      children.add(Text('Belum ada berita.'));
+                    }
+
+                    children.add(FooterWidget());
+
+                    return Column(children: children);
                   },
                 ),
               ),

@@ -22,10 +22,10 @@ class AppHeader extends StatelessWidget {
             children: [
               Spacer(),
               Text(
-                'V.01.7b',
+                'v.04.7c',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey,
+                  color: Colors.black,
                   fontWeight: FontWeight.w600
                 ),
               ),

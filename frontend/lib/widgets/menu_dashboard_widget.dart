@@ -9,25 +9,34 @@ import '../screens/dashboard/perilaku_screen.dart';
 import '../screens/dashboard/kelengkapan_screen.dart';
 import '../screens/dashboard/validasi_pembayaran.dart';
 import '../services/keluhan_service.dart';
-
-class MenuGrid extends StatelessWidget {
+import '../screens/surah_list_screen.dart';
+import '../screens/pegawai_screen.dart';
+import '../screens/informasi_screen.dart';
+class MenuGrid extends StatefulWidget {
   const MenuGrid({Key? key}) : super(key: key);
-  
-  final List<Map<String, dynamic>> menuItems = const [
+
+  @override
+  State<MenuGrid> createState() => _MenuGridState();
+}
+
+class _MenuGridState extends State<MenuGrid> {
+  bool _showAll = false;
+
+  final List<Map<String, dynamic>> _menuItems = const [
     {
       'icon': FontAwesomeIcons.dollarSign,
       'label': 'Pembayaran',
-      'color': Color(0xFF10B981), 
+      'color': Color(0xFF10B981),
     },
     {
       'icon': FontAwesomeIcons.hospital,
       'label': 'Kesehatan',
-      'color': Color(0xFF10B981), 
+      'color': Color(0xFF10B981),
     },
     {
       'icon': FontAwesomeIcons.book,
       'label': 'Tahfidz',
-      'color': Color(0xFF8B5CF6), 
+      'color': Color(0xFF8B5CF6),
     },
     {
       'icon': FontAwesomeIcons.comments,
@@ -37,12 +46,28 @@ class MenuGrid extends StatelessWidget {
     {
       'icon': FontAwesomeIcons.userCheck,
       'label': 'Perilaku',
-      'color': Color(0xFFF59E0B), 
+      'color': Color(0xFFF59E0B),
     },
     {
       'icon': FontAwesomeIcons.clipboardCheck,
       'label': 'Kelengkapan',
-      'color': Color(0xFFEF4444), 
+      'color': Color(0xFFEF4444),
+    },
+    // Tambahan menu lainnya
+    {
+      'icon': FontAwesomeIcons.quran,
+      'label': 'Al-Qur\'an',
+      'color': Color(0xFF6366F1),
+    },
+    {
+      'icon': FontAwesomeIcons.userTie,
+      'label': 'Pegawai',
+      'color': Color(0xFF3B82F6),
+    },
+    {
+      'icon': FontAwesomeIcons.circleInfo,
+      'label': 'Informasi',
+      'color': Color(0xFF10B981),
     },
   ];
 
@@ -58,9 +83,7 @@ class MenuGrid extends StatelessWidget {
         Navigator.push(context, MaterialPageRoute(builder: (_) => const KetahfidzanScreen()));
         break;
       case 'Saran':
-        Navigator.push(context, MaterialPageRoute(
-          builder: (_) => KeluhanScreen(keluhanService: KeluhanService()),
-        ));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => KeluhanScreen(keluhanService: KeluhanService())));
         break;
       case 'Perilaku':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const PerilakuScreen()));
@@ -68,13 +91,26 @@ class MenuGrid extends StatelessWidget {
       case 'Kelengkapan':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const KelengkapanScreen()));
         break;
+      case 'Al-Qur\'an':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => QuranScreen()));
+        break;
+      case 'Pegawai':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiDataScreen()));
+        break;
+      case 'Informasi':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const InformasiScreen()));
+        break;
       default:
-        print('Menu tidak dikenali: $label');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Menu "$label" belum tersedia')),
+        );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final visibleItems = _showAll ? _menuItems : _menuItems.take(6).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -85,11 +121,7 @@ class MenuGrid extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.apps_rounded,
-                    color: Colors.black,
-                    size: 20,
-                  ),
+                  const Icon(Icons.apps_rounded, color: Colors.black, size: 20),
                   const SizedBox(width: 8),
                   Text(
                     'Menu Cepat',
@@ -105,10 +137,7 @@ class MenuGrid extends StatelessWidget {
               const SizedBox(height: 8),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(
-                  thickness: 2,
-                  color: Colors.teal,
-                ),
+                child: Divider(thickness: 2, color: Colors.teal),
               ),
             ],
           ),
@@ -124,9 +153,9 @@ class MenuGrid extends StatelessWidget {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            itemCount: menuItems.length,
+            itemCount: visibleItems.length,
             itemBuilder: (context, index) {
-              final item = menuItems[index];
+              final item = visibleItems[index];
               return _buildMenuCard(
                 item['icon'],
                 item['label'],
@@ -136,6 +165,22 @@ class MenuGrid extends StatelessWidget {
             },
           ),
         ),
+        if (!_showAll && _menuItems.length > 6)
+          Center(
+            child: TextButton.icon(
+              onPressed: () => setState(() => _showAll = true),
+              icon: const Icon(Icons.keyboard_arrow_down),
+              label: const Text('Lainnya'),
+            ),
+          )
+        else if (_showAll)
+          Center(
+            child: TextButton.icon(
+              onPressed: () => setState(() => _showAll = false),
+              icon: const Icon(Icons.keyboard_arrow_up),
+              label: const Text('Sembunyikan'),
+            ),
+          ),
       ],
     );
   }
@@ -161,10 +206,7 @@ class MenuGrid extends StatelessWidget {
               spreadRadius: 2,
             ),
           ],
-          border: Border.all(
-            color: Colors.grey.withOpacity(0.1),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.grey.withOpacity(0.1), width: 1),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -173,10 +215,7 @@ class MenuGrid extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    color.withOpacity(0.8),
-                    color,
-                  ],
+                  colors: [color.withOpacity(0.8), color],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -189,13 +228,8 @@ class MenuGrid extends StatelessWidget {
                   ),
                 ],
               ),
-              child: FaIcon(
-                icon,
-                size: 24,
-                color: Colors.white,
-              ),
+              child: FaIcon(icon, size: 24, color: Colors.white),
             ),
-            
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -207,7 +241,7 @@ class MenuGrid extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF374151), 
+                  color: const Color(0xFF374151),
                   height: 1.3,
                 ),
               ),

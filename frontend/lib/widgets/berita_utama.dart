@@ -3,7 +3,7 @@ import '../models/berita_model.dart';
 import '../screens/detail_berita.dart';
 
 class BeritaUtama extends StatelessWidget {
-  final Berita berita;
+  final BeritaItem berita;
 
   BeritaUtama({required this.berita});
 
@@ -43,10 +43,10 @@ class BeritaUtama extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                berita.thumbnail,
-                fit: BoxFit.contain,
+                'https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/${berita.thumbnail}',
+                fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    Icon(Icons.broken_image, size: 200),
+                    Icon(Icons.broken_image, size: 50),
               ),
             ),
           ),
