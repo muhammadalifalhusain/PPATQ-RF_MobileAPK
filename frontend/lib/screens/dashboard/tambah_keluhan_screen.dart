@@ -132,11 +132,7 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Keluhan berhasil dikirim!')),
           );
-
-          // Arahkan langsung ke KeluhanListScreen dengan refresh otomatis
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const KeluhanListScreen()),
-          );
+          Navigator.pop(context, true);
         }
       } catch (e) {
         setState(() => _isLoading = false);

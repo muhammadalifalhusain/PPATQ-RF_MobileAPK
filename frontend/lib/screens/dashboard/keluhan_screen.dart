@@ -133,7 +133,11 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
                     keluhanService: KeluhanService(),
                   ),
                 ),
-              ).then((_) => _fetchKeluhan());
+              ).then((result) {
+                if (result == true) {
+                  _fetchKeluhan(); 
+                }
+              });
             },
             child: Card(
               color: Colors.indigo,
