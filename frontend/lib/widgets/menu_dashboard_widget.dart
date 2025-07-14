@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../screens/kesehatan_screen.dart';
 import '../screens/dashboard/ketahfidzan_screen.dart';
-import '../screens/keluhan_screen.dart';
+import '../screens/dashboard/keluhan_screen.dart';
 import '../screens/dashboard/perilaku_screen.dart';
 import '../screens/dashboard/kelengkapan_screen.dart';
 import '../screens/dashboard/validasi_pembayaran.dart';
@@ -83,7 +83,7 @@ class _MenuGridState extends State<MenuGrid> {
         Navigator.push(context, MaterialPageRoute(builder: (_) => const KetahfidzanScreen()));
         break;
       case 'Saran':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => KeluhanScreen(keluhanService: KeluhanService())));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => KeluhanListScreen()));
         break;
       case 'Perilaku':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const PerilakuScreen()));

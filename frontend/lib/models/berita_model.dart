@@ -11,9 +11,9 @@ class BeritaResponse {
 
   factory BeritaResponse.fromJson(Map<String, dynamic> json) {
     return BeritaResponse(
-      status: json['status'],
-      message: json['message'],
-      data: BeritaData.fromJson(json['data']),
+      status: json['status'] ?? 0,
+      message: json['message'] ?? 'Tidak ada pesan',
+      data: BeritaData.fromJson(json['data'] ?? {}),
     );
   }
 }
@@ -35,11 +35,14 @@ class BeritaData {
 
   factory BeritaData.fromJson(Map<String, dynamic> json) {
     return BeritaData(
-      currentPage: json['current_page'],
-      data: List<BeritaItem>.from(json['data'].map((x) => BeritaItem.fromJson(x))),
+      currentPage: json['current_page'] ?? 1,
+      data: (json['data'] as List?)
+              ?.map((x) => BeritaItem.fromJson(x ?? {}))
+              .toList() ??
+          [],
       nextPageUrl: json['next_page_url'],
       prevPageUrl: json['prev_page_url'],
-      total: json['total'],
+      total: json['total'] ?? 0,
     );
   }
 }
@@ -58,22 +61,22 @@ class BeritaItem {
   });
 
   factory BeritaItem.fromJson(Map<String, dynamic> json) {
-    // Bersihkan path lokal jika ada
-    String thumb = json['thumbnail'];
-    if (thumb.startsWith('file:///')) {
-      thumb = thumb.split('/').last;
-    }
+    String rawThumb = (json['thumbnail'] ?? '').toString();
+    String rawGambar = (json['gambar_dalam'] ?? '').toString();
 
-    String gambar = json['gambar_dalam'];
-    if (gambar.startsWith('file:///')) {
-      gambar = gambar.split('/').last;
-    }
+    String thumb = rawThumb.startsWith('file:///')
+        ? rawThumb.split('/').last
+        : rawThumb;
+
+    String gambar = rawGambar.startsWith('file:///')
+        ? rawGambar.split('/').last
+        : rawGambar;
 
     return BeritaItem(
-      judul: json['judul'],
-      thumbnail: thumb,
-      gambarDalam: gambar,
-      isiBerita: json['isi_berita'],
+      judul: (json['judul'] ?? 'Tanpa Judul').toString(),
+      thumbnail: thumb.isNotEmpty ? thumb : 'default_thumb.jpg',
+      gambarDalam: gambar.isNotEmpty ? gambar : 'default_gambar.jpg',
+      isiBerita: (json['isi_berita'] ?? 'Belum ada isi berita.').toString(),
     );
   }
 }

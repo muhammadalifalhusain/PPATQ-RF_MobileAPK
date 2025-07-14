@@ -19,13 +19,12 @@ class BeritaSlider extends StatefulWidget {
 
 class _BeritaSliderState extends State<BeritaSlider> {
   int _currentIndex = 0;
-  bool _hasReachedEnd = false;
 
   @override
   Widget build(BuildContext context) {
     final beritaList = widget.beritaList;
 
-    if (beritaList.length <= 1) {
+    if (beritaList.length < 2) {
       return const SizedBox.shrink();
     }
 
@@ -33,8 +32,17 @@ class _BeritaSliderState extends State<BeritaSlider> {
       itemCount: beritaList.length,
       itemBuilder: (context, index, realIndex) {
         final berita = beritaList[index];
-        final imageUrl =
-            'https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/${berita.thumbnail}';
+
+        // Pastikan thumbnail aman
+        final String thumbnailUrl = (berita.thumbnail.isNotEmpty)
+            ? (berita.thumbnail.startsWith('http')
+                ? berita.thumbnail
+                : 'https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/${berita.thumbnail}')
+            : 'https://via.placeholder.com/400x300.png?text=No+Image';
+
+        final String judul = (berita.judul.trim().isEmpty)
+            ? 'Judul tidak tersedia'
+            : berita.judul;
 
         return GestureDetector(
           onTap: () => Navigator.push(
@@ -45,35 +53,56 @@ class _BeritaSliderState extends State<BeritaSlider> {
           ),
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 5,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                  child: Image.network(
+                    thumbnailUrl,
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    alignment: Alignment.center,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey[300],
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: const Icon(Icons.broken_image, size: 50, color: Colors.grey),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                      ),
-                    ),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  berita.judul,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    judul,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ],
@@ -85,16 +114,16 @@ class _BeritaSliderState extends State<BeritaSlider> {
         height: MediaQuery.of(context).size.height * 0.4,
         autoPlay: false,
         enlargeCenterPage: true,
-        viewportFraction: 0.8,
+        viewportFraction: 0.85,
         onPageChanged: (index, reason) {
           setState(() {
             _currentIndex = index;
           });
-          if (_currentIndex >= 4 && !_hasReachedEnd) {
-            _hasReachedEnd = true;
-            if (widget.onReachEnd != null) {
-              widget.onReachEnd!();
-            }
+
+          // Callback saat hampir mencapai akhir
+          if (widget.onReachEnd != null &&
+              index >= widget.beritaList.length - 2) {
+            widget.onReachEnd!();
           }
         },
       ),

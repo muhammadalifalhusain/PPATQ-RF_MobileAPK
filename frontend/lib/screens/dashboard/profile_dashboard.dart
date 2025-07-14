@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/login_model.dart';
 import '../../providers/auth_provider.dart';
-import '../../services/login_service.dart';
 
 import '../landing_page.dart';
 import '../../widgets/menu_dashboard_widget.dart';
@@ -108,11 +107,11 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: Text(
-              'V.30.6',
+              'V1.1.8',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: const Color.fromARGB(255, 97, 95, 95),
+                color: Colors.white,
               ),
             ),
           ),

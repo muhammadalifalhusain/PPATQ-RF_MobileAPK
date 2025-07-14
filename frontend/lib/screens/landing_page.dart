@@ -17,6 +17,17 @@ class _LandingPageState extends State<LandingPage> {
   final BeritaService beritaService = BeritaService();
   int _selectedIndex = 1;
 
+  List<BeritaItem> beritaList = [];
+  int currentPage = 1;
+  bool isLoading = false;
+  bool hasMore = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBerita();
+  }
+
   Future<void> _launchPSBUrl() async {
     final Uri url = Uri.parse('http://psb.ppatq-rf.id');
     if (!await launchUrl(url)) {
@@ -27,67 +38,13 @@ class _LandingPageState extends State<LandingPage> {
   void _showDevelopmentDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 10),
-                )
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.engineering, size: 60, color: Colors.orange),
-                SizedBox(height: 20),
-                Text(
-                  'Sedang Dalam Pengembangan',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 15),
-                Text(
-                  'Fitur ini sedang dalam proses pengembangan. Akan segera tersedia!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 25),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  ),
-                  child: Text('Got it', style: TextStyle(fontSize: 16)),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      builder: (_) => AlertDialog(
+        title: Text('Sedang Dalam Pengembangan'),
+        content: Text('Fitur ini sedang dalam proses pengembangan.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Tutup')),
+        ],
+      ),
     );
   }
 
@@ -95,11 +52,27 @@ class _LandingPageState extends State<LandingPage> {
     if (index == 0 || index == 2) {
       _showDevelopmentDialog(context);
     } else {
+      setState(() => _selectedIndex = index);
+    }
+  }
+
+  Future<void> _loadBerita() async {
+    if (isLoading || !hasMore) return;
+    setState(() => isLoading = true);
+
+    try {
+      final response = await beritaService.fetchBerita(page: currentPage);
+      final newBerita = response.data.data;
+
       setState(() {
-        _selectedIndex = index;
+        currentPage++;
+        beritaList.addAll(newBerita);
+        hasMore = response.data.nextPageUrl != null;
       });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Menu Profil dipilih')));
+    } catch (e) {
+      debugPrint('Gagal memuat berita: $e');
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -109,116 +82,78 @@ class _LandingPageState extends State<LandingPage> {
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              color: Colors.white,
-              child: AppHeader(
-                showAuthButtons: true,
-                showBackButton: false,
-              ),
-            ),
+            AppHeader(showAuthButtons: true, showBackButton: false),
             Expanded(
               child: SingleChildScrollView(
-                child: FutureBuilder<BeritaResponse>(
-                  future: beritaService.fetchBerita(),
-                  builder: (context, snapshot) {
-                    List<Widget> children = [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 5.0),
-                        child: GestureDetector(
-                          onTap: _launchPSBUrl,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.teal, Colors.green],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 6,
-                                  offset: Offset(0, 3),
-                                )
-                              ],
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(13),
+                      child: GestureDetector(
+                        onTap: _launchPSBUrl,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.teal, Colors.green],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.school, color: Colors.white, size: 40),
-                                SizedBox(width: 13),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'PENDAFTARAN SANTRI BARU',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                        ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.all(14),
+                          child: Row(
+                            children: [
+                              Icon(Icons.school, color: Colors.white, size: 40),
+                              SizedBox(width: 13),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'PENDAFTARAN SANTRI BARU',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        'Daftarkan putra/putri Anda sekarang! Klik untuk informasi lebih lanjut.',
-                                        style: TextStyle(
-                                          color: Colors.white.withOpacity(0.9),
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      'Daftarkan putra/putri Anda sekarang!',
+                                      style: TextStyle(color: Colors.white70),
+                                    ),
+                                  ],
                                 ),
-                                Icon(Icons.arrow_forward_ios, color: Colors.white),
-                              ],
-                            ),
+                              ),
+                              Icon(Icons.arrow_forward_ios, color: Colors.white),
+                            ],
                           ),
                         ),
                       ),
-                    ];
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      children.add(Center(child: CircularProgressIndicator()));
-                    } else if (snapshot.hasError) {
-                      children.add(Center(
-                          child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Berita gagal dimuat. Menampilkan menu lain.',
-                          style: TextStyle(color: Colors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                      )));
-                    } else if (snapshot.hasData && snapshot.data!.data.data.isNotEmpty) {
-                      final beritaList = snapshot.data!.data.data;
-
-                      children.addAll([
-                        BeritaUtama(berita: beritaList.first),
-                        Divider(color: Colors.teal, thickness: 2, height: 20),
-                        Text(
-                          'Menu',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                        ),
-                        SizedBox(height: 5),
-                        MenuIkonWidget(),
-                        Text(
-                          'Berita Lainnya',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                        ),
-                        SizedBox(height: 15),
-                        if (beritaList.length > 1)
-                          BeritaSlider(beritaList: beritaList.sublist(1)),
-                      ]);
-                    } else {
-                      children.add(Text('Belum ada berita.'));
-                    }
-
-                    children.add(FooterWidget());
-
-                    return Column(children: children);
-                  },
+                    ),
+                    if (beritaList.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      )
+                    else ...[
+                      BeritaUtama(berita: beritaList.first),
+                      Divider(),
+                      Text('Menu', style: TextStyle(fontWeight: FontWeight.bold)),
+                      MenuIkonWidget(),
+                      SizedBox(height: 10),
+                      Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      BeritaSlider(
+                        beritaList: beritaList.sublist(1),
+                        onReachEnd: _loadBerita,
+                      ),
+                    ],
+                    if (isLoading)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      ),
+                    FooterWidget(),
+                  ],
                 ),
               ),
             ),
@@ -230,18 +165,9 @@ class _LandingPageState extends State<LandingPage> {
         onTap: _onItemTapped,
         selectedItemColor: Colors.teal,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Akademik',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Keuangan',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Akademik'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: 'Keuangan'),
         ],
       ),
     );

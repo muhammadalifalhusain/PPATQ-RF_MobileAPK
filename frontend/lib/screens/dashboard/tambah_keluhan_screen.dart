@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
-import '../models/keluhan_model.dart';
-import '../models/get-santri_model.dart';
-import '../services/keluhan_service.dart';
-import '../services/get-santri_service.dart';
-import '../models/kelas_model.dart';
-import '../services/get-kelas_service.dart';
-import '../models/kategori_keluhan_model.dart'; 
-import '../services/kategori_keluhan_service.dart'; 
+import '../../models/keluhan_model.dart';
+import '../../services/keluhan_service.dart';
+import '../../models/kategori_keluhan_model.dart'; 
+import '../../services/kategori_keluhan_service.dart'; 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'keluhan_screen.dart';
 
 import 'dart:convert';
-
-
-
-class KeluhanScreen extends StatefulWidget {
+class TambahKeluhanScreen extends StatefulWidget {
   final KeluhanService keluhanService;
 
-  const KeluhanScreen({Key? key, required this.keluhanService}) : super(key: key);
+  const TambahKeluhanScreen({Key? key, required this.keluhanService}) : super(key: key);
 
   @override
-  State<KeluhanScreen> createState() => _KeluhanScreenState();
+  State<TambahKeluhanScreen> createState() => _TambahKeluhanScreenState();
 }
 
-class _KeluhanScreenState extends State<KeluhanScreen> {
+class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
@@ -35,14 +29,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
   final TextEditingController _masukanController = TextEditingController();
   final TextEditingController _saranController = TextEditingController();
   final TextEditingController _idSantriController = TextEditingController();
-  final TextEditingController _idKategoriController = TextEditingController();
-
-  List<Santri> _allSantri = [];
-  List<Santri> _filteredSantri = [];
-  Santri? _selectedSantri;
-
-  List<Kelas> _kelasList = [];
-  String? _selectedKodeKelas;
 
   List<KategoriKeluhan> _kategoriKeluhanList = []; // Tambahkan ini
   KategoriKeluhan? _selectedKategoriKeluhan; // Tambahkan ini
@@ -53,10 +39,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
 
   bool _isLoading = false;
   bool _isSubmitted = false;
-  bool _isSearching = false;
-  bool _isLoadingSantri = false;
-  bool _isLoadingKelas = false;
-  bool _isLoadingKategoriKeluhan = false; // Tambahkan ini
+  bool _isLoadingKategoriKeluhan = false; 
 
   final Duration _animationDuration = const Duration(milliseconds: 300);
   final Curve _animationCurve = Curves.easeInOut;
@@ -66,7 +49,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     super.initState();
     
     _loadKategoriKeluhan();
-    _searchController.addListener(_onSearchChanged);
   }
 
   Future<void> _loadKategoriKeluhan() async { 
@@ -82,26 +64,8 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
     }
   }
 
-  void _onSearchChanged() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredSantri = _allSantri.where((santri) {
-        final nama = santri.nama.toLowerCase();
-        final noInduk = santri.noInduk?.toLowerCase() ?? '';
-        return nama.contains(query) || noInduk.contains(query);
-      }).toList();
-    });
-  }
-
-  void _selectSantri(Santri santri) {
-    setState(() {
-      _selectedSantri = santri;
-      _idSantriController.text = santri.noInduk; 
-      _isSearching = false;
-    });
-  }
-
-  Widget _buildDropdownKategoriKeluhan() { // Tambahkan ini
+  
+  Widget _buildDropdownKategoriKeluhan() { 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: _isLoadingKategoriKeluhan
@@ -127,9 +91,9 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
             ),
     );
   }
+
   void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
-
       setState(() {
         _isLoading = true;
       });
@@ -140,7 +104,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         curve: _animationCurve,
       );
 
-      // Ambil data login dari SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final loginJson = prefs.getString('login_data');
       final loginData = loginJson != null ? json.decode(loginJson) : {};
@@ -149,7 +112,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         namaPelapor: _namaPelaporController.text.trim(),
         email: _emailController.text.trim(),
         noHp: loginData['noHp'] ?? _noHpController.text.trim(),
-        idSantri: prefs.getInt('no_induk') ?? 0,
+        idSantri: prefs.getInt('noInduk') ?? 0,
         namaWaliSantri: loginData['namaAyah'] ?? _namaWaliSantriController.text.trim(),
         idKategori: _selectedKategoriKeluhan?.id,
         masukan: _masukanController.text.trim(),
@@ -158,41 +121,36 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
         jenis: _selectedJenis,
       );
 
+      try {
+        bool success = await widget.keluhanService.submitKeluhan(keluhan);
 
-      bool success = await widget.keluhanService.submitKeluhan(keluhan);
-
-      setState(() {
-        _isLoading = false;
-        _isSubmitted = success;
-      });
-
-      if (success) {
-        Future.delayed(const Duration(seconds: 5), () {
-          if (mounted) {
-            setState(() {
-              _isSubmitted = false;
-              _formKey.currentState?.reset();
-              _namaPelaporController.clear();
-              _emailController.clear();
-              _noHpController.clear();
-              _namaWaliSantriController.clear();
-              _masukanController.clear();
-              _saranController.clear();
-              _idSantriController.clear();
-              _searchController.clear();
-
-              _rating = 5;
-              _selectedJenis = 'Keluhan';
-              _selectedSantri = null;
-              _selectedKodeKelas = null;
-              _selectedKategoriKeluhan = null;
-            });
-          }
+        setState(() {
+          _isLoading = false;
         });
+
+        if (success && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Keluhan berhasil dikirim!')),
+          );
+
+          // Arahkan langsung ke KeluhanListScreen dengan refresh otomatis
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const KeluhanListScreen()),
+          );
+        }
+      } catch (e) {
+        setState(() => _isLoading = false);
+
+        final errorMessage = e.toString().replaceFirst('Exception: ', '');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
       }
     }
   }
-
 
   @override
   void dispose() {
@@ -427,7 +385,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                             const SizedBox(height: 16),
                             Card(
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(12)),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -438,7 +396,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 16),
-                                    _buildDropdownKategoriKeluhan(), // Tambahkan ini
+                                    _buildDropdownKategoriKeluhan(), 
                                     _buildTextField(
                                       controller: _masukanController,
                                       label: 'Detail Laporan',
