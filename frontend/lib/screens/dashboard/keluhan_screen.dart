@@ -46,123 +46,425 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
     }
   }
 
-  Widget _buildList(List<KeluhanItem> keluhanList) {
-    if (keluhanList.isEmpty) {
-      return const Center(child: Text("Tidak ada data."));
-    }
+  Widget _buildEmptyState(String message, IconData icon) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.teal.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 64,
+              color: Colors.teal.withOpacity(0.6),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Belum ada keluhan yang tersedia",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
 
-    return ListView.builder(
-      itemCount: keluhanList.length,
-      itemBuilder: (context, index) {
-        final item = keluhanList[index];
-        return Card(
-          margin: const EdgeInsets.all(8),
-          child: ListTile(
-            title: Text(item.kategori, style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Jenis: ${item.jenis}"),
-                Text("Masukan: ${item.masukan}"),
-                Text("Saran: ${item.saran}"),
-                Text("Rating: ${item.rating}"),
-                if (item.status == 'Ditangani' && item.balasan != null)
-                  Text("Balasan: ${item.balasan}", style: const TextStyle(color: Colors.green)),
+  Widget _buildKeluhanCard(KeluhanItem item) {
+    final isHandled = item.status == 'Ditangani';
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: isHandled ? Colors.green.withOpacity(0.3) : Colors.orange.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white,
+                isHandled ? Colors.green.withOpacity(0.05) : Colors.orange.withOpacity(0.05),
               ],
             ),
-            trailing: Text(item.status,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: item.status == 'Ditangani' ? Colors.green : Colors.red,
-                )),
           ),
-        );
-      },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header dengan kategori dan status
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.teal.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          item.kategori,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.teal,
+                          ),
+                        ),
+                      ),
+                    ),
+                    
+                  ],
+                ),
+                const SizedBox(height: 6),
+                _buildDetailRow(Icons.category, "Jenis", item.jenis),
+                const SizedBox(height: 12),
+                _buildDetailRow(Icons.feedback, "Masukan", item.masukan),
+                const SizedBox(height: 12),
+                _buildDetailRow(Icons.lightbulb, "Saran", item.saran),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      "Rating: ${item.rating}",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    
+                  ],
+                ),
+                if (isHandled && item.balasan != null) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.reply, color: Colors.green, size: 18),
+                            SizedBox(width: 8),
+                            Text(
+                              "Balasan:",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item.balasan!,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.grey[600],
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildList(List<KeluhanItem> keluhanList, bool isHandled) {
+    if (keluhanList.isEmpty) {
+      return _buildEmptyState(
+        isHandled ? "Belum ada keluhan yang ditangani" : "Belum ada keluhan masuk",
+        isHandled ? Icons.check_circle_outline : Icons.pending_actions,
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _fetchKeluhan,
+      color: Colors.teal,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: keluhanList.length,
+        itemBuilder: (context, index) {
+          return _buildKeluhanCard(keluhanList[index]);
+        },
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        elevation: 1,
-        toolbarHeight: 48,
-        automaticallyImplyLeading: true,
+        elevation: 0,
+        toolbarHeight: 56,
+        automaticallyImplyLeading: false, 
         centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white), 
+          onPressed: () => Navigator.pop(context),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Daftar Keluhan',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          indicatorColor: Colors.black,
-          tabs: const [
-            Tab(text: 'Belum Ditangani'),
-            Tab(text: 'Sudah Ditangani'),
-          ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.teal,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white70,
+              indicatorColor: Colors.white,
+              indicatorWeight: 3,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              tabs: const [
+                Tab(child: Text('Belum Ditangani')),
+                Tab(child: Text('Sudah Ditangani')),
+              ],
+            ),
+          ),
         ),
       ),
 
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Memuat data keluhan...",
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            )
           : errorMessage.isNotEmpty
-              ? Center(child: Text(errorMessage))
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: Colors.red.withOpacity(0.6),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Terjadi Kesalahan",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        errorMessage,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[500],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: _fetchKeluhan,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text("Coba Lagi"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               : TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildList(belumDitangani),
-                    _buildList(ditangani),
+                    _buildList(belumDitangani, false),
+                    _buildList(ditangani, true),
                   ],
                 ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => TambahKeluhanScreen(
-                    keluhanService: KeluhanService(),
-                  ),
-                ),
-              ).then((result) {
-                if (result == true) {
-                  _fetchKeluhan(); 
-                }
-              });
-            },
-            child: Card(
-              color: Colors.indigo,
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(
-                      "Sumbang Saran",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.teal,
+              Colors.teal.shade700,
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.teal.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => TambahKeluhanScreen(
+                  keluhanService: KeluhanService(),
                 ),
               ),
+            ).then((result) {
+              if (result == true) {
+                _fetchKeluhan();
+              }
+            });
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          icon: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 24,
+          ),
+          label: const Text(
+            "Sumbang Saran",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
