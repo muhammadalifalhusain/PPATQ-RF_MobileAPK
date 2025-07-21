@@ -59,7 +59,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
 
   Future<void> _loadData() async {
     try {
-      await Future.delayed(const Duration(milliseconds: 800)); // Simulate loading
+      await Future.delayed(const Duration(milliseconds: 800)); 
       _originalUstadz = await _service.fetchUstadz();
       _originalMurroby = await _service.fetchMurroby();
       _originalStaff = await _service.fetchStaff();
@@ -142,16 +142,6 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
             hintStyle: TextStyle(color: Colors.grey[600]),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            prefixIcon: Icon(Icons.search, color: Colors.black),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: Icon(Icons.clear, color: Colors.grey[600]),
-                    onPressed: () {
-                      _searchController.clear();
-                      _filterLists();
-                    },
-                  )
-                : null,
           ),
           onChanged: (value) {
             _filterLists();
@@ -160,6 +150,7 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       ),
     );
   }
+
 
   Widget _buildLoadingWidget() {
     return Container(
@@ -374,7 +365,6 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
     );
   }
 
-
   Widget _buildList(List<Pegawai> list) {
     if (list.isEmpty) {
       return _buildEmptyState(
@@ -411,13 +401,13 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
       backgroundColor: Colors.teal,
       elevation: 1,
       toolbarHeight: 48,
-      automaticallyImplyLeading: false, // Nonaktifkan tombol back default
+      automaticallyImplyLeading: false, 
       centerTitle: false,
       iconTheme: const IconThemeData(color: Colors.white),
       leading: IconButton(
         icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
         onPressed: () {
-          Navigator.of(context).pop(); // Selalu kembali ke halaman sebelumnya
+          Navigator.of(context).pop(); 
         },
       ),
       title: _isSearching

@@ -30,7 +30,7 @@ class BeritaUtama extends StatelessWidget {
         GestureDetector(
           onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => DetailBeritaPage(berita: berita)),
+            MaterialPageRoute(builder: (_) => DetailBeritaScreen(berita: berita)),
           ),
           child: Container(
             width: double.infinity,

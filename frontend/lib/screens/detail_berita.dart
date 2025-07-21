@@ -3,14 +3,16 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/berita_model.dart';
 import 'package:google_fonts/google_fonts.dart';
+class DetailBeritaScreen extends StatelessWidget {
+  final BeritaItem berita;
 
-class DetailBeritaPage extends StatelessWidget {
-  final BeritaItem berita; 
-
-  const DetailBeritaPage({super.key, required this.berita});
+  const DetailBeritaScreen ({super.key, required this.berita});
 
   @override
   Widget build(BuildContext context) {
+    final String baseImageUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/";
+    final String? gambarDalam = berita.gambarDalam?.isNotEmpty == true ? berita.gambarDalam : null;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
@@ -35,36 +37,50 @@ class DetailBeritaPage extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               berita.judul,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Poppins',
-                color: Colors.teal[800],
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withOpacity(0.2),
-                    offset: Offset(2, 2),
-                    blurRadius: 4,
-                  ),
-                ],
+                color: Colors.black,
+                
               ),
             ),
             const SizedBox(height: 16),
+
+            // Gambar Dalam
+            if (gambarDalam != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  '$baseImageUrl$gambarDalam',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: Colors.grey[200],
+                    height: 200,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
+                  ),
+                ),
+              ),
+
+            if (gambarDalam != null) const SizedBox(height: 20),
+
             Html(
               data: berita.isiBerita,
-              onLinkTap: (url, attributes, element) async {
+              onLinkTap: (url, _, __) async {
                 if (url != null) {
                   final uri = Uri.parse(url);
                   if (await canLaunchUrl(uri)) {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   } else {
-                    print("Tidak dapat membuka link: $url");
+                    debugPrint("Tidak dapat membuka link: $url");
                   }
                 }
               },

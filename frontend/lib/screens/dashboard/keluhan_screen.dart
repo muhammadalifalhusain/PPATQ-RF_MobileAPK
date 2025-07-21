@@ -173,7 +173,7 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
                   ],
                 ),
                 if (isHandled && item.balasan != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -186,8 +186,6 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.reply, color: Colors.green, size: 18),
-                            SizedBox(width: 8),
                             Text(
                               "Balasan:",
                               style: TextStyle(
@@ -197,12 +195,12 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
                         Text(
                           item.balasan!,
                           style: const TextStyle(
                             fontSize: 14,
-                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
                         ),
                       ],

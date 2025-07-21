@@ -8,8 +8,8 @@ import '../../providers/auth_provider.dart';
 
 import '../landing_page.dart';
 import '../../widgets/menu_dashboard_widget.dart';
-import 'saku_keluar.dart';
-import 'saku_masuk.dart';
+import 'saku_keluar_screen.dart';
+import 'saku_masuk_screen.dart';
 import 'riwayat_bayar_screen.dart';
 
 class ProfileDashboard extends StatefulWidget {
@@ -505,87 +505,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 3),
-                          InkWell(
-                            onTap: () async {
-                              final scaffoldMessenger = ScaffoldMessenger.of(context);
-                              final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                              
-                              try {
-                                // Tampilkan loading indicator
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (context) => Center(child: CircularProgressIndicator()),
-                                );
-                                await authProvider.logout();
-                                
-                                // Tutup loading indicator
-                                Navigator.of(context).pop();
-                                
-                                // Navigasi ke halaman landing
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => LandingPage()),
-                                  (route) => false, // Hapus semua route sebelumnya
-                                );
-                                
-                                // Tampilkan pesan sukses
-                                scaffoldMessenger.showSnackBar(
-                                  SnackBar(
-                                    content: Text('Logout berhasil'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                                
-                              } catch (e) {
-                                // Tutup loading indicator jika ada error
-                                Navigator.of(context).pop();
-                                
-                                // Tampilkan pesan error
-                                scaffoldMessenger.showSnackBar(
-                                  SnackBar(
-                                    content: Text('Gagal logout: ${e.toString()}'),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(16),
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 236, 26, 26),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: Colors.grey.shade200, width: 1.5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
-                                    blurRadius: 8,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.logout, color: Colors.white, size: 20),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    'Keluar dari akun',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
                         ],
                       ),
                     ),

@@ -1,25 +1,25 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../models/berita_model.dart';
+import '../../models/berita_model.dart';
 import '../screens/detail_berita.dart';
 
-class BeritaSlider extends StatefulWidget {
+class BeritaScreen extends StatefulWidget {
   final List<BeritaItem> beritaList;
   final VoidCallback? onReachEnd;
 
-  const BeritaSlider({
+  const BeritaScreen({
     Key? key,
     required this.beritaList,
     this.onReachEnd,
   }) : super(key: key);
 
   @override
-  _BeritaSliderState createState() => _BeritaSliderState();
+  _BeritaScreenState createState() => _BeritaScreenState();
 }
 
-class _BeritaSliderState extends State<BeritaSlider> {
+class _BeritaScreenState extends State<BeritaScreen> {
   int _currentIndex = 0;
-
+  
   @override
   Widget build(BuildContext context) {
     final beritaList = widget.beritaList;
@@ -32,8 +32,6 @@ class _BeritaSliderState extends State<BeritaSlider> {
       itemCount: beritaList.length,
       itemBuilder: (context, index, realIndex) {
         final berita = beritaList[index];
-
-        // Pastikan thumbnail aman
         final String thumbnailUrl = (berita.thumbnail.isNotEmpty)
             ? (berita.thumbnail.startsWith('http')
                 ? berita.thumbnail
@@ -48,7 +46,7 @@ class _BeritaSliderState extends State<BeritaSlider> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => DetailBeritaPage(berita: berita),
+              builder: (_) => DetailBeritaScreen(berita: berita),
             ),
           ),
           child: Container(
@@ -113,14 +111,13 @@ class _BeritaSliderState extends State<BeritaSlider> {
       options: CarouselOptions(
         height: MediaQuery.of(context).size.height * 0.4,
         autoPlay: false,
+        initialPage: 0,
         enlargeCenterPage: true,
         viewportFraction: 0.85,
         onPageChanged: (index, reason) {
           setState(() {
             _currentIndex = index;
           });
-
-          // Callback saat hampir mencapai akhir
           if (widget.onReachEnd != null &&
               index >= widget.beritaList.length - 2) {
             widget.onReachEnd!();

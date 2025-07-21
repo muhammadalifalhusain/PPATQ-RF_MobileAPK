@@ -166,7 +166,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Total Uang Masuk',
+                                'Total Saldo Masuk',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -205,7 +205,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Riwayat Uang Masuk',
+                              'Riwayat Saldo Masuk',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -277,25 +277,6 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           color: Colors.green.shade600,
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.only(top: 4),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.shade50,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          'Masuk',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.green.shade700,
-                                          ),
                                         ),
                                       ),
                                     ],

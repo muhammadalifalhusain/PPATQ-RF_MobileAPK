@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import '../services/api_service.dart';
-import '../models/galeri_model.dart';
-import '../widgets/app_header.dart';
-import '../widgets/footer_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../models/galeri_model.dart';
+import '../../services/galeri_service.dart';
 
 class GaleriScreen extends StatefulWidget {
   const GaleriScreen({Key? key}) : super(key: key);
@@ -12,275 +10,178 @@ class GaleriScreen extends StatefulWidget {
   State<GaleriScreen> createState() => _GaleriScreenState();
 }
 
-class _GaleriScreenState extends State<GaleriScreen> {
-  late Future<List<Galeri>> _galeriFuture;
-  final ApiService _apiService = ApiService();
-  String _errorMessage = '';
+class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  List<GaleriItem> _galeriList = [];
+  List<GaleriItem> _fasilitasList = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadGaleri();
+    _tabController = TabController(length: 2, vsync: this);
+    _fetchData();
   }
 
-  void _loadGaleri() {
-    setState(() {
-      _errorMessage = '';
-      _galeriFuture = _apiService.fetchGaleri().catchError((error) {
-        setState(() {
-          _errorMessage = "Terjadi kesalahan: ${error.toString()}";
-        });
-        return <Galeri>[];
+  Future<void> _fetchData() async {
+    try {
+      final galeri = await GaleriService.fetchGaleri();
+      final fasilitas = await GaleriService.fetchFasilitas();
+      setState(() {
+        _galeriList = galeri;
+        _fasilitasList = fasilitas;
+        isLoading = false;
       });
-    });
+    } catch (e) {
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memuat data: $e')),
+      );
+    }
+  }
+
+  String getImageUrl(GaleriItem item, bool isFasilitas) {
+    final baseUrl = isFasilitas
+        ? 'https://manajemen.ppatq-rf.id/assets/img/upload/foto_fasilitas/'
+        : 'https://manajemen.ppatq-rf.id/assets/img/upload/foto_galeri/';
+    return '$baseUrl${item.foto}';
+  }
+
+  void _showImageFull(GaleriItem item, bool isFasilitas) {
+    final imageUrl = getImageUrl(item, isFasilitas);
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Close",
+      barrierColor: Colors.black.withOpacity(0.85),
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, anim1, anim2) {
+        return GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: Hero(
+                tag: 'img_${item.foto}',
+                child: InteractiveViewer(
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, color: Colors.white, size: 80),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildGrid(List<GaleriItem> items, bool isFasilitas) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(12),
+      itemCount: items.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12,
+      ),
+      itemBuilder: (context, index) {
+        final item = items[index];
+        final imageUrl = getImageUrl(item, isFasilitas);
+        return GestureDetector(
+          onTap: () => _showImageFull(item, isFasilitas),
+          child: Hero(
+            tag: 'img_${item.foto}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                    ),
+                  ),
+                  if (item.nama.isNotEmpty)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                        color: Colors.black54,
+                        child: Text(
+                          item.nama,
+                          style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.32),
-                  _buildTitleSection(),
-                  if (_errorMessage.isNotEmpty) _buildErrorSection(),
-                  FutureBuilder<List<Galeri>>(
-                    future: _galeriFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-                      if (snapshot.hasError || _errorMessage.isNotEmpty) {
-                        return SizedBox();
-                      }
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return _buildEmptyDataSection();
-                      }
-                      return _buildGaleriGrid(snapshot.data!);
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                  FooterWidget(),
-                ],
-              ),
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        elevation: 2,
+        toolbarHeight: 56,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Galeri',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
             ),
-            _buildHeader(),
-          ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTitleSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
-          Text(
-            'Galeri PPATQ',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
-              letterSpacing: 1.2,
-            ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            'Kumpulan Moment Berharga PPATQ Raudlatul Falah',
-            style: TextStyle(fontSize: 14, color: Colors.black54),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
+      body: Column(
         children: [
-          Text(_errorMessage, style: TextStyle(color: Colors.red)),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: _loadGaleri,
-            child: const Text("Coba Lagi"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyDataSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 32),
-      child: Text(
-        'Tidak ada data galeri tersedia',
-        style: TextStyle(fontSize: 16, color: Colors.black54),
-      ),
-    );
-  }
-
-  Widget _buildGaleriGrid(List<Galeri> galeriList) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.75,
-        ),
-        itemCount: galeriList.length,
-        itemBuilder: (context, index) => _buildGaleriItem(galeriList[index]),
-      ),
-    );
-  }
-
-  Widget _buildGaleriItem(Galeri galeri) {
-    return GestureDetector(
-      onTap: () => _showImageDialog(context, galeri),
-      child: Card(
-        elevation: 6,
-        shadowColor: Colors.black26,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Image.network(
-                galeri.foto,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.broken_image, size: 48),
-                ),
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: progress.expectedTotalBytes != null
-                          ? progress.cumulativeBytesLoaded / (progress.expectedTotalBytes!)
-                          : null,
-                    ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    galeri.nama,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    galeri.deskripsi,
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.85),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
+          Container(
+            color: Colors.teal.shade50,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.teal,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Colors.teal,
+              tabs: const [
+                Tab(text: 'Galeri'),
+                Tab(text: 'Fasilitas'),
               ],
             ),
-            child: const AppHeader(
-              showAuthButtons: true,
-              showBackButton: true,
-            ),
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showImageDialog(BuildContext context, Galeri galeri) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                child: Image.network(galeri.foto, fit: BoxFit.cover),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Text(
-                      galeri.nama,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      galeri.deskripsi,
-                      style: const TextStyle(fontSize: 14),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text('Tutup'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildGrid(_galeriList, false),
+                      _buildGrid(_fasilitasList, true),
+                    ],
+                  ),
           ),
-        ),
+        ],
       ),
     );
   }

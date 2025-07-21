@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart'; // Sesuaikan dengan lokasi file AuthProvider
+import '../../screens/landing_page.dart';  
 import 'validasi_pembayaran.dart';
 import 'profile_dashboard.dart';
 
@@ -11,14 +14,13 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 1; // Default ke Profile
 
   final List<Widget> _screens = [
-    ValidasiPembayaranScreen(),  // Index 0
-    ProfileDashboard()           // Index 1
+    ValidasiPembayaranScreen(),  
+    ProfileDashboard(),        
   ];
 
   void _onItemTapped(int index) {
     if (index == 0) {
-      // Jika tap pada Payment, tampilkan dialog
-      _showDevelopmentDialog(context);
+      _confirmLogout();
     } else {
       setState(() {
         _selectedIndex = index;
@@ -26,99 +28,90 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _showDevelopmentDialog(BuildContext context) {
-    showDialog(
+  void _confirmLogout() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    final confirm = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+      builder: (context) => AlertDialog(
+        title: const Text('Keluar'),
+        content: const Text('Apakah Anda yakin ingin keluar dari akun?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Batal'),
           ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 10),
-                )
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.engineering,
-                  size: 60,
-                  color: Colors.orange,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Sedang Dalam Pengembangan',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 15),
-                Text(
-                  'This feature is currently under development. We will launch it as soon as possible!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 25),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  ),
-                  child: Text(
-                    'Got it',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Keluar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        // Tampilkan loading
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => const Center(child: CircularProgressIndicator()),
+        );
+
+        await authProvider.logout();
+        Navigator.of(context).pop(); // Tutup loading dialog
+
+        // Navigasi ke halaman awal dan hapus semua route sebelumnya
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => LandingPage()),
+          (route) => false,
+        );
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Logout berhasil'),
+            backgroundColor: Colors.green,
           ),
         );
-      },
-    );
+      } catch (e) {
+        Navigator.of(context).pop(); // Tutup loading
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Gagal logout: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex], 
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.teal, 
-        unselectedItemColor: Colors.grey, 
-        items: [
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black87, // akan berfungsi kalau labelColor tidak override
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.normal,
+        ),
+        items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.logout, color: Colors.red), // Ikon merah
+            label: 'Keluar',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Profil',
           ),
         ],
       ),

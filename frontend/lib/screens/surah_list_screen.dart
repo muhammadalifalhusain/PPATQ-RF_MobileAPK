@@ -42,7 +42,7 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
         'arabicName': quran.getSurahName(i),
         'englishName': quran.getSurahNameEnglish(i),
         'verseCount': quran.getVerseCount(i),
-        'revelation': i <= 86 ? 'Makkiyah' : 'Madaniyah', // Simplified logic
+        'revelation': i <= 86 ? 'Makkiyah' : 'Madaniyah', 
       });
     }
     setState(() {
@@ -69,17 +69,14 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF0D7377),
-              Color(0xFF14A085),
-              Color(0xFF2ECC71),
+              const Color(0xFF254B62),
+              const Color(0xFF3C6E71),
             ],
-            stops: [0.0, 0.6, 1.0],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              // Custom App Bar
               Container(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 30),
                 child: Column(
@@ -120,11 +117,9 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
                             ),
                           ),
                         ),
-                        SizedBox(width: 48), // Balance the back button
+                        SizedBox(width: 48),
                       ],
                     ),
-                    
-                    // Search Bar
                     SizedBox(height: 25),
                     Container(
                       decoration: BoxDecoration(
@@ -164,8 +159,6 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
                   ],
                 ),
               ),
-
-              // Surahs List
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -250,8 +243,6 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
                                       ),
                                       
                                       SizedBox(width: 12),
-                                      
-                                      // Surah Info
                                       Expanded(
                                         flex: 3,
                                         child: Column(
@@ -302,8 +293,6 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
                                       ),
                                       
                                       SizedBox(width: 8),
-                                      
-                                      // Arabic Name & Arrow
                                       Expanded(
                                         flex: 2,
                                         child: Column(
@@ -365,286 +354,287 @@ class SurahDetailScreen extends StatefulWidget {
   _SurahDetailScreenState createState() => _SurahDetailScreenState();
 }
 
-class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  ScrollController _scrollController = ScrollController();
-  bool _showFloatingButton = false;
+  class _SurahDetailScreenState extends State<SurahDetailScreen> with TickerProviderStateMixin {
+    late AnimationController _animationController;
+    late Animation<double> _fadeAnimation;
+    ScrollController _scrollController = ScrollController();
+    bool _showFloatingButton = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: Duration(milliseconds: 600),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    
-    _scrollController.addListener(() {
-      if (_scrollController.offset > 200 && !_showFloatingButton) {
-        setState(() => _showFloatingButton = true);
-      } else if (_scrollController.offset <= 200 && _showFloatingButton) {
-        setState(() => _showFloatingButton = false);
-      }
-    });
-    
-    _animationController.forward();
-  }
+    @override
+    void initState() {
+      super.initState();
+      _animationController = AnimationController(
+        duration: Duration(milliseconds: 600),
+        vsync: this,
+      );
+      _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      );
+      
+      _scrollController.addListener(() {
+        if (_scrollController.offset > 200 && !_showFloatingButton) {
+          setState(() => _showFloatingButton = true);
+        } else if (_scrollController.offset <= 200 && _showFloatingButton) {
+          setState(() => _showFloatingButton = false);
+        }
+      });
+      
+      _animationController.forward();
+    }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
+    @override
+    void dispose() {
+      _animationController.dispose();
+      _scrollController.dispose();
+      super.dispose();
+    }
 
-  @override
-  Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF0D7377),
-            Color(0xFF14A085),
-          ],
+    @override
+    Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF254B62),
+              const Color(0xFF3C6E71),
+            ],
+          ),
         ),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Custom App Bar
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 25),
-              child: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 25),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
                     ),
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.surahName,
-                          style: GoogleFonts.amiri(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          widget.surahNameEnglish,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Verses List
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-                ),
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
-                    itemCount: quran.getVerseCount(widget.surahNumber) +
-                        ((widget.surahNumber != 1 && widget.surahNumber != 9) ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      // Tampilkan Basmala di index 0 untuk semua surah kecuali 1 (Al-Fatihah) dan 9 (At-Taubah)
-                      if (widget.surahNumber != 1 &&
-                          widget.surahNumber != 9 &&
-                          index == 0) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            quran.basmala,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.amiriQuran(
-                              fontSize: 28,
-                              height: 2.2,
-                              color: Colors.black87,
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.surahName,
+                            style: GoogleFonts.amiri(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
-                        );
-                      }
-                      int verseNumber;
-                      if (widget.surahNumber != 1 && widget.surahNumber != 9) {
-                        verseNumber = index; // Karena index 0 adalah Basmala
-                      } else {
-                        verseNumber = index + 1; // Tidak ada Basmala, ayat dimulai dari index + 1
-                      }
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        margin: const EdgeInsets.only(bottom: 20),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
-                                blurRadius: 15,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                          Text(
+                            widget.surahNameEnglish,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF0D7377),
-                                            Color(0xFF14A085),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        '$verseNumber',
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(Icons.bookmark_border,
-                                              color: Colors.grey[500], size: 20),
-                                          onPressed: () {},
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.share_outlined,
-                                              color: Colors.grey[500], size: 20),
-                                          onPressed: () {},
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                Text(
-                                  quran.getVerse(
-                                      widget.surahNumber, verseNumber),
-                                  textAlign: TextAlign.right,
-                                  style: GoogleFonts.amiri(
-                                    fontSize: 26,
-                                    height: 2.0,
-                                    color: Colors.grey[800],
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                SizedBox(height: 16),
-                                Container(
-                                  height: 1,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.transparent,
-                                        Color(0xFF0D7377).withOpacity(0.3),
-                                        Colors.transparent,
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 12),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Ayat $verseNumber',
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.grey[600],
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF0D7377).withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        widget.surahNameEnglish,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xFF0D7377),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
+                      itemCount: quran.getVerseCount(widget.surahNumber) +
+                          ((widget.surahNumber != 1 && widget.surahNumber != 9) ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (widget.surahNumber != 1 &&
+                            widget.surahNumber != 9 &&
+                            index == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Text(
+                              quran.basmala,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.amiriQuran(
+                                fontSize: 28,
+                                height: 2.2,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          );
+                        }
+                        int verseNumber;
+                        if (widget.surahNumber != 1 && widget.surahNumber != 9) {
+                          verseNumber = index; 
+                        } else {
+                          verseNumber = index + 1; // Tidak ada Basmala, ayat dimulai dari index + 1
+                        }
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              const Color(0xFF254B62),
+                                              const Color(0xFF3C6E71),
+                                            ],
+                                          ),
+
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          '$verseNumber',
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.bookmark_border,
+                                                color: Colors.grey[500], size: 20),
+                                            onPressed: () {},
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.share_outlined,
+                                                color: Colors.grey[500], size: 20),
+                                            onPressed: () {},
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    quran.getVerse(
+                                        widget.surahNumber, verseNumber),
+                                    textAlign: TextAlign.right,
+                                    style: GoogleFonts.amiri(
+                                      fontSize: 26,
+                                      height: 2.0,
+                                      color: Colors.grey[800],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(height: 16),
+                                  Container(
+                                    height: 1,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          const Color(0xFF254B62),
+                                          const Color(0xFF3C6E71),
+                                        ],
+                                      ),
+
+                                    ),
+                                  ),
+                                  SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Ayat $verseNumber',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.grey[600],
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF0D7377).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          widget.surahNameEnglish,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color(0xFF0D7377),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-    floatingActionButton: AnimatedOpacity(
-      opacity: _showFloatingButton ? 1.0 : 0.0,
-      duration: Duration(milliseconds: 300),
-      child: FloatingActionButton(
-        onPressed: () {
-          _scrollController.animateTo(
-            0,
-            duration: Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        backgroundColor: Color(0xFF0D7377),
-        child: Icon(Icons.keyboard_arrow_up, color: Colors.white),
+      floatingActionButton: AnimatedOpacity(
+        opacity: _showFloatingButton ? 1.0 : 0.0,
+        duration: Duration(milliseconds: 300),
+        child: FloatingActionButton(
+          onPressed: () {
+            _scrollController.animateTo(
+              0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          },
+          backgroundColor: Color(0xFF254B62),
+          child: Icon(Icons.keyboard_arrow_up, color: Colors.white),
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

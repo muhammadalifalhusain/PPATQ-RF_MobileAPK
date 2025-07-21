@@ -34,7 +34,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
     },
     {
       'icon': Icons.record_voice_over,
-      'label': 'Dakwah',
+      'label': 'Dawuh Abah',
       'color': Colors.green,
       'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => DakwahScreen())),
     },

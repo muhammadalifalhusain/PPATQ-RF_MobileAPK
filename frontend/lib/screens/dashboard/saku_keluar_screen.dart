@@ -164,7 +164,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Total Uang Keluar',
+                                'Total Saldo Keluar',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -203,7 +203,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Riwayat Uang Keluar',
+                              'Riwayat Saldo Keluar',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -275,25 +275,6 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           color: Colors.red.shade600,
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.only(top: 4),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red.shade50,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          'Keluar',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.red.shade700,
-                                          ),
                                         ),
                                       ),
                                     ],

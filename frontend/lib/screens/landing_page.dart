@@ -142,7 +142,7 @@ class _LandingPageState extends State<LandingPage> {
                       SizedBox(height: 10),
                       Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold)),
                       SizedBox(height: 10),
-                      BeritaSlider(
+                      BeritaScreen(
                         beritaList: beritaList.sublist(1),
                         onReachEnd: _loadBerita,
                       ),
@@ -152,7 +152,6 @@ class _LandingPageState extends State<LandingPage> {
                         padding: const EdgeInsets.all(16),
                         child: CircularProgressIndicator(),
                       ),
-                    FooterWidget(),
                   ],
                 ),
               ),

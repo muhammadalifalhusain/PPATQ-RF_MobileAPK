@@ -1,48 +1,66 @@
-class Dakwah {
-  final String judul;
-  final String isiDakwah;
-  final String createdAt;
+class DakwahResponse {
+  final int status;
+  final String message;
+  final DakwahData data;
 
-  Dakwah({
-    required this.judul,
-    required this.isiDakwah,
-    required this.createdAt,
+  DakwahResponse({
+    required this.status,
+    required this.message,
+    required this.data,
   });
 
-  factory Dakwah.fromJson(Map<String, dynamic> json) {
-    return Dakwah(
-      judul: json['judul'] ?? '',
-      isiDakwah: json['isi_dakwah'] ?? '',
-      createdAt: json['created_at'] ?? '',
+  factory DakwahResponse.fromJson(Map<String, dynamic> json) {
+    return DakwahResponse(
+      status: json['status'],
+      message: json['message'],
+      data: DakwahData.fromJson(json['data']),
     );
   }
 }
 
-class DakwahResponse {
+class DakwahData {
   final int currentPage;
-  final List<Dakwah> dakwahList;
-  final int total;
-  final int perPage;
-  final int lastPage;
+  final List<DakwahItem> data;
+  final String? nextPageUrl;
+  final String? prevPageUrl;
 
-  DakwahResponse({
+  DakwahData({
     required this.currentPage,
-    required this.dakwahList,
-    required this.total,
-    required this.perPage,
-    required this.lastPage,
+    required this.data,
+    required this.nextPageUrl,
+    required this.prevPageUrl,
   });
 
-  factory DakwahResponse.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
-    return DakwahResponse(
-      currentPage: data['current_page'],
-      total: data['total'],
-      perPage: data['per_page'],
-      lastPage: data['last_page'],
-      dakwahList: List<Dakwah>.from(
-        data['data'].map((item) => Dakwah.fromJson(item)),
-      ),
+  factory DakwahData.fromJson(Map<String, dynamic> json) {
+    return DakwahData(
+      currentPage: json['current_page'],
+      data: List<DakwahItem>.from(
+          json['data'].map((item) => DakwahItem.fromJson(item))),
+      nextPageUrl: json['next_page_url'],
+      prevPageUrl: json['prev_page_url'],
+    );
+  }
+}
+
+class DakwahItem {
+  final String judul;
+  final String? foto;
+  final String isiDakwah;
+  final String createdAt;
+
+  DakwahItem({
+    required this.judul,
+    this.foto,
+    required this.isiDakwah,
+    required this.createdAt,
+  });
+
+  factory DakwahItem.fromJson(Map<String, dynamic> json) {
+    return DakwahItem(
+      judul: json['judul'],
+      foto: json['foto'],
+      isiDakwah: json['isiDakwah'],
+      createdAt: json['createdAt'],
     );
   }
 }
