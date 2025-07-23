@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../screens/dashboard/pelanggaran_screen.dart';
 import '../screens/kesehatan_screen.dart';
+import '../screens/dashboard/kerapian_screen.dart';
 import '../screens/dashboard/ketahfidzan_screen.dart';
 import '../screens/dashboard/keluhan_screen.dart';
 import '../screens/dashboard/perilaku_screen.dart';
@@ -54,6 +56,16 @@ class _MenuGridState extends State<MenuGrid> {
       'color': Color(0xFFEF4444),
     },
     {
+      'icon': FontAwesomeIcons.basketShopping,
+      'label': 'Kerapian',
+      'color': Colors.brown,
+    },
+    {
+      'icon': FontAwesomeIcons.warning,
+      'label': 'Pelanggaran',
+      'color': Color(0xFFEF4444),
+    },
+    {
       'icon': FontAwesomeIcons.fileSignature,
       'label': 'Izin',
       'color': Color(0xFFEF4444),
@@ -94,6 +106,12 @@ class _MenuGridState extends State<MenuGrid> {
         break;
       case 'Kelengkapan':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const KelengkapanScreen()));
+        break;
+      case 'Kerapian':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const KerapianScreen()));
+        break;
+      case 'Pelanggaran':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const PelanggaranSantriScreen()));
         break;
       case 'Izin':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const IzinSantriScreen()));

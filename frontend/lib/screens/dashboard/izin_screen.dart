@@ -28,15 +28,10 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'disetujui':
-      case 'approved':
+      case 'izin':
         return Colors.green;
-      case 'ditolak':
-      case 'rejected':
+      case 'tidak izin':
         return Colors.red;
-      case 'pending':
-      case 'menunggu':
-        return Colors.orange;
       default:
         return Colors.grey;
     }
@@ -44,15 +39,10 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
 
   IconData _getStatusIcon(String status) {
     switch (status.toLowerCase()) {
-      case 'disetujui':
-      case 'approved':
+      case 'izin':
         return Icons.check_circle;
-      case 'ditolak':
-      case 'rejected':
+      case 'tidak izin':
         return Icons.cancel;
-      case 'pending':
-      case 'menunggu':
-        return Icons.access_time;
       default:
         return Icons.help;
     }
@@ -74,7 +64,7 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
-            'Data Izin Santri',
+            'Izin',
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -280,16 +270,17 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
                   TextSpan(
                     text: '$label: ',
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
-                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 15,
                     ),
                   ),
                   TextSpan(
                     text: value,
                     style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                      fontSize: 15,
                     ),
                   ),
                 ],
