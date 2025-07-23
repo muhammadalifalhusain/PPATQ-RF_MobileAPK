@@ -8,7 +8,7 @@ import '../screens/dashboard/keluhan_screen.dart';
 import '../screens/dashboard/perilaku_screen.dart';
 import '../screens/dashboard/kelengkapan_screen.dart';
 import '../screens/dashboard/validasi_pembayaran.dart';
-import '../services/keluhan_service.dart';
+import '../screens/dashboard/izin_screen.dart';
 import '../screens/surah_list_screen.dart';
 import '../screens/pegawai_screen.dart';
 import '../screens/informasi_screen.dart';
@@ -53,7 +53,11 @@ class _MenuGridState extends State<MenuGrid> {
       'label': 'Kelengkapan',
       'color': Color(0xFFEF4444),
     },
-    // Tambahan menu lainnya
+    {
+      'icon': FontAwesomeIcons.fileSignature,
+      'label': 'Izin',
+      'color': Color(0xFFEF4444),
+    },
     {
       'icon': FontAwesomeIcons.quran,
       'label': 'Al-Qur\'an',
@@ -90,6 +94,9 @@ class _MenuGridState extends State<MenuGrid> {
         break;
       case 'Kelengkapan':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const KelengkapanScreen()));
+        break;
+      case 'Izin':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const IzinSantriScreen()));
         break;
       case 'Al-Qur\'an':
         Navigator.push(context, MaterialPageRoute(builder: (_) => QuranScreen()));

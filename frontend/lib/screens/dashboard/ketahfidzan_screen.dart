@@ -473,7 +473,7 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween, 
               children: [
                 Text(
-                  '${entry.tanggal}',
+                  '${entry.tanggalTahfidzan}',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
