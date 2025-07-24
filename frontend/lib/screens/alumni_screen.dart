@@ -536,7 +536,8 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     final filteredAlumni = _getFilteredAlumni();
-    final shouldShowLoading = !isLastPage && !isLoading && selectedYear == null;
+    final isInitialLoading = isLoading && filteredAlumni.isEmpty;
+    final isLoadingMore = isLoading && filteredAlumni.isNotEmpty && !isLastPage;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -547,19 +548,21 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
             child: RefreshIndicator(
               onRefresh: () => _fetchAlumni(refresh: true),
               color: const Color(0xFF5B913B),
-              child: filteredAlumni.isEmpty && !isLoading
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.only(top: 8, bottom: 20),
-                      itemCount: filteredAlumni.length + (shouldShowLoading ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index >= filteredAlumni.length) {
-                          return _buildLoadingIndicator();
-                        }
-                        return _buildAlumniCard(filteredAlumni[index], index);
-                      },
-                    ),
+              child: isInitialLoading
+                  ? _buildLoadingIndicator()
+                  : filteredAlumni.isEmpty
+                      ? _buildEmptyState()
+                      : ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.only(top: 8, bottom: 20),
+                          itemCount: filteredAlumni.length + (isLoadingMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index >= filteredAlumni.length) {
+                              return _buildLoadingIndicator(); // Loading bawah (infinite scroll)
+                            }
+                            return _buildAlumniCard(filteredAlumni[index], index);
+                          },
+                        ),
             ),
           ),
         ],
