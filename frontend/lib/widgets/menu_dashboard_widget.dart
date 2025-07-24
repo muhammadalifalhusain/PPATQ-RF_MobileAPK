@@ -9,6 +9,7 @@ import '../screens/dashboard/ketahfidzan_screen.dart';
 import '../screens/dashboard/keluhan_screen.dart';
 import '../screens/dashboard/perilaku_screen.dart';
 import '../screens/dashboard/kelengkapan_screen.dart';
+import '../screens/dashboard/ketertiban_screen.dart';
 import '../screens/dashboard/validasi_pembayaran.dart';
 import '../screens/dashboard/izin_screen.dart';
 import '../screens/surah_list_screen.dart';
@@ -66,6 +67,11 @@ class _MenuGridState extends State<MenuGrid> {
       'color': Color(0xFFEF4444),
     },
     {
+      'icon': FontAwesomeIcons.listCheck,
+      'label': 'Ketertiban',
+      'color': Color.fromARGB(255, 227, 119, 17),
+    },
+    {
       'icon': FontAwesomeIcons.fileSignature,
       'label': 'Izin',
       'color': Color(0xFFEF4444),
@@ -112,6 +118,9 @@ class _MenuGridState extends State<MenuGrid> {
         break;
       case 'Pelanggaran':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const PelanggaranSantriScreen()));
+        break;
+      case 'Ketertiban':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const KetertibanScreen()));
         break;
       case 'Izin':
         Navigator.push(context, MaterialPageRoute(builder: (_) => const IzinSantriScreen()));
@@ -194,16 +203,29 @@ class _MenuGridState extends State<MenuGrid> {
           Center(
             child: TextButton.icon(
               onPressed: () => setState(() => _showAll = true),
-              icon: const Icon(Icons.keyboard_arrow_down),
-              label: const Text('Lainnya'),
+              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+              label: const Text(
+                'Lainnya',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+              ),
             ),
           )
         else if (_showAll)
           Center(
             child: TextButton.icon(
               onPressed: () => setState(() => _showAll = false),
-              icon: const Icon(Icons.keyboard_arrow_up),
-              label: const Text('Sembunyikan'),
+              icon: const Icon(Icons.keyboard_arrow_up, color: Colors.black),
+              label: const Text('Sembunyikan',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ),
       ],

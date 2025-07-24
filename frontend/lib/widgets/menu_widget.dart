@@ -7,6 +7,7 @@ import '../screens/galeri_screen.dart';
 import '../screens/pegawai_screen.dart';
 import '../screens/dakwah_screen.dart';
 import '../screens/surah_list_screen.dart';
+import '../screens/alumni_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   @override
@@ -49,6 +50,12 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
       'label': 'AL-Quran',
       'color': Colors.indigo,
       'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => QuranScreen())),
+    },
+    {
+      'icon': Icons.history_edu,
+      'label': 'Alumni',
+      'color': Colors.teal,
+      'action': (BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (_) => AlumniScreen())),
     },
     {
       'icon': Icons.location_on,

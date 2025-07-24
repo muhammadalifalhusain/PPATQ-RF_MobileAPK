@@ -13,6 +13,7 @@ class PerilakuScreen extends StatefulWidget {
 
 class _PerilakuScreenState extends State<PerilakuScreen> {
   late Future<PerilakuResponse?> _futurePerilaku;
+  int? _openCardIndex;
 
   @override
   void initState() {
@@ -112,6 +113,13 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
           }
 
           final data = snapshot.data!.data;
+          if (_openCardIndex == null) {
+            if (data.length == 1) {
+              _openCardIndex = 0; 
+            } else {
+              _openCardIndex = 0; 
+            }
+          }
 
           if (data.isEmpty) {
             return Center(
@@ -157,7 +165,7 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
             itemCount: data.length,
             itemBuilder: (context, index) {
               final perilaku = data[index];
-
+              final isOpen = _openCardIndex == index;
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
@@ -173,7 +181,6 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Header dengan tanggal
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -230,11 +237,22 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                               ],
                             ),
                           ),
+                          IconButton(
+                            icon: Icon(
+                              isOpen ? Icons.expand_less : Icons.expand_more,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _openCardIndex = isOpen ? null : index;
+                              });
+                            },
+                          ),
                         ],
                       ),
                     ),
 
-                    // Content dengan detail perilaku
+                    if (isOpen)
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
@@ -249,7 +267,7 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                               _buildPerilakuItem('Ketaatan Peraturan', perilaku.ketaatanPeraturan),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           _buildPerilakuSection(
                             'Kebersihan & Kerapian',
                             Icons.cleaning_services,
@@ -259,7 +277,7 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                               _buildPerilakuItem('Kerapian', perilaku.kerapian),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           _buildPerilakuSection(
                             'Sosial & Lingkungan',
                             Icons.groups,

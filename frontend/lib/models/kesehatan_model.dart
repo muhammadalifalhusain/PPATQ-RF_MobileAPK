@@ -33,16 +33,16 @@ class KesehatanData {
 
   factory KesehatanData.fromJson(Map<String, dynamic> json) {
     return KesehatanData(
-      riwayatSakit: (json['riwayatSakit'] as List?)
-              ?.map((x) => RiwayatSakit.fromJson(x))
+      riwayatSakit: (json['riwayatSakit'] as List<dynamic>?)
+              ?.map((e) => RiwayatSakit.fromJson(e))
               .toList() ??
           [],
-      pemeriksaan: (json['pemeriksaan'] as List?)
-              ?.map((x) => Pemeriksaan.fromJson(x))
+      pemeriksaan: (json['pemeriksaan'] as List<dynamic>?)
+              ?.map((e) => Pemeriksaan.fromJson(e))
               .toList() ??
           [],
-      rawatInap: (json['rawatInap'] as List?)
-              ?.map((x) => RawatInap.fromJson(x))
+      rawatInap: (json['rawatInap'] as List<dynamic>?)
+              ?.map((e) => RawatInap.fromJson(e))
               .toList() ??
           [],
     );
@@ -59,8 +59,8 @@ class KesehatanData {
 
 class RiwayatSakit {
   final String keluhan;
-  final int tanggalSakit;
-  final int? tanggalSembuh;
+  final String tanggalSakit;
+  final String? tanggalSembuh;
   final String keteranganSakit;
   final String? keteranganSembuh;
   final String? tindakan;
@@ -68,7 +68,7 @@ class RiwayatSakit {
   RiwayatSakit({
     required this.keluhan,
     required this.tanggalSakit,
-    this.tanggalSembuh,
+    required this.tanggalSembuh,
     required this.keteranganSakit,
     this.keteranganSembuh,
     this.tindakan,
@@ -77,24 +77,17 @@ class RiwayatSakit {
   factory RiwayatSakit.fromJson(Map<String, dynamic> json) {
     return RiwayatSakit(
       keluhan: json['keluhan'] ?? '',
-      tanggalSakit: json['tanggalSakit'] ?? 0,
-      tanggalSembuh: json['tanggalSembuh'],
+      tanggalSakit: (json['tanggalSakit']),
+      tanggalSembuh:(json['tanggalSembuh']),
       keteranganSakit: json['keteranganSakit'] ?? '',
       keteranganSembuh: json['keteranganSembuh'],
       tindakan: json['tindakan'],
     );
   }
-
-  DateTime get tanggalSakitDate =>
-      DateTime.fromMillisecondsSinceEpoch(tanggalSakit * 1000);
-
-  DateTime? get tanggalSembuhDate => tanggalSembuh != null
-      ? DateTime.fromMillisecondsSinceEpoch(tanggalSembuh! * 1000)
-      : null;
 }
 
 class Pemeriksaan {
-  final int tanggalPemeriksaan;
+  final String? tanggalPemeriksaan;
   final int tinggiBadan;
   final int beratBadan;
   final int? lingkarPinggul;
@@ -112,7 +105,7 @@ class Pemeriksaan {
 
   factory Pemeriksaan.fromJson(Map<String, dynamic> json) {
     return Pemeriksaan(
-      tanggalPemeriksaan: json['tanggalPemeriksaan'] ?? 0,
+      tanggalPemeriksaan: (json['tanggalPemeriksaan']),
       tinggiBadan: json['tinggiBadan'] ?? 0,
       beratBadan: json['beratBadan'] ?? 0,
       lingkarPinggul: json['lingkarPinggul'],
@@ -123,10 +116,10 @@ class Pemeriksaan {
 }
 
 class RawatInap {
-  final int tanggalMasuk;
+  final String? tanggalMasuk;
   final String keluhan;
   final String terapi;
-  final int? tanggalKeluar;
+  final String? tanggalKeluar;
 
   RawatInap({
     required this.tanggalMasuk,
@@ -137,17 +130,10 @@ class RawatInap {
 
   factory RawatInap.fromJson(Map<String, dynamic> json) {
     return RawatInap(
-      tanggalMasuk: json['tanggalMasuk'] ?? 0,
+      tanggalMasuk: (json['tanggalMasuk']),
       keluhan: json['keluhan'] ?? '',
       terapi: json['terapi'] ?? '',
-      tanggalKeluar: json['tanggalKeluar'],
+      tanggalKeluar: (json['tanggalKeluar']),
     );
   }
-
-  DateTime get tanggalMasukDate =>
-      DateTime.fromMillisecondsSinceEpoch(tanggalMasuk * 1000);
-
-  DateTime? get tanggalKeluarDate => tanggalKeluar != null
-      ? DateTime.fromMillisecondsSinceEpoch(tanggalKeluar! * 1000)
-      : null;
 }

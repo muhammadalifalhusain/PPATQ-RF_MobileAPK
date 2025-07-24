@@ -12,6 +12,7 @@ class KelengkapanScreen extends StatefulWidget {
 
 class _KelengkapanScreenState extends State<KelengkapanScreen> {
   late Future<KelengkapanResponse?> _futureKelengkapan;
+  int? _openCardIndex;
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
         toolbarHeight: 56,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: false,
@@ -50,105 +51,23 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal.shade400),
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Memuat data kelengkapan...',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.teal.shade400),
+                strokeWidth: 3,
               ),
             );
           }
 
           if (snapshot.hasError || snapshot.data == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.error_outline,
-                      size: 48,
-                      color: Colors.red.shade400,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Gagal memuat data kelengkapan',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Periksa koneksi internet Anda',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return const Center(child: Text('Gagal memuat data kelengkapan'));
           }
 
           final data = snapshot.data!.data;
-
+          if (_openCardIndex == null && data.isNotEmpty) {
+            _openCardIndex = data.length == 1 ? 0 : 0; 
+          }
           if (data.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.inventory_2_outlined,
-                      size: 48,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Belum ada data kelengkapan',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Data kelengkapan akan muncul di sini',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return const Center(child: Text('Belum ada data kelengkapan'));
           }
 
           return ListView.builder(
@@ -156,6 +75,7 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
             itemCount: data.length,
             itemBuilder: (context, index) {
               final kelengkapan = data[index];
+              final isOpen = _openCardIndex == index;
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
@@ -172,7 +92,6 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Header dengan tanggal
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -229,47 +148,57 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-
-                    // Content dengan detail kelengkapan
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          _buildKelengkapanSection(
-                            'Perlengkapan Mandi',
-                            Icons.shower,
-                            Colors.blue,
-                            [
-                              _buildDetailItem('Status', kelengkapan.perlengkapanMandi),
-                              _buildDetailItem('Catatan', kelengkapan.catatanMandi),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          _buildKelengkapanSection(
-                            'Peralatan Sekolah',
-                            Icons.school,
-                            Colors.green,
-                            [
-                              _buildDetailItem('Status', kelengkapan.peralatanSekolah),
-                              _buildDetailItem('Catatan', kelengkapan.catatanSekolah),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          _buildKelengkapanSection(
-                            'Perlengkapan Diri',
-                            Icons.person,
-                            Colors.orange,
-                            [
-                              _buildDetailItem('Status', kelengkapan.perlengkapanDiri),
-                              _buildDetailItem('Catatan', kelengkapan.catatanDiri),
-                            ],
+                          IconButton(
+                            icon: Icon(
+                              isOpen ? Icons.expand_less : Icons.expand_more,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _openCardIndex = isOpen ? null : index;
+                              });
+                            },
                           ),
                         ],
                       ),
                     ),
+                    if (isOpen)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            _buildKelengkapanSection(
+                              'Perlengkapan Mandi',
+                              Icons.shower,
+                              Colors.blue,
+                              [
+                                _buildDetailItem('Status', kelengkapan.perlengkapanMandi),
+                                _buildDetailItem('Catatan', kelengkapan.catatanMandi),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            _buildKelengkapanSection(
+                              'Peralatan Sekolah',
+                              Icons.school,
+                              Colors.green,
+                              [
+                                _buildDetailItem('Status', kelengkapan.peralatanSekolah),
+                                _buildDetailItem('Catatan', kelengkapan.catatanSekolah),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            _buildKelengkapanSection(
+                              'Perlengkapan Diri',
+                              Icons.person,
+                              Colors.orange,
+                              [
+                                _buildDetailItem('Status', kelengkapan.perlengkapanDiri),
+                                _buildDetailItem('Catatan', kelengkapan.catatanDiri),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               );
@@ -323,9 +252,7 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
               width: 1,
             ),
           ),
-          child: Column(
-            children: children,
-          ),
+          child: Column(children: children),
         ),
       ],
     );
@@ -350,10 +277,7 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
           ),
           const Text(
             ': ',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
           Expanded(
             child: Text(

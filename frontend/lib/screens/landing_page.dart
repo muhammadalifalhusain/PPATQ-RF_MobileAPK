@@ -5,8 +5,10 @@ import '../models/berita_model.dart';
 import '../widgets/app_header.dart';
 import '../widgets/berita_utama.dart';
 import '../widgets/berita_slider.dart';
-import '../widgets/footer_widget.dart';
+import '../widgets/capain_tahfidz.dart';
 import '../widgets/menu_widget.dart';
+import '../models/capaian_tahfidz_model.dart';
+import '../services/capaian_tahfidz_service.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -15,9 +17,11 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final BeritaService beritaService = BeritaService();
+  final CapaianTahfidzService capaianService = CapaianTahfidzService();
   int _selectedIndex = 1;
 
   List<BeritaItem> beritaList = [];
+  CapaianTahfidzResponse? capaianResponse; 
   int currentPage = 1;
   bool isLoading = false;
   bool hasMore = true;
@@ -26,6 +30,16 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     _loadBerita();
+    _loadCapaianTahfidz();();
+  }
+
+  Future<void> _loadCapaianTahfidz() async {
+    final result = await CapaianTahfidzService.fetchCapaianTahfidz();
+    if (result != null) {
+      setState(() {
+        capaianResponse = result;
+      });
+    }
   }
 
   Future<void> _launchPSBUrl() async {
@@ -139,7 +153,24 @@ class _LandingPageState extends State<LandingPage> {
                       Divider(),
                       Text('Menu', style: TextStyle(fontWeight: FontWeight.bold)),
                       MenuIkonWidget(),
-                      SizedBox(height: 10),
+                      if (capaianResponse?.data != null) ...[
+                        CapaianCard(
+                          title: 'Tertinggi',
+                          data: capaianResponse!.data.tertinggi,
+                        ),
+                        CapaianCard(
+                          title: 'Terendah',
+                          data: capaianResponse!.data.terendah,
+                        ),
+                      ] else ...[
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            'Data capaian tahfidz tidak tersedia.',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ],
                       Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold)),
                       SizedBox(height: 10),
                       BeritaScreen(
