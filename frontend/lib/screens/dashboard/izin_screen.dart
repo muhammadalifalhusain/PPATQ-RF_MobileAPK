@@ -51,6 +51,7 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 2,
@@ -172,70 +173,138 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
                 itemCount: izinList.length,
                 itemBuilder: (context, index) {
                   final izin = izinList[index];
-
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
+                    margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                      color: Colors.white,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  izin.nama,
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                    color: Colors.grey[800],
-                                  ),
-                                ),
+                          // Header Card
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  _getStatusColor(izin.status).withOpacity(0.1),
+                                  _getStatusColor(izin.status).withOpacity(0.05),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _getStatusColor(izin.status).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: _getStatusColor(izin.status).withOpacity(0.3),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: _getStatusColor(izin.status),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    izin.status.toLowerCase() == 'izin' 
+                                        ? Icons.exit_to_app 
+                                        : Icons.block,
+                                    color: Colors.white,
+                                    size: 20,
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      _getStatusIcon(izin.status),
-                                      size: 14,
-                                      color: _getStatusColor(izin.status),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        izin.nama,
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16,
+                                          color: Colors.grey[800],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        izin.tanggal,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _getStatusColor(izin.status).withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: _getStatusColor(izin.status).withOpacity(0.3),
+                                      width: 1,
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      izin.status,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        _getStatusIcon(izin.status),
+                                        size: 14,
                                         color: _getStatusColor(izin.status),
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        izin.status,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: _getStatusColor(izin.status),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 12),
-                          _buildInfoRow(Icons.calendar_today, 'Tanggal', izin.tanggal),
-                          _buildInfoRow(Icons.logout, 'Keluar', izin.keluar),
-                          _buildInfoRow(Icons.login, 'Kembali', izin.kembali),
-                          _buildInfoRow(Icons.category, 'Kategori', izin.kategori),
-                          _buildInfoRow(Icons.person, 'Pengisi', izin.namaPengisi),
+                          // Content Card
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              children: [
+                                _buildDetailSection('Detail Waktu', [
+                                  _buildDetailItem(Icons.logout, 'Keluar', izin.keluar),
+                                  _buildDetailItem(Icons.login, 'Kembali', izin.kembali),
+                                ]),
+                                const SizedBox(height: 16),
+                                _buildDetailSection('Informasi Lainnya', [
+                                  _buildDetailItem(Icons.category, 'Kategori', izin.kategori),
+                                  _buildDetailItem(Icons.person_outline, 'Pengisi Data', izin.namaPengisi),
+                                ]),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -251,44 +320,79 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: 16,
-            color: Colors.teal[600],
+  Widget _buildDetailSection(String title, List<Widget> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: Colors.teal[700],
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: '$label: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 15,
-                    ),
-                  ),
-                  TextSpan(
-                    text: value,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey[200]!),
+          ),
+          child: Column(
+            children: items
+                .map((item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: item,
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailItem(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16,
+          color: Colors.teal[600],
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          flex: 3,
+          child: Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              color: Colors.grey[700],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          flex: 4,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.blue[50],
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.blue[700],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
