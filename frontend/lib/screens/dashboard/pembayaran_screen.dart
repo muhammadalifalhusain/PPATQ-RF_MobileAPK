@@ -9,6 +9,7 @@ import '../../services/pembayaran_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 
 class InputPembayaranScreen extends StatefulWidget {
@@ -175,7 +176,6 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
       });
     }
   }
-  
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
@@ -293,13 +293,31 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
 
       } catch (e) {
         Navigator.of(context).pop();
+
+        String errorMessage = 'Gagal mengirim pembayaran';
+
+        // Coba ekstrak pesan dari response jika error-nya berbentuk Exception: {...}
+        final errorString = e.toString();
+        final jsonStart = errorString.indexOf('{');
+        final jsonEnd = errorString.lastIndexOf('}');
+
+        if (jsonStart != -1 && jsonEnd != -1) {
+          try {
+            final jsonStr = errorString.substring(jsonStart, jsonEnd + 1);
+            final Map<String, dynamic> json = jsonDecode(jsonStr);
+            if (json.containsKey('message')) {
+              errorMessage = json['message'];
+            }
+          } catch (_) {
+          }
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Gagal mengirim pembayaran: ${e.toString()}'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
           ),
         );
-        debugPrint('❌ Error submit: $e');
       }
     }
   }
@@ -457,15 +475,15 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                           ),
                           TextFormField(
                             controller: _tanggalBayarController,
-                            readOnly: true, 
-                            onTap: () => _selectDate(_tanggalBayarController), 
-                            decoration: InputDecoration(
+                            readOnly: true,
+                            onTap: () => _selectDate(_tanggalBayarController),
+                            decoration: const InputDecoration(
+                              labelText: 'Masukkan Tanggal Bayar',
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.calendar_today),
                             ),
                             validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
                           ),
-
                         ],
                       ),
                     ),

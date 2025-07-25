@@ -26,20 +26,23 @@ class _LandingPageState extends State<LandingPage> {
   bool isLoading = false;
   bool hasMore = true;
 
+  late Future<CapaianTahfidzResponse?> _capaianFuture;
+
   @override
   void initState() {
     super.initState();
     _loadBerita();
-    _loadCapaianTahfidz();();
+    _capaianFuture = _loadCapaianTahfidz(); 
   }
 
-  Future<void> _loadCapaianTahfidz() async {
+  Future<CapaianTahfidzResponse?> _loadCapaianTahfidz() async {
     final result = await CapaianTahfidzService.fetchCapaianTahfidz();
     if (result != null) {
       setState(() {
         capaianResponse = result;
       });
     }
+    return result; 
   }
 
   Future<void> _launchPSBUrl() async {
@@ -153,24 +156,38 @@ class _LandingPageState extends State<LandingPage> {
                       Divider(),
                       Text('Menu', style: TextStyle(fontWeight: FontWeight.bold)),
                       MenuIkonWidget(),
-                      if (capaianResponse?.data != null) ...[
-                        CapaianCard(
-                          title: 'Tertinggi',
-                          data: capaianResponse!.data.tertinggi,
-                        ),
-                        CapaianCard(
-                          title: 'Terendah',
-                          data: capaianResponse!.data.terendah,
-                        ),
-                      ] else ...[
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          child: Text(
-                            'Data capaian tahfidz tidak tersedia.',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ],
+                      FutureBuilder<CapaianTahfidzResponse?>(
+                        future: _capaianFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData || snapshot.data == null) {
+                            return const Center(child: Text('Tidak ada data capaian tahfidz'));
+                          }
+                          final data = snapshot.data!.data;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ...List.generate(data.capaianCustom.length, (index) {
+                                final item = data.capaianCustom[index];
+                                return CapaianCard(
+                                  title: 'Capaian',
+                                  data: item,
+                                );
+                              }),
+
+                              const SizedBox(height: 4),
+                              CapaianCard(
+                                title: 'Capaian Terendah',
+                                data: data.terendah,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                       Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold)),
                       SizedBox(height: 10),
                       BeritaScreen(

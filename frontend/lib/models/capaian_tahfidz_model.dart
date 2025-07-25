@@ -19,17 +19,19 @@ class CapaianTahfidzResponse {
 }
 
 class CapaianTahfidzData {
-  final CapaianItem tertinggi;
+  final List<CapaianItem> capaianCustom;
   final CapaianItem terendah;
 
   CapaianTahfidzData({
-    required this.tertinggi,
+    required this.capaianCustom,
     required this.terendah,
   });
 
   factory CapaianTahfidzData.fromJson(Map<String, dynamic> json) {
     return CapaianTahfidzData(
-      tertinggi: CapaianItem.fromJson(json['tertinggi']),
+      capaianCustom: (json['capaianCustom'] as List)
+          .map((e) => CapaianItem.fromJson(e))
+          .toList(),
       terendah: CapaianItem.fromJson(json['terendah']),
     );
   }
@@ -50,9 +52,9 @@ class CapaianItem {
     return CapaianItem(
       capaian: json['capaian'],
       jumlah: json['jumlah'],
-      santri: List<SantriTahfidz>.from(
-        json['santri'].map((x) => SantriTahfidz.fromJson(x)),
-      ),
+      santri: (json['santri'] as List)
+          .map((e) => SantriTahfidz.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -62,12 +64,14 @@ class SantriTahfidz {
   final String? photo;
   final String kelas;
   final String guruTahfidz;
+  final String? photoUstadTahfidz;
 
   SantriTahfidz({
     required this.nama,
-    required this.photo,
+    this.photo,
     required this.kelas,
     required this.guruTahfidz,
+    this.photoUstadTahfidz,
   });
 
   factory SantriTahfidz.fromJson(Map<String, dynamic> json) {
@@ -76,6 +80,7 @@ class SantriTahfidz {
       photo: json['photo'],
       kelas: json['kelas'],
       guruTahfidz: json['guruTahfidz'],
+      photoUstadTahfidz: json['photoUstadTahfidz'],
     );
   }
 }

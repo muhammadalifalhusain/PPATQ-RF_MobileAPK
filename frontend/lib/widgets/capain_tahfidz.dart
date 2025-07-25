@@ -22,8 +22,8 @@ class _CapaianCardState extends State<CapaianCard> {
     if (widget.title.toLowerCase().contains('terendah')) {
       return const LinearGradient(
         colors: [
-          Color.fromARGB(255, 143, 65, 72), // Merah muda
-          Color(0xFFD32F2F), // Merah tua
+          Color.fromARGB(255, 143, 65, 72),
+          Color(0xFFD32F2F),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -31,8 +31,8 @@ class _CapaianCardState extends State<CapaianCard> {
     } else {
       return const LinearGradient(
         colors: [
-          Color.fromARGB(255, 94, 151, 110), // Hijau muda
-          Color(0xFF00C853), // Hijau tua
+          Color.fromARGB(255, 94, 151, 110),
+          Color(0xFF00C853),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -43,7 +43,7 @@ class _CapaianCardState extends State<CapaianCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
@@ -59,12 +59,14 @@ class _CapaianCardState extends State<CapaianCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${widget.title}: ${widget.data.capaian}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Flexible(
+                  child: Text(
+                    '${widget.title}: ${widget.data.capaian}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 Row(
@@ -92,27 +94,38 @@ class _CapaianCardState extends State<CapaianCard> {
               ],
             ),
           ),
-
-          // Daftar santri
-          if (_expanded && widget.data.santri != null)
+          if (_expanded)
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.data.santri.length,
-              separatorBuilder: (_, __) => const Divider(),
+              separatorBuilder: (_, __) => const Divider(height: 0),
               itemBuilder: (context, index) {
                 final santri = widget.data.santri[index];
+                final photoSantri = santri.photo != null && santri.photo!.isNotEmpty
+                    ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
+                    : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}&background=random&color=fff';
+
+                final photoUstad = santri.photoUstadTahfidz != null &&
+                        santri.photoUstadTahfidz!.isNotEmpty
+                    ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photoUstadTahfidz}'
+                    : null;
+
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      santri.photo != null && santri.photo!.isNotEmpty
-                          ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
-                          : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}&background=random&color=fff',
-                    ),
+                    backgroundImage: NetworkImage(photoSantri),
+                    radius: 25,
                   ),
-                  title: Text(santri.nama),
-                  subtitle: Text('Kelas: ${santri.kelas} - ${santri.guruTahfidz}'),
+                  title: Text(santri.nama, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: Text('Kelas: ${santri.kelas}-${santri.guruTahfidz}'),
+                  isThreeLine: true,
+                  trailing: photoUstad != null
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(photoUstad),
+                          radius: 18,
+                        )
+                      : const SizedBox(width: 36), 
                 );
               },
             ),

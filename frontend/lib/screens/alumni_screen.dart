@@ -52,34 +52,34 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
 
   Future<void> _fetchAlumni({bool refresh = false}) async {
     if (isLoading) return;
-    
+
     setState(() => isLoading = true);
-    
-    if (refresh) {
+
+    if (refresh || searchQuery != null) {
       currentPage = 1;
       alumniList.clear();
       isLastPage = false;
     }
 
-    final response = await AlumniService.fetchAlumni(
-      page: currentPage,
-      search: searchQuery,
-    );
+    final response = await AlumniService.fetchAlumni(search: searchQuery);
 
-    if (response != null) {
+    if (response != null && response.data != null) {
+      final alumniData = response.data!;
+
       setState(() {
-        if (refresh || perTahunList.isEmpty) {
-          perTahunList = response.data.perTahun;
-        }
-        
-        alumniList.addAll(response.data.alumni.data);
+        alumniList.addAll(alumniData.alumni);
+
+        // ✅ Ini perbaikannya:
+        perTahunList = alumniData.perTahun;
+
+        isLastPage = alumniData.alumni.length < 25;
         currentPage++;
-        isLastPage = response.data.alumni.nextPageUrl == null;
       });
     }
-    
+
     setState(() => isLoading = false);
   }
+
 
   List<AlumniDetail> _getFilteredAlumni() {
     if (selectedYear == null) {
@@ -89,13 +89,19 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
         (element) => element.tahun == selectedYear,
         orElse: () => PerTahun(tahun: selectedYear!, data: []),
       );
-      if (perTahunData.data.length >= 3) {
-        return perTahunData.data;
-      }
+
       final fromAlumniList = alumniList.where((a) => a.tahunLulus == selectedYear).toList();
-      return [...perTahunData.data, ...fromAlumniList];
+
+      final combined = [...perTahunData.data, ...fromAlumniList];
+
+      if (combined.isEmpty) {
+        return alumniList;
+      }
+
+      return combined;
     }
   }
+
   void _onSearchChanged(String value) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -145,11 +151,7 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
   Widget _buildHeader() {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF5B913B), Color(0xFF4A7C2F)],
-        ),
+        color: Colors.teal,
       ),
       child: SafeArea(
         child: Column(
@@ -558,7 +560,7 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                           itemCount: filteredAlumni.length + (isLoadingMore ? 1 : 0),
                           itemBuilder: (context, index) {
                             if (index >= filteredAlumni.length) {
-                              return _buildLoadingIndicator(); // Loading bawah (infinite scroll)
+                              return _buildLoadingIndicator(); 
                             }
                             return _buildAlumniCard(filteredAlumni[index], index);
                           },
