@@ -260,15 +260,9 @@ class _KerapianScreenState extends State<KerapianScreen> {
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'baik':
-      case 'rapi':
-      case 'bersih':
+      case 'ditata':
         return Colors.green[100]!;
-      case 'kurang':
-      case 'kotor':
-        return Colors.orange[100]!;
-      case 'buruk':
-      case 'tidak rapi':
+      case 'tidak ditata':
         return Colors.red[100]!;
       default:
         return Colors.blue[100]!;
@@ -277,16 +271,10 @@ class _KerapianScreenState extends State<KerapianScreen> {
 
   Color _getStatusTextColor(String status) {
     switch (status.toLowerCase()) {
-      case 'baik':
-      case 'rapi':
-      case 'bersih':
+      case 'ditata':
         return Colors.green[700]!;
-      case 'kurang':
-      case 'kotor':
-        return Colors.orange[700]!;
-      case 'buruk':
-      case 'tidak rapi':
-        return Colors.red[700]!;
+      case 'tidak ditata':
+        return Colors.black;
       default:
         return Colors.blue[700]!;
     }

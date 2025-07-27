@@ -255,9 +255,9 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
                             color: Colors.grey[200],
                           ),
                           const SizedBox(height: 8),
-                          _buildInfoRow(Icons.calendar_today, 'Tanggal', pelanggaran.tanggal),
-                          _buildInfoRow(Icons.gavel, 'Hukuman', pelanggaran.hukuman),
-                          _buildInfoRow(Icons.person, 'Pencatat', pelanggaran.namaPengisi),
+                          _buildDetailItem('Tanggal', pelanggaran.tanggal),
+                          _buildDetailItem('Hukuman', pelanggaran.hukuman),
+                          _buildDetailItem('Pencatat', pelanggaran.namaPengisi),
                         ],
                       ),
                     ),
@@ -273,51 +273,50 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildDetailItem(String label, String value) {
+    final bool isEmpty = value.trim().isEmpty;
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: const Color(0xFF5B913B).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Icon(
-              icon,
-              size: 16,
-              color: const Color(0xFF5B913B),
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
+              ),
             ),
           ),
-          const SizedBox(width: 12),
+          const Text(
+            ': ',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
           Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '$label: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isEmpty ? Colors.grey[100] : Colors.blue[100],
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isEmpty ? 'Tidak ada catatan' : value,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: isEmpty ? FontWeight.w400 : FontWeight.w600,
+                  fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+                  color: isEmpty ? Colors.grey[500] : Colors.black,
                 ),
-                Flexible(
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          )
         ],
       ),
     );

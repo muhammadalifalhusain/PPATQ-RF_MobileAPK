@@ -209,7 +209,12 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
     );
   }
 
-  Widget _buildKelengkapanSection(String title, IconData icon, MaterialColor color, List<Widget> children) {
+  Widget _buildKelengkapanSection(
+      String title,
+      IconData icon,
+      MaterialColor color,
+      List<Widget> children,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,26 +236,22 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
-                  fontSize: 16,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Colors.teal[700],
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
+            color: Colors.grey[50],
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.grey.shade200,
-              width: 1,
-            ),
+            border: Border.all(color: Colors.grey[200]!),
           ),
           child: Column(children: children),
         ),
@@ -259,39 +260,76 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
   }
 
   Widget _buildDetailItem(String label, String value) {
+    final bool isEmpty = value.trim().isEmpty;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 80,
+            width: 100,
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
               ),
             ),
           ),
           const Text(
             ': ',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
           ),
           Expanded(
-            child: Text(
-              value.isNotEmpty ? value : 'Tidak ada catatan',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: value.isNotEmpty ? Colors.grey.shade800 : Colors.grey.shade500,
-                fontStyle: value.isNotEmpty ? FontStyle.normal : FontStyle.italic,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isEmpty ? Colors.grey[100] : _getStatusColor(value),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isEmpty ? 'Tidak ada catatan' : value,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: isEmpty ? FontWeight.w400 : FontWeight.w600,
+                  fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+                  color: isEmpty ? Colors.grey[500] : _getStatusTextColor(value),
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'lengkap & baik':
+        return Colors.green[100]!;
+      case 'lengkap & kurang baik':
+        return Colors.orange[100]!;
+      case 'tidak lengkap':
+        return Colors.red;
+      default:
+        return Colors.blue[100]!; 
+    }
+  }
+
+  Color _getStatusTextColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'lengkap & baik':
+        return Colors.green[700]!;
+      case 'lengkap & kurang baik':
+        return Colors.black;
+      case 'tidak lengkap':
+        return Colors.white;
+      default:
+        return Colors.black;
+    }
   }
 }
