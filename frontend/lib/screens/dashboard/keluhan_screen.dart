@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../models/keluhan_model.dart';
 import '../../services/keluhan_service.dart';
 import 'tambah_keluhan_screen.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../widgets/loading_screen.dart';
 class KeluhanListScreen extends StatefulWidget {
   const KeluhanListScreen({Key? key}) : super(key: key);
 
@@ -336,23 +337,11 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
       ),
 
       body: isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "Memuat data keluhan...",
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
+          ? const LoadingScreen(
+              message: 'Memuat data Daftar Keluhan...',
+              backgroundColor: Colors.teal,
+              progressColor: Colors.white,
+              icon: FontAwesomeIcons.comments,
             )
           : errorMessage.isNotEmpty
               ? Center(
@@ -423,17 +412,11 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.teal,
+              Colors.teal.shade800,
               Colors.teal.shade700,
+              const Color.fromARGB(255, 53, 187, 171),
             ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.teal.withOpacity(0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: FloatingActionButton.extended(
           onPressed: () {
@@ -461,7 +444,7 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
             "Sumbang Saran",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
           ),

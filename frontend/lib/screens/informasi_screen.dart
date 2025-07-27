@@ -4,7 +4,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:frontend/models/tutorial_pembayaran_model.dart';
 import 'package:frontend/services/tutorial_pembayaran_service.dart';
-
+import '../widgets/loading_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class InformasiScreen extends StatefulWidget {
   const InformasiScreen({Key? key}) : super(key: key);
 
@@ -237,7 +238,12 @@ class _InformasiScreenState extends State<InformasiScreen> {
         ),
       ),
       body: isLoading
-          ? _buildLoadingWidget()
+          ? const LoadingScreen(
+                message: 'Memuat data Informasi...',
+                backgroundColor: Colors.teal,
+                progressColor: Colors.white,
+                icon: FontAwesomeIcons.circleInfo,
+              )
           : errorMessage.isNotEmpty
               ? _buildErrorWidget()
               : tutorialList.isEmpty

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/pegawai_model.dart';
 import '../services/pegawai_service.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class PegawaiDataScreen extends StatefulWidget {
   const PegawaiDataScreen({Key? key}) : super(key: key);
 
@@ -151,34 +151,34 @@ class _PegawaiDataScreenState extends State<PegawaiDataScreen>
     );
   }
 
-
   Widget _buildLoadingWidget() {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.blue[50]!,
-            Colors.indigo[100]!,
-          ],
-        ),
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.teal,
       ),
-      child: const Center(
+      child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-              strokeWidth: 3,
+            const Icon(
+              Icons.hourglass_top_rounded,
+              color: Colors.white,
+              size: 48,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              strokeWidth: 4,
+            ),
+            const SizedBox(height: 24),
             Text(
               'Memuat data pegawai...',
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 16,
-                color: Colors.white,
                 fontWeight: FontWeight.w500,
+                color: Colors.white,
               ),
             ),
           ],

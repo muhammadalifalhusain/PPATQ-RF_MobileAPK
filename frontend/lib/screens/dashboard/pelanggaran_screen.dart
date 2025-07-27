@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import '../../widgets/loading_screen.dart';
 import '../../models/pelanggaran_model.dart';
 import '../../services/pelanggaran_service.dart';
 
@@ -31,7 +31,7 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
   Color _getSeverityColor(String kategori) {
     switch (kategori.toLowerCase()) {
       case 'ringan':
-        return const Color.fromARGB(255, 233, 163, 106)!;
+        return const Color.fromARGB(255, 233, 163, 106);
       case 'berat':
         return Colors.red;
       default:
@@ -43,10 +43,7 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
     switch (kategori.toLowerCase()) {
       case 'ringan':
         return FontAwesomeIcons.exclamationTriangle;
-      case 'sedang':
-        return FontAwesomeIcons.triangleExclamation;
       case 'berat':
-      case 'tinggi':
         return FontAwesomeIcons.circleExclamation;
       default:
         return FontAwesomeIcons.question;
@@ -87,17 +84,11 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
           future: _pelanggaranFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF5B913B)),
-                    ),
-                    SizedBox(height: 16),
-                    Text('Memuat data pelanggaran...'),
-                  ],
-                ),
+              return const LoadingScreen(
+                message: 'Memuat data Pelanggaran...',
+                backgroundColor: Colors.teal,
+                progressColor: Colors.white,
+                icon: FontAwesomeIcons.warning,
               );
             } else if (snapshot.hasError) {
               return Center(

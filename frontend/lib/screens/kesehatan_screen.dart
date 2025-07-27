@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/kesehatan_model.dart';
 import '../services/kesehatan_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/loading_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class KesehatanScreen extends StatefulWidget {
   const KesehatanScreen({Key? key}) : super(key: key);
@@ -42,15 +44,18 @@ class _KesehatanScreenState extends State<KesehatanScreen>
     _tabController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Scaffold(
-        body: const Center(child: CircularProgressIndicator()),
+      return const Scaffold(
+        body: LoadingScreen(
+          message: 'Mengambil data Kesehatan...',
+          backgroundColor: Colors.teal,
+          progressColor: Colors.white,
+          icon: FontAwesomeIcons.hospital,
+        ),
       );
     }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -69,7 +74,7 @@ class _KesehatanScreenState extends State<KesehatanScreen>
             color: Colors.teal,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: Colors.black,
+              indicatorColor: Colors.white,
               indicatorWeight: 3,
               indicatorSize: TabBarIndicatorSize.tab,
               labelColor: Colors.white,

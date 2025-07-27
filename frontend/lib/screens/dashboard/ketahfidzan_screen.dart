@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../services/ketahfidzan_service.dart';
 import '../../models/ketahfidzan_model.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../../widgets/loading_screen.dart';
 class KetahfidzanScreen extends StatefulWidget {
   const KetahfidzanScreen({Key? key}) : super(key: key);
 
@@ -15,7 +15,6 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
   KetahfidzanResponse? _ketahfidzanData;
   bool _isLoading = true;
   String _errorMessage = '';
-
   @override
   void initState() {
     super.initState(); 
@@ -41,6 +40,16 @@ class _KetahfidzanScreenState extends State<KetahfidzanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: LoadingScreen(
+          message: 'Mengambil data Ketahfidzan...',
+          backgroundColor: Colors.teal,
+          progressColor: Colors.white,
+          icon: Icons.school_rounded,
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../../widgets/loading_screen.dart';
 import '../../models/izin_model.dart';
 import '../../services/izin_service.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class IzinSantriScreen extends StatefulWidget {
   const IzinSantriScreen({super.key});
 
@@ -83,17 +83,11 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
           future: _izinFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
-                    ),
-                    SizedBox(height: 16),
-                    Text('Memuat data izin...'),
-                  ],
-                ),
+              return const LoadingScreen(
+                message: 'Memuat data Izin...',
+                backgroundColor: Colors.teal,
+                progressColor: Colors.white,
+                icon: FontAwesomeIcons.fileSignature,
               );
             } else if (snapshot.hasError) {
               return Center(
@@ -387,7 +381,7 @@ class _IzinSantriScreenState extends State<IzinSantriScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: Colors.blue[700],
+                color: Colors.black,
               ),
             ),
           ),

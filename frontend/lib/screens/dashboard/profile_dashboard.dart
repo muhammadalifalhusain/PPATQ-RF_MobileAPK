@@ -259,7 +259,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                             ),
                                             SizedBox(width: 5),
                                             Text(
-                                              'No.Induk: ${_loginData?.noInduk ?? 'Tidak Tersedia'}',
+                                              'NIS: ${_loginData?.noInduk ?? 'Tidak Tersedia'}',
                                               style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,

@@ -21,12 +21,12 @@ class KetertibanResponse {
 }
 
 class Ketertiban {
-  final String id;
+  final int id;
   final String tanggal;
   final String nama;
-  final String buangSampah;
-  final String menataPeralatan;
-  final String tidakBerseragam;
+  final int buangSampah;
+  final int menataPeralatan;
+  final int tidakBerseragam;
   final String namaPengisi;
 
   Ketertiban({

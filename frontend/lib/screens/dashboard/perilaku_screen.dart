@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../models/perilaku_model.dart';
 import '../../services/perilaku_service.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-
+import '../../widgets/loading_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class PerilakuScreen extends StatefulWidget {
   const PerilakuScreen({super.key});
 
@@ -14,7 +14,7 @@ class PerilakuScreen extends StatefulWidget {
 class _PerilakuScreenState extends State<PerilakuScreen> {
   late Future<PerilakuResponse?> _futurePerilaku;
   int? _openCardIndex;
-
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -51,25 +51,11 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
         future: _futurePerilaku,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.teal.shade400),
-                    strokeWidth: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Memuat data perilaku...',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+            return const LoadingScreen(
+              message: 'Memuat data Perilaku...',
+              backgroundColor: Colors.teal,
+              progressColor: Colors.white,
+              icon: FontAwesomeIcons.userCheck,
             );
           }
 
@@ -262,9 +248,9 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                             Icons.psychology,
                             Colors.purple,
                             [
-                              _buildPerilakuItem('Ketertiban', perilaku.ketertiban),
-                              _buildPerilakuItem('Kedisiplinan', perilaku.kedisiplinan),
-                              _buildPerilakuItem('Ketaatan Peraturan', perilaku.ketaatanPeraturan),
+                              _buildDetailItem('Ketertiban', perilaku.ketertiban),
+                              _buildDetailItem('Kedisiplinan', perilaku.kedisiplinan),
+                              _buildDetailItem('Ketaatan Peraturan', perilaku.ketaatanPeraturan),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -273,8 +259,8 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                             Icons.cleaning_services,
                             Colors.blue,
                             [
-                              _buildPerilakuItem('Kebersihan', perilaku.kebersihan),
-                              _buildPerilakuItem('Kerapian', perilaku.kerapian),
+                              _buildDetailItem('Kebersihan', perilaku.kebersihan),
+                              _buildDetailItem('Kerapian', perilaku.kerapian),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -283,8 +269,8 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
                             Icons.groups,
                             Colors.green,
                             [
-                              _buildPerilakuItem('Kesopanan', perilaku.kesopanan),
-                              _buildPerilakuItem('Kepekaan Lingkungan', perilaku.kepekaanLingkungan),
+                              _buildDetailItem('Kesopanan', perilaku.kesopanan),
+                              _buildDetailItem('Kepekaan Lingkungan', perilaku.kepekaanLingkungan),
                             ],
                           ),
                         ],
@@ -351,63 +337,77 @@ class _PerilakuScreenState extends State<PerilakuScreen> {
     );
   }
 
-  Widget _buildPerilakuItem(String label, String value) {
-    Color getScoreColor(String score) {
-      switch (score.toLowerCase()) {
-        case 'baik':
-          return Colors.green;
-        case 'b':
-        case 'cukup':
-          return Colors.orange;
-        case 'kurang baik':
-          return Colors.red;
-        default:
-          return Colors.grey.shade600;
-      }
-    }
-
-    Widget getScoreWidget(String score) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: getScoreColor(score).withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: getScoreColor(score).withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Text(
-          score,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: getScoreColor(score),
-          ),
-        ),
-      );
-    }
+  Widget _buildDetailItem(String label, String value) {
+    final bool isEmpty = value.trim().isEmpty;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 3,
+          SizedBox(
+            width: 100,
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade700,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          getScoreWidget(value),
+          const Text(
+            ': ',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isEmpty ? Colors.grey[100] : _getStatusColor(value),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isEmpty ? 'Tidak ada catatan' : value,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: isEmpty ? FontWeight.w400 : FontWeight.w600,
+                  fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+                  color: isEmpty ? Colors.grey[500] : _getStatusTextColor(value),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
+  }
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'baik':
+        return Colors.green[100]!;
+      case 'cukup':
+        return Colors.orange[100]!;
+      case 'kurang baik':
+        return Colors.red;
+      default:
+        return Colors.blue[100]!; 
+    }
+  }
+
+  Color _getStatusTextColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'baik':
+        return Colors.green[700]!;
+      case 'cukup':
+        return Colors.black;
+      case 'kurang baik':
+        return Colors.white;
+      default:
+        return Colors.black;
+    }
   }
 }

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/ketertiban_model.dart';
 import '../../services/ketertiban_service.dart';
-
+import '../../widgets/loading_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class KetertibanScreen extends StatefulWidget {
   const KetertibanScreen({super.key});
 
@@ -49,9 +50,13 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingScreen(
+                message: 'Memuat data Ketertiban...',
+                backgroundColor: Colors.teal,
+                progressColor: Colors.white,
+                icon: FontAwesomeIcons.listCheck,
+              );
           }
-
           if (snapshot.hasError) {
             return Center(
               child: Text('Terjadi kesalahan: ${snapshot.error}'),
@@ -148,28 +153,6 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
                                 ],
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.red[50],
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                  color: Colors.red[200]!,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(
-                                'Pelanggaran',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.red[700],
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -179,13 +162,13 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
                         child: Column(
                           children: [
                             _buildDetailSection('Jenis Pelanggaran', [
-                              _buildDetailItem(Icons.delete_outline, 'Buang Sampah', item.buangSampah),
-                              _buildDetailItem(Icons.inventory_2_outlined, 'Menata Peralatan', item.menataPeralatan),
-                              _buildDetailItem(Icons.checkroom, 'Tidak Berseragam', item.tidakBerseragam),
+                              _buildDetailItem('Tidak Membuang Sampah', item.buangSampah.toString()),
+                              _buildDetailItem('Tidak Menata Peralatan', item.menataPeralatan.toString()),
+                              _buildDetailItem('Tidak Berseragam', item.tidakBerseragam.toString()),
                             ]),
                             const SizedBox(height: 16),
                             _buildDetailSection('Informasi Tambahan', [
-                              _buildDetailItem(Icons.person_outline, 'Pengisi Data', item.namaPengisi),
+                              _buildDetailItem('Pengisi Data', item.namaPengisi, addSuffixKali: false),
                             ]),
                           ],
                         ),
@@ -210,10 +193,10 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 14,
-            color: Colors.red[700],
+            color: Colors.black,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -234,83 +217,57 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
     );
   }
 
-  Widget _buildDetailItem(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: Colors.red[600],
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          flex: 3,
-          child: Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-              color: Colors.grey[700],
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          flex: 4,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: _getViolationColor(value),
-              borderRadius: BorderRadius.circular(6),
-            ),
+  Widget _buildDetailItem(String label, String value, {bool addSuffixKali = true}) {
+    final bool isEmpty = value.trim().isEmpty;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 140,
             child: Text(
-              value,
+              label,
               style: GoogleFonts.poppins(
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: _getViolationTextColor(value),
+                color: Colors.grey[700],
               ),
             ),
           ),
-        ),
-      ],
+          const Text(
+            ': ',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isEmpty ? Colors.grey[100] : Colors.blue[100],
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isEmpty
+                    ? 'Tidak ada catatan'
+                    : addSuffixKali
+                        ? '$value kali'
+                        : value,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: isEmpty ? FontWeight.w400 : FontWeight.w600,
+                  fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+                  color: isEmpty ? Colors.grey[500] : Colors.black,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  Color _getViolationColor(String status) {
-    // Untuk pelanggaran, biasanya "Ya" = ada pelanggaran, "Tidak" = tidak ada pelanggaran
-    switch (status.toLowerCase()) {
-      case 'tidak':
-      case 'tidak ada':
-      case 'baik':
-        return Colors.green[100]!;
-      case 'ya':
-      case 'ada':
-      case 'melanggar':
-        return Colors.red[100]!;
-      case 'kadang':
-      case 'jarang':
-        return Colors.orange[100]!;
-      default:
-        return Colors.blue[100]!;
-    }
-  }
-
-  Color _getViolationTextColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'tidak':
-      case 'tidak ada':
-      case 'baik':
-        return Colors.green[700]!;
-      case 'ya':
-      case 'ada':
-      case 'melanggar':
-        return Colors.red[700]!;
-      case 'kadang':
-      case 'jarang':
-        return Colors.orange[700]!;
-      default:
-        return Colors.blue[700]!;
-    }
-  }
 }

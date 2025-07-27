@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/kerapian_model.dart';
 import '../../services/kerapian_service.dart';
+import '../../widgets/loading_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class KerapianScreen extends StatefulWidget {
   const KerapianScreen({super.key});
@@ -49,7 +51,12 @@ class _KerapianScreenState extends State<KerapianScreen> {
         future: _futureKerapian,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingScreen(
+              message: 'Memuat data Kerapian...',
+              backgroundColor: Colors.teal,
+              progressColor: Colors.white,
+              icon: FontAwesomeIcons.basketShopping,
+            );
           }
 
           if (snapshot.hasError) {

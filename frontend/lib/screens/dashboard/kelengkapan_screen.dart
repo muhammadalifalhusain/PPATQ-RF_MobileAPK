@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/kelengkapan_model.dart';
 import '../../services/kelengkapan_service.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../widgets/loading_screen.dart';
 class KelengkapanScreen extends StatefulWidget {
   const KelengkapanScreen({super.key});
 
@@ -50,11 +51,11 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
         future: _futureKelengkapan,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.teal.shade400),
-                strokeWidth: 3,
-              ),
+            return const LoadingScreen(
+              message: 'Memuat data Kelengkapan...',
+              backgroundColor: Colors.teal,
+              progressColor: Colors.white,
+              icon: FontAwesomeIcons.clipboardCheck,
             );
           }
 
