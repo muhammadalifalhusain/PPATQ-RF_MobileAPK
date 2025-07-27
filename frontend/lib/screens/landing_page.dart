@@ -207,15 +207,31 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.teal,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Akademik'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
-          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: 'Keuangan'),
+      // bottomNavigationBar dihilangkan, diganti shadow dari bawah ke atas
+      extendBody: true,
+      bottomSheet: IgnorePointer(
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF00897B), // Colors.teal
+            blurRadius: 44,
+            spreadRadius: 0,
+            offset: Offset(0, -24),
+          ),
+          BoxShadow(
+            color: Color(0xFF388E3C), // Colors.green
+            blurRadius: 44,
+            spreadRadius: 0,
+            offset: Offset(0, -24),
+          ),
         ],
+          ),
+          child: SizedBox(
+        height: 4,
+        width: double.infinity,
+          ),
+        ),
       ),
     );
   }
