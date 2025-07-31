@@ -8,6 +8,7 @@ import '../screens/pegawai_screen.dart';
 import '../screens/dakwah_screen.dart';
 import '../screens/surah_list_screen.dart';
 import '../screens/alumni_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   @override
@@ -18,8 +19,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
   bool _showAllMenus = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-
-  // Convert _menus to a getter to allow instance method access
   List<Map<String, dynamic>> get _menus => [
     {
       'icon': Icons.info,
@@ -169,42 +168,41 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
   Widget _buildMenuIkon(IconData ikon, String label, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                ikon, 
-                size: 28, 
-                color: color,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
-            SizedBox(height: 8),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+            child: Icon(
+              ikon,
+              size: 28,
+              color: color,
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 8),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
+
 
   Widget _buildMoreButton() {
     return GestureDetector(

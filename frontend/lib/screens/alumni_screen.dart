@@ -5,7 +5,7 @@ import '../../services/alumni_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/phone_formatter.dart';
-
+import '../widgets/loading_screen.dart';
 class AlumniScreen extends StatefulWidget {
   const AlumniScreen({Key? key}) : super(key: key);
 
@@ -68,8 +68,6 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
 
       setState(() {
         alumniList.addAll(alumniData.alumni);
-
-        // ✅ Ini perbaikannya:
         perTahunList = alumniData.perTahun;
 
         isLastPage = alumniData.alumni.length < 25;
@@ -230,7 +228,9 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                         ],
                       ),
                       child: DropdownButtonFormField<int>(
-                        value: selectedYear,
+                        value: selectedYear != null && _getAvailableYears().contains(selectedYear!)
+                          ? selectedYear
+                          : null,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.calendar_today, color: Colors.grey[600], size: 20),
                           border: OutlineInputBorder(
@@ -244,11 +244,11 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                         dropdownColor: Colors.white,
                         style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF2D3748)),
                         items: [
-                          DropdownMenuItem<int>(
-                            value: null,
+                          const DropdownMenuItem<int>(
+                            value: null, 
                             child: Text(
                               'Semua Tahun',
-                              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
+                              style: TextStyle(fontWeight: FontWeight.w500),
                             ),
                           ),
                           ..._getAvailableYears().map(
@@ -455,43 +455,6 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
     );
   }
 
-  Widget _buildLoadingIndicator() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Center(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF5B913B)),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Memuat data alumni...',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -551,7 +514,12 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
               onRefresh: () => _fetchAlumni(refresh: true),
               color: const Color(0xFF5B913B),
               child: isInitialLoading
-                  ? _buildLoadingIndicator()
+                  ? const LoadingScreen(
+                      message: 'Memuat data Alumni...',
+                      backgroundColor: Colors.teal,
+                      progressColor: Colors.white,
+                      icon: Icons.history_edu,
+                    )
                   : filteredAlumni.isEmpty
                       ? _buildEmptyState()
                       : ListView.builder(
@@ -560,7 +528,12 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                           itemCount: filteredAlumni.length + (isLoadingMore ? 1 : 0),
                           itemBuilder: (context, index) {
                             if (index >= filteredAlumni.length) {
-                              return _buildLoadingIndicator(); 
+                              return LoadingScreen(
+                                message: 'Memuat data Alumni...',
+                                backgroundColor: Colors.teal,
+                                progressColor: Colors.white,
+                                icon: Icons.history_edu,
+                              ); 
                             }
                             return _buildAlumniCard(filteredAlumni[index], index);
                           },

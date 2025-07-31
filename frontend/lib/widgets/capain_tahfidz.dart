@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/capaian_tahfidz_model.dart';
 
 class CapaianCard extends StatefulWidget {
@@ -49,49 +50,51 @@ class _CapaianCardState extends State<CapaianCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header dengan gradasi warna
-          Container(
-            decoration: BoxDecoration(
-              gradient: getGradientColor(),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    '${widget.title}: ${widget.data.capaian}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '${widget.data.jumlah} Santri',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
+          InkWell(
+            onTap: () {
+              setState(() {
+                _expanded = !_expanded;
+              });
+            },
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: getGradientColor(),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      '${widget.title}: ${widget.data.capaian}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${widget.data.jumlah} Santri',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
                         _expanded ? Icons.expand_less : Icons.expand_more,
                         color: Colors.white,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _expanded = !_expanded;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           if (_expanded)
@@ -102,6 +105,7 @@ class _CapaianCardState extends State<CapaianCard> {
               separatorBuilder: (_, __) => const Divider(height: 0),
               itemBuilder: (context, index) {
                 final santri = widget.data.santri[index];
+
                 final photoSantri = santri.photo != null && santri.photo!.isNotEmpty
                     ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
                     : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}&background=random&color=fff';
@@ -117,15 +121,27 @@ class _CapaianCardState extends State<CapaianCard> {
                     backgroundImage: NetworkImage(photoSantri),
                     radius: 25,
                   ),
-                  title: Text(santri.nama, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text('Kelas: ${santri.kelas}-${santri.guruTahfidz}'),
-                  isThreeLine: true,
+                  title: Text(
+                    santri.nama,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Kelas: ${santri.kelas} - ${santri.guruTahfidz}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[700],
+                    ),
+                  ),
                   trailing: photoUstad != null
                       ? CircleAvatar(
                           backgroundImage: NetworkImage(photoUstad),
                           radius: 18,
                         )
-                      : const SizedBox(width: 36), 
+                      : null,
                 );
               },
             ),

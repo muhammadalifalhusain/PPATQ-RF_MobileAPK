@@ -181,14 +181,14 @@ class _LandingPageState extends State<LandingPage> {
 
                               const SizedBox(height: 4),
                               CapaianCard(
-                                title: 'Capaian Terendah',
+                                title: 'Terendah',
                                 data: data.terendah,
                               ),
                             ],
                           );
                         },
                       ),
-                      Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
                       SizedBox(height: 10),
                       BeritaScreen(
                         beritaList: beritaList.sublist(1),

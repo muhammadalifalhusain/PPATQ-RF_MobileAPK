@@ -318,7 +318,7 @@ class _DakwahScreenState extends State<DakwahScreen>
                                           _formatDate(item.createdAt),
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Colors.green.shade700,
+                                            color: Colors.black,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),

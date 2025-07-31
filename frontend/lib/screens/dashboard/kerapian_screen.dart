@@ -270,7 +270,7 @@ class _KerapianScreenState extends State<KerapianScreen> {
       case 'ditata':
         return Colors.green[100]!;
       case 'tidak ditata':
-        return Colors.red[100]!;
+        return Colors.red;
       default:
         return Colors.blue[100]!;
     }
@@ -281,7 +281,7 @@ class _KerapianScreenState extends State<KerapianScreen> {
       case 'ditata':
         return Colors.green[700]!;
       case 'tidak ditata':
-        return Colors.black;
+        return Colors.white;
       default:
         return Colors.blue[700]!;
     }
