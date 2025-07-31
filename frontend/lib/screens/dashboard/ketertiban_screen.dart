@@ -4,6 +4,7 @@ import '../../models/ketertiban_model.dart';
 import '../../services/ketertiban_service.dart';
 import '../../widgets/loading_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 class KetertibanScreen extends StatefulWidget {
   const KetertibanScreen({super.key});
 
@@ -13,11 +14,19 @@ class KetertibanScreen extends StatefulWidget {
 
 class _KetertibanScreenState extends State<KetertibanScreen> {
   late Future<KetertibanResponse> _future;
+  int? _expandedIndex; // menyimpan index card yang terbuka
 
   @override
   void initState() {
     super.initState();
-    _future = KetertibanService().getDataKetertiban();
+    _future = KetertibanService().getDataKetertiban().then((response) {
+      final data = response.data;
+      if (data.isNotEmpty) {
+        // jika hanya 1 data atau lebih dari 1, default buka index 0
+        _expandedIndex = 0;
+      }
+      return response;
+    });
   }
 
   @override
@@ -51,11 +60,11 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingScreen(
-                message: 'Memuat data Ketertiban...',
-                backgroundColor: Colors.teal,
-                progressColor: Colors.white,
-                icon: FontAwesomeIcons.listCheck,
-              );
+              message: 'Memuat data Ketertiban...',
+              backgroundColor: Colors.teal,
+              progressColor: Colors.white,
+              icon: FontAwesomeIcons.listCheck,
+            );
           }
           if (snapshot.hasError) {
             return Center(
@@ -76,17 +85,12 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
             itemCount: data.length,
             itemBuilder: (context, index) {
               final item = data[index];
+              final bool isExpanded = _expandedIndex == index;
+
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: Card(
                   margin: EdgeInsets.zero,
@@ -97,82 +101,101 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
                   color: Colors.white,
                   child: Column(
                     children: [
-                      // Header Card
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.red.withOpacity(0.1),
-                              Colors.red.withOpacity(0.05),
+                      // Header Card dengan GestureDetector
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (isExpanded) {
+                              _expandedIndex = null; // tutup jika diklik lagi
+                            } else {
+                              _expandedIndex = index; // buka card ini
+                            }
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.red.withOpacity(0.1),
+                                Colors.red.withOpacity(0.05),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.red[600],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.warning,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.nama,
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      item.tanggal,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                isExpanded
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                color: Colors.grey[700],
+                              ),
                             ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.red[600],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.warning,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.nama,
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    item.tanggal,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                      // Content Card
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            _buildDetailSection('Jenis Pelanggaran', [
-                              _buildDetailItem('Tidak Membuang Sampah', item.buangSampah.toString()),
-                              _buildDetailItem('Tidak Menata Peralatan', item.menataPeralatan.toString()),
-                              _buildDetailItem('Tidak Berseragam', item.tidakBerseragam.toString()),
-                            ]),
-                            const SizedBox(height: 16),
-                            _buildDetailSection('Informasi Tambahan', [
-                              _buildDetailItem('Pengisi Data', item.namaPengisi, addSuffixKali: false),
-                            ]),
-                          ],
+
+                      // Content Card hanya muncul jika isExpanded true
+                      if (isExpanded)
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              _buildDetailSection('Jenis Pelanggaran', [
+                                _buildDetailItem('Tidak Membuang Sampah', item.buangSampah.toString()),
+                                _buildDetailItem('Tidak Menata Peralatan', item.menataPeralatan.toString()),
+                                _buildDetailItem('Tidak Berseragam', item.tidakBerseragam.toString()),
+                              ]),
+                              const SizedBox(height: 16),
+                              _buildDetailSection('Informasi Tambahan', [
+                                _buildDetailItem('Pengisi Data', item.namaPengisi, addSuffixKali: false),
+                              ]),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -269,5 +292,4 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
       ),
     );
   }
-
 }

@@ -283,7 +283,7 @@ class _KerapianScreenState extends State<KerapianScreen> {
       case 'tidak ditata':
         return Colors.white;
       default:
-        return Colors.blue[700]!;
+        return Colors.black;
     }
   }
 }

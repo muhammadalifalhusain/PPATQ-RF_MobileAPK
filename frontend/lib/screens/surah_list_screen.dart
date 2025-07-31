@@ -505,50 +505,6 @@ class SurahDetailScreen extends StatefulWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 6),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              const Color(0xFF254B62),
-                                              const Color(0xFF3C6E71),
-                                            ],
-                                          ),
-
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        child: Text(
-                                          '$verseNumber',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                            icon: Icon(Icons.bookmark_border,
-                                                color: Colors.grey[500], size: 20),
-                                            onPressed: () {},
-                                          ),
-                                          IconButton(
-                                            icon: Icon(Icons.share_outlined,
-                                                color: Colors.grey[500], size: 20),
-                                            onPressed: () {},
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 20),
                                   Text(
                                     quran.getVerse(
                                         widget.surahNumber, verseNumber),
