@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/berita_service.dart';
 import '../models/berita_model.dart';
@@ -65,14 +66,6 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  void _onItemTapped(int index) {
-    if (index == 0 || index == 2) {
-      _showDevelopmentDialog(context);
-    } else {
-      setState(() => _selectedIndex = index);
-    }
-  }
-
   Future<void> _loadBerita() async {
     if (isLoading || !hasMore) return;
     setState(() => isLoading = true);
@@ -121,21 +114,26 @@ class _LandingPageState extends State<LandingPage> {
                           child: Row(
                             children: [
                               Icon(Icons.school, color: Colors.white, size: 40),
-                              SizedBox(width: 13),
+                              SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'PENDAFTARAN SANTRI BARU',
-                                      style: TextStyle(
+                                      style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 17,
                                       ),
                                     ),
                                     Text(
                                       'Daftarkan putra/putri Anda sekarang!',
-                                      style: TextStyle(color: Colors.white70),
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -154,7 +152,14 @@ class _LandingPageState extends State<LandingPage> {
                     else ...[
                       BeritaUtama(berita: beritaList.first),
                       Divider(),
-                      Text('Menu', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Menu',
+                        style: GoogleFonts.poppins(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
                       MenuIkonWidget(),
                       FutureBuilder<CapaianTahfidzResponse?>(
                         future: _capaianFuture,

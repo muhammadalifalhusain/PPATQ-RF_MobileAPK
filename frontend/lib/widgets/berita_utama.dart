@@ -14,7 +14,7 @@ class BeritaUtama extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: Text(
             berita.judul,
             style: TextStyle(
@@ -51,7 +51,7 @@ class BeritaUtama extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 6),
       ],
     );
   }

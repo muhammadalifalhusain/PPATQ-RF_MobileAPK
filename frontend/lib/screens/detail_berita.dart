@@ -41,17 +41,19 @@ class DetailBeritaScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              berita.judul,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Poppins',
-                color: Colors.black,
-                
+            Center(
+              child: Text(
+                berita.judul,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
             // Gambar Dalam
             if (gambarDalam != null)
@@ -90,10 +92,10 @@ class DetailBeritaScreen extends StatelessWidget {
                   lineHeight: LineHeight.number(1.5),
                   padding: HtmlPaddings.zero,
                   margin: Margins.zero,
-                  fontFamily: 'Poppins',
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                 ),
                 "body": Style(
-                  fontFamily: 'Poppins',
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                 ),
               },
             ),

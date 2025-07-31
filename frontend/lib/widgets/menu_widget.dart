@@ -104,7 +104,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
+      margin: EdgeInsets.symmetric(vertical: 12),
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
@@ -114,9 +114,9 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
             _buildMoreButton(),
           ],
           if (_showAllMenus) ...[
-            SizedBox(height: 8),
+            SizedBox(height: 6),
             _buildAdditionalMenuGrid(),
-            SizedBox(height: 8),
+            SizedBox(height: 6),
             _buildLessButton(),
           ],
         ],
@@ -210,10 +210,23 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
         setState(() => _showAllMenus = true);
         _animationController.forward();
       },
-      child: Icon(
-        Icons.keyboard_arrow_down_rounded,
-        size: 30,
-        color: Colors.grey[600],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 24,
+            color: Colors.black,
+          ),
+          Text(
+            'lainnya',
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -225,13 +238,27 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
           setState(() => _showAllMenus = false);
         });
       },
-      child: Icon(
-        Icons.keyboard_arrow_up_rounded,
-        size: 30,
-        color: Colors.grey[600],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.keyboard_arrow_up_rounded,
+            size: 24,
+            color: Colors.black,
+          ),
+          Text(
+            'tutup',
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ],
       ),
     );
   }
+
 
   Future<void> _launchWithFallback(String uri, String fallbackUrl) async {
     if (await canLaunch(uri)) {
