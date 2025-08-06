@@ -204,9 +204,9 @@ class _MenuGridState extends State<MenuGrid> {
             child: TextButton.icon(
               onPressed: () => setState(() => _showAll = true),
               icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
-              label: const Text(
+              label: Text(
                 'Lainnya',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
@@ -219,8 +219,9 @@ class _MenuGridState extends State<MenuGrid> {
             child: TextButton.icon(
               onPressed: () => setState(() => _showAll = false),
               icon: const Icon(Icons.keyboard_arrow_up, color: Colors.black),
-              label: const Text('Sembunyikan',
-              style: TextStyle(
+              label: Text(
+                'Sembunyikan',
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
@@ -230,6 +231,7 @@ class _MenuGridState extends State<MenuGrid> {
           ),
       ],
     );
+
   }
 
   Widget _buildMenuCard(IconData icon, String label, Color color, VoidCallback onTap) {

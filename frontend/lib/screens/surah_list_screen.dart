@@ -275,7 +275,7 @@ class _QuranScreenState extends State<QuranScreen> with TickerProviderStateMixin
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 10,
                                                       fontWeight: FontWeight.w500,
-                                                      color: Color(0xFF0D7377),
+                                                      color: Colors.black,
                                                     ),
                                                   ),
                                                 ),
