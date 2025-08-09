@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../models/login_model.dart';
 import '../../providers/auth_provider.dart';
 
-import '../landing_page.dart';
 import '../../widgets/menu_dashboard_widget.dart';
 import 'saku_keluar_screen.dart';
 import 'saku_masuk_screen.dart';
@@ -26,7 +25,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
   }
   Widget _buildTextRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16), 
+      padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,15 +36,15 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   value,
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey[800],
                   ),
@@ -523,10 +522,10 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 5.0),
+                              horizontal: 12.0, vertical: 4.0),
                           child: Text(
                             'Informasi Santri',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -569,7 +568,11 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                     child: ExpansionTile(
                       title: Text(
                         'Data Ortu',
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
                       ),
                       childrenPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 5), 
                       children: [
@@ -592,28 +595,29 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
 
       Widget _buildInfoItem(IconData icon, String label, String value) {
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(icon, size: 20, color: Colors.teal),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       label,
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 14,
                         color: Colors.grey[600],
                       ),
                     ),
                     Text(
                       value,
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Colors.black,
                       ),
                     ),
                   ],

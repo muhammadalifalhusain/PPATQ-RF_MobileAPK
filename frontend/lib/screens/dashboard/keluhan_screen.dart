@@ -4,6 +4,8 @@ import '../../services/keluhan_service.dart';
 import 'tambah_keluhan_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../widgets/loading_screen.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 class KeluhanListScreen extends StatefulWidget {
   const KeluhanListScreen({Key? key}) : super(key: key);
 
@@ -115,11 +117,10 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header dengan kategori dan status
                 Row(
                   children: [
                     Expanded(
@@ -144,9 +145,9 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
                 ),
                 const SizedBox(height: 6),
                 _buildDetailRow(Icons.category, "Jenis", item.jenis),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
                 _buildDetailRow(Icons.feedback, "Masukan", item.masukan),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
                 _buildDetailRow(Icons.lightbulb, "Saran", item.saran),
                 Row(
                   children: [
@@ -217,48 +218,53 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
   }
 
   Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4), // jarak atas-bawah lebih rapat
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6), // padding icon lebih kecil
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: Colors.grey[600],
+              size: 18, // icon sedikit lebih kecil
+            ),
           ),
-          child: Icon(
-            icon,
-            color: Colors.grey[600],
-            size: 20,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[600],
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                const SizedBox(height: 1), // jarak label ke value lebih rapat
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
 
   Widget _buildList(List<KeluhanItem> keluhanList, bool isHandled) {
     if (keluhanList.isEmpty) {
