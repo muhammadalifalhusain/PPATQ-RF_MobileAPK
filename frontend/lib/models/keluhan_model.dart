@@ -54,18 +54,22 @@ class KeluhanResponse {
   });
 
   factory KeluhanResponse.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] ?? {};
+    final rawData = json['data'];
+
+    final dataMap = (rawData is Map<String, dynamic>) ? rawData : {};
+
     return KeluhanResponse(
       status: json['status'] ?? 0,
       message: json['message'] ?? '',
-      belumDitangani: (data['Belum Ditangani'] as List<dynamic>? ?? [])
+      belumDitangani: (dataMap['Belum Ditangani'] as List<dynamic>? ?? [])
           .map((item) => KeluhanItem.fromJson(item ?? {}))
           .toList(),
-      ditangani: (data['Ditangani'] as List<dynamic>? ?? [])
+      ditangani: (dataMap['Ditangani'] as List<dynamic>? ?? [])
           .map((item) => KeluhanItem.fromJson(item ?? {}))
           .toList(),
     );
   }
+
 }
 
 class KeluhanItem {
