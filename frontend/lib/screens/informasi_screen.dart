@@ -57,8 +57,16 @@ class _InformasiScreenState extends State<InformasiScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: Colors.white, // Gunakan background putih
         borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +81,7 @@ class _InformasiScreenState extends State<InformasiScreen> {
             child: Center(
               child: Text(
                 '${tutorial.urutan}',
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -89,12 +97,16 @@ class _InformasiScreenState extends State<InformasiScreen> {
                 "body": Style(
                   margin: Margins.zero,
                   padding: HtmlPaddings.zero,
-                  color: Colors.blue[700],
+                  color: Colors.grey[800],
                   fontWeight: FontWeight.w500,
+                  fontSize: FontSize(16),
+                  fontFamily: GoogleFonts.poppins().fontFamily, 
                 ),
                 "div": Style(
                   margin: Margins.zero,
                   padding: HtmlPaddings.zero,
+                  fontFamily: GoogleFonts.poppins().fontFamily, 
+                  
                 ),
                 "br": Style(
                   margin: Margins.only(bottom: 4),
@@ -102,6 +114,9 @@ class _InformasiScreenState extends State<InformasiScreen> {
                 "a": Style(
                   color: Colors.teal,
                   textDecoration: TextDecoration.underline,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: GoogleFonts.poppins().fontFamily, 
+                  
                 ),
               },
               onLinkTap: (url, attributes, element) {
@@ -111,21 +126,6 @@ class _InformasiScreenState extends State<InformasiScreen> {
               },
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoadingWidget() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            color: Colors.teal,
-          ),
-          SizedBox(height: 16),
-          Text('Memuat tutorial pembayaran...'),
         ],
       ),
     );
