@@ -28,27 +28,36 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
     });
   }
 
-  Color _getSeverityColor(String kategori) {
-    switch (kategori.toLowerCase()) {
+  Color _getSeverityColor(String? kategori) {
+    final value = (kategori ?? '').toLowerCase();
+    switch (value) {
       case 'ringan':
         return const Color.fromARGB(255, 233, 163, 106);
       case 'berat':
         return Colors.red;
+      case '-':
+        return Colors.blue.shade100;
       default:
-        return Colors.grey[600]!;
+        return Colors.grey.shade600;
     }
   }
 
-  IconData _getSeverityIcon(String kategori) {
-    switch (kategori.toLowerCase()) {
+
+  IconData _getSeverityIcon(String? kategori) {
+    final value = (kategori ?? '').toLowerCase();
+
+    switch (value) {
       case 'ringan':
         return FontAwesomeIcons.exclamationTriangle;
       case 'berat':
         return FontAwesomeIcons.circleExclamation;
+      case '-':
+        return FontAwesomeIcons.minusCircle;
       default:
         return FontAwesomeIcons.question;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +164,7 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Selamat! Tidak ada catatan pelanggaran',
+                        'Tidak ada catatan pelanggaran',
                         style: TextStyle(color: Colors.grey[500]),
                       ),
                     ],

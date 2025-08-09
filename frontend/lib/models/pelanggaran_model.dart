@@ -21,7 +21,6 @@ class PelanggaranResponse {
 }
 
 class PelanggaranData {
-  final int id;
   final String nama;
   final String tanggal;
   final String jenisPelanggaran;
@@ -31,7 +30,6 @@ class PelanggaranData {
   final String namaPengisi;
 
   PelanggaranData({
-    required this.id,
     required this.nama,
     required this.tanggal,
     required this.jenisPelanggaran,
@@ -48,7 +46,6 @@ class PelanggaranData {
     }
 
     return PelanggaranData(
-      id: json['id'] ?? 0,
       nama: _sanitize(json['nama']),
       tanggal: _sanitize(json['tanggal']),
       jenisPelanggaran: _sanitize(json['jenisPelanggaran']),
