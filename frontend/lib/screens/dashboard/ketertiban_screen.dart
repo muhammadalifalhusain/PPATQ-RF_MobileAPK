@@ -75,8 +75,31 @@ class _KetertibanScreenState extends State<KetertibanScreen> {
           final data = snapshot.data?.data ?? [];
 
           if (data.isEmpty) {
-            return const Center(
-              child: Text('Belum ada data pelanggaran ketertiban'),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    FontAwesomeIcons.listCheck,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Belum Ada Data Ketertiban',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Data akan tampil ketika data tersedia',
+                    style: TextStyle(color: Colors.grey[500]),
+                  ),
+                ],
+              ),
             );
           }
 

@@ -45,7 +45,6 @@ class _PelanggaranSantriScreenState extends State<PelanggaranSantriScreen> {
 
   IconData _getSeverityIcon(String? kategori) {
     final value = (kategori ?? '').toLowerCase();
-
     switch (value) {
       case 'ringan':
         return FontAwesomeIcons.exclamationTriangle;

@@ -10,18 +10,25 @@ class KetertibanResponse {
   });
 
   factory KetertibanResponse.fromJson(Map<String, dynamic> json) {
+    final rawData = json['data'] as List<dynamic>? ?? [];
+
+    // Jika semua elemen berisi tanda "-", kembalikan list kosong
+    final isDummyData = rawData.isNotEmpty &&
+        rawData.every((item) =>
+            (item is Map<String, dynamic>) &&
+            item.values.every((v) => v.toString().trim() == '-'));
+
     return KetertibanResponse(
-      status: json['status'],
-      message: json['message'],
-      data: List<Ketertiban>.from(
-        json['data'].map((item) => Ketertiban.fromJson(item)),
-      ),
+      status: json['status'] ?? 0,
+      message: json['message'] ?? '',
+      data: isDummyData
+          ? []
+          : rawData.map((item) => Ketertiban.fromJson(item ?? {})).toList(),
     );
   }
 }
 
 class Ketertiban {
-  final int id;
   final String tanggal;
   final String nama;
   final int buangSampah;
@@ -30,7 +37,6 @@ class Ketertiban {
   final String namaPengisi;
 
   Ketertiban({
-    required this.id,
     required this.tanggal,
     required this.nama,
     required this.buangSampah,
@@ -41,13 +47,26 @@ class Ketertiban {
 
   factory Ketertiban.fromJson(Map<String, dynamic> json) {
     return Ketertiban(
-      id: json['id'],
-      tanggal: json['tanggal'],
-      nama: json['nama'],
-      buangSampah: json['buangSampah'],
-      menataPeralatan: json['menataPeralatan'],
-      tidakBerseragam: json['tidakBerseragam'],
-      namaPengisi: json['namaPengisi'],
+      tanggal: _parseString(json['tanggal']),
+      nama: _parseString(json['nama']),
+      buangSampah: _parseInt(json['buangSampah']),
+      menataPeralatan: _parseInt(json['menataPeralatan']),
+      tidakBerseragam: _parseInt(json['tidakBerseragam']),
+      namaPengisi: _parseString(json['namaPengisi']),
     );
+  }
+
+  static String _parseString(dynamic value) {
+    if (value == null || value.toString().trim() == '-') {
+      return '';
+    }
+    return value.toString();
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value == null || value.toString().trim() == '-') {
+      return 0;
+    }
+    return int.tryParse(value.toString()) ?? 0;
   }
 }
