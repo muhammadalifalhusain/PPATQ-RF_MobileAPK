@@ -68,7 +68,35 @@ class _KelengkapanScreenState extends State<KelengkapanScreen> {
             _openCardIndex = data.length == 1 ? 0 : 0; 
           }
           if (data.isEmpty) {
-            return const Center(child: Text('Belum ada data kelengkapan'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    FontAwesomeIcons.clipboardCheck,
+                    size: 80,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Belum ada data Kelengkapan',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Data Kelengkapan santri akan muncul disini.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           return ListView.builder(
