@@ -174,14 +174,25 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
         controller: controller,
+        style: GoogleFonts.poppins( // teks yang diketik user
+          fontSize: 14,
+          color: Colors.black87,
+        ),
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: GoogleFonts.poppins( // label di atas field
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[700],
+          ),
           helperText: helperText,
+          helperStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: Colors.grey[100], // abu lembut, biar tidak putih banget
+          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         ),
         keyboardType: keyboardType,
         maxLines: maxLines,
@@ -227,12 +238,28 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
     );
   }
 
+  
   Widget _buildRatingSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Rating Kepuasan (1-10)',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        Text(
+          'Rating Kepuasan (1-10)',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87, // Teks biasa, bukan putih
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Berikan nilai kondisi saat ini',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Colors.black54,
+          ),
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -260,10 +287,11 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
               alignment: Alignment.center,
               child: Text(
                 _rating.toString(),
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ],
