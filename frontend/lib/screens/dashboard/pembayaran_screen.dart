@@ -5,7 +5,7 @@ import '../../models/pembayaran_model.dart';
 import '../../models/get_bank_model.dart';
 import '../../services/get_bank_service.dart';
 import '../../services/pembayaran_service.dart';
-
+import '../../widgets/tanggal_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,10 +34,8 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   String _validationMessage = '';
   String _selectedMetode = 'transfer';
   int _totalJumlah = 0;
-
-  // Form controllers
+  String? tanggalBayar;
   final TextEditingController _noIndukController = TextEditingController();
-  final TextEditingController _tanggalBayarController = TextEditingController();
   final TextEditingController _periodeController = TextEditingController();
   final TextEditingController _tahunController = TextEditingController();
   final TextEditingController _atasNamaController = TextEditingController();
@@ -262,7 +260,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         final pembayaran = Pembayaran(
           noInduk: noInduk,
           jumlah: totalJumlah,
-          tanggalBayar: _tanggalBayarController.text,
+          tanggalBayar: tanggalBayar!,
           periode: now.month,
           tahun: now.year,
           bankPengirim: _selectedMetode == 'transfer' ? _selectedBank! : 0,
@@ -313,12 +311,9 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
     }
   }
 
-
-
   @override
   void dispose() {
     _noIndukController.dispose();
-    _tanggalBayarController.dispose();
     _periodeController.dispose();
     _tahunController.dispose();
     _atasNamaController.dispose();
@@ -357,20 +352,20 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
         keyboardType: keyboardType,
         maxLines: maxLines,
         validator: validator,
-        style: TextStyle(
+        style: GoogleFonts.poppins(
           fontSize: 16,
           color: Colors.grey.shade800,
           height: 1.4,
         ),
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: TextStyle(
+          labelStyle: GoogleFonts.poppins(
             color: Colors.teal.shade600,
             fontWeight: FontWeight.w500,
             fontSize: 14,
           ),
           hintText: hintText,
-          hintStyle: TextStyle(
+          hintStyle: GoogleFonts.poppins(
             color: Colors.grey.shade400,
             fontSize: 14,
           ),
@@ -407,9 +402,9 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
           ),
           contentPadding: EdgeInsets.symmetric(
             horizontal: 14,
-            vertical: maxLines != null && maxLines! > 1 ? 16 : 20,
+            vertical: maxLines != null && maxLines > 1 ? 16 : 20,
           ),
-          errorStyle: TextStyle(
+          errorStyle: GoogleFonts.poppins(
             color: Colors.red.shade600,
             fontSize: 12,
             height: 1.2,
@@ -418,6 +413,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
       ),
     );
   }
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -453,370 +449,318 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Tanggal Pembayaran',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal,
-                            ),
-                          ),
-                          TextFormField(
-                            controller: _tanggalBayarController,
-                            readOnly: true,
-                            onTap: () => _selectDate(_tanggalBayarController),
-                            decoration: const InputDecoration(
-                              labelText: 'Masukkan Tanggal Bayar',
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.calendar_today),
-                            ),
-                            validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
-                          ),
-                        ],
-                      ),
-                    ),
+                  TanggalPembayaranDropdown(
+                    onDateChanged: (value) {
+                      setState(() {
+                        tanggalBayar = value; // contoh hasil: 2025-08-11
+                      });
+                    },
                   ),
                   SizedBox(height: 10),
-                  
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.teal.shade50,
-                            Colors.white,
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.teal.withOpacity(0.1),
-                            blurRadius: 20,
-                            offset: Offset(0, 8),
-                            spreadRadius: 0,
-                          ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.teal.shade50,
+                          Colors.white,
                         ],
                       ),
-                      child: Card(
-                        elevation: 0,
-                        color: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.teal.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: Offset(0, 8),
+                          spreadRadius: 0,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min, // Prevent overflow
-                            children: [
-                              // Header Section - Improved layout
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start, // Better alignment
+                      ],
+                    ),
+                    child: Card(
+                      elevation: 0,
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.teal.shade100,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.teal.shade700,
+                                    size: 24,
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Data Pengirim',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.teal.shade800,
+                                          letterSpacing: 0.5,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'Masukkan informasi pengirim dengan lengkap',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade600,
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.3,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            IntrinsicHeight(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: Colors.teal.shade100,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      Icons.send_rounded,
-                                      color: Colors.teal.shade700,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  SizedBox(width: 16), // Better spacing
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Data Pengirim',
-                                          style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.teal.shade800,
-                                            letterSpacing: 0.5,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        SizedBox(height: 4), // Better spacing
-                                        Text(
-                                          'Masukkan informasi pengirim dengan lengkap',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey.shade600,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.3,
-                                          ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.03),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-
-                              SizedBox(height: 24), // Better spacing
-
-                              // Form Section with intrinsic height
-                              IntrinsicHeight(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Metode Pembayaran
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(16),
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.03),
-                                            blurRadius: 8,
-                                            offset: Offset(0, 2),
+                                    child: DropdownButtonFormField<String>(
+                                      value: _selectedMetode,
+                                      decoration: InputDecoration(
+                                        labelText: 'Metode Pembayaran',
+                                        labelStyle: GoogleFonts.poppins(
+                                          color: Colors.teal.shade600,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        hintText: 'Pilih metode pembayaran',
+                                        hintStyle: GoogleFonts.poppins(
+                                          color: Colors.grey.shade400,
+                                          fontSize: 14,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                          borderSide: BorderSide(color: Colors.teal, width: 2),
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        prefixIcon: Container(
+                                          margin: EdgeInsets.all(12),
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.teal.shade50,
+                                            borderRadius: BorderRadius.circular(8),
                                           ),
-                                        ],
-                                      ),
-                                      child: DropdownButtonFormField<String>(
-                                        value: _selectedMetode,
-                                        decoration: InputDecoration(
-                                          labelText: 'Metode Pembayaran',
-                                          labelStyle: TextStyle(
+                                          child: Icon(
+                                            Icons.payment_rounded,
                                             color: Colors.teal.shade600,
-                                            fontWeight: FontWeight.w500,
+                                            size: 20,
                                           ),
-                                          hintText: 'Pilih metode pembayaran',
-                                          hintStyle: TextStyle(
-                                            color: Colors.grey.shade400,
-                                            fontSize: 14,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(16),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(16),
-                                            borderSide: BorderSide(color: Colors.teal, width: 2),
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          prefixIcon: Container(
-                                            margin: EdgeInsets.all(12),
-                                            padding: EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.teal.shade50,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: Icon(
-                                              Icons.payment_rounded,
-                                              color: Colors.teal.shade600,
-                                              size: 20,
-                                            ),
-                                          ),
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
                                         ),
-                                        isExpanded: true,
-                                        menuMaxHeight: 250,
-                                        dropdownColor: Colors.white,
-                                        style: TextStyle(
-                                          color: Colors.grey.shade800,
-                                          fontSize: 16,
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                                      ),
+                                      isExpanded: true,
+                                      menuMaxHeight: 250,
+                                      dropdownColor: Colors.white,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16,
+                                      ),
+                                      items: [
+                                        DropdownMenuItem(
+                                          value: 'transfer',
+                                          child: Text('Transfer Bank', style: GoogleFonts.poppins()),
                                         ),
-                                        items: [
-                                          DropdownMenuItem(
-                                            value: 'transfer',
-                                            child: Row(
-                                              children: [
-                                                Expanded(child: Text('Transfer Bank')),
-                                              ],
-                                            ),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: 'cash',
-                                            child: Row(
-                                              children: [
-                                                Expanded(child: Text('Cash')),
-                                              ],
-                                            ),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: 'va',
-                                            child: Row(
-                                              children: [
-                                                Expanded(child: Text('Virtual Account')),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _selectedMetode = value!;
-                                            if (_selectedMetode != 'transfer') {
-                                              _selectedBank = 0;
-                                            }
-                                          });
-                                        },
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Pilih metode pembayaran';
+                                        DropdownMenuItem(
+                                          value: 'cash',
+                                          child: Text('Cash', style: GoogleFonts.poppins()),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'va',
+                                          child: Text('Virtual Account', style: GoogleFonts.poppins()),
+                                        ),
+                                      ],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedMetode = value!;
+                                          if (_selectedMetode != 'transfer') {
+                                            _selectedBank = 0;
                                           }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-
-                                    SizedBox(height: 16),
-
-                                    // Bank Pengirim dengan animasi
-                                    AnimatedContainer(
-                                      duration: Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                      height: _selectedMetode == 'transfer' ? null : 0,
-                                      child: AnimatedOpacity(
-                                        duration: Duration(milliseconds: 300),
-                                        opacity: _selectedMetode == 'transfer' ? 1.0 : 0.0,
-                                        child: _selectedMetode == 'transfer'
-                                            ? Container(
-                                                margin: EdgeInsets.only(bottom: 16),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(16),
-                                                  border: Border.all(color: Colors.grey.shade200),
-                                                  color: Colors.white,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black.withOpacity(0.03),
-                                                      blurRadius: 8,
-                                                      offset: Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: DropdownButtonFormField<int>(
-                                                  value: _selectedBank,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Bank Pengirim',
-                                                    labelStyle: TextStyle(
-                                                      color: Colors.teal.shade600,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                    hintText: 'Pilih bank pengirim',
-                                                    hintStyle: TextStyle(
-                                                      color: Colors.grey.shade400,
-                                                      fontSize: 14,
-                                                    ),
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(16),
-                                                      borderSide: BorderSide.none,
-                                                    ),
-                                                    focusedBorder: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(16),
-                                                      borderSide: BorderSide(color: Colors.teal, width: 2),
-                                                    ),
-                                                    filled: true,
-                                                    fillColor: Colors.white,
-                                                    prefixIcon: Container(
-                                                      margin: EdgeInsets.all(12),
-                                                      padding: EdgeInsets.all(8),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.teal.shade50,
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.account_balance_rounded,
-                                                        color: Colors.teal.shade600,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                    contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-                                                  ),
-                                                  isExpanded: true,
-                                                  menuMaxHeight: 300,
-                                                  dropdownColor: Colors.white,
-                                                  style: TextStyle(
-                                                    color: Colors.grey.shade800,
-                                                    fontSize: 16,
-                                                  ),
-                                                  items: _banks.map<DropdownMenuItem<int>>((bank) {
-                                                    return DropdownMenuItem<int>(
-                                                      value: bank.id,
-                                                      child: Container(
-                                                        constraints: BoxConstraints(maxWidth: double.infinity),
-                                                        child: Text(
-                                                          bank.nama,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          maxLines: 1,
-                                                          style: TextStyle(fontSize: 14),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                  onChanged: (value) => setState(() => _selectedBank = value),
-                                                  validator: (value) {
-                                                    if (_selectedMetode == 'transfer' && (value == null || value == 0)) {
-                                                      return 'Pilih bank pengirim';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                              )
-                                            : SizedBox.shrink(),
-                                      ),
-                                    ),
-
-                                    // Text Fields with consistent spacing
-                                    _buildModernTextField(
-                                      controller: _atasNamaController,
-                                      labelText: 'Atas Nama',
-                                      icon: Icons.person_outline_rounded,
-                                      validator: (value) => value?.isEmpty == true ? 'Nama wajib diisi' : null,
-                                      hintText: 'Masukkan nama lengkap',
-                                    ),
-
-                                    SizedBox(height: 16),
-
-                                    _buildModernTextField(
-                                      controller: _noWaController,
-                                      labelText: 'No WhatsApp',
-                                      icon: Icons.phone_rounded,
-                                      keyboardType: TextInputType.phone,
+                                        });
+                                      },
                                       validator: (value) {
-                                        if (value?.isEmpty == true) return 'Nomor WhatsApp wajib diisi';
-                                        if (!RegExp(r'^(\+?62|0)[0-9]{9,13}$').hasMatch(value!)) {
-                                          return 'Format nomor tidak valid';
+                                        if (value == null || value.isEmpty) {
+                                          return 'Pilih metode pembayaran';
                                         }
                                         return null;
                                       },
-                                      hintText: 'Contoh: 08123456789',
                                     ),
-
-                                    SizedBox(height: 16),
-
-                                    _buildModernTextField(
-                                      controller: _catatanController,
-                                      labelText: 'Catatan (Opsional)',
-                                      icon: Icons.note_rounded,
-                                      maxLines: 3,
-                                      hintText: 'Tambahkan catatan jika diperlukan...',
-                                      validator: null,
+                                  ),
+                                  SizedBox(height: 16),
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                    height: _selectedMetode == 'transfer' ? null : 0,
+                                    child: AnimatedOpacity(
+                                      duration: Duration(milliseconds: 300),
+                                      opacity: _selectedMetode == 'transfer' ? 1.0 : 0.0,
+                                      child: _selectedMetode == 'transfer'
+                                          ? Container(
+                                              margin: EdgeInsets.only(bottom: 16),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(16),
+                                                border: Border.all(color: Colors.grey.shade200),
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.03),
+                                                    blurRadius: 8,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: DropdownButtonFormField<int>(
+                                                value: _selectedBank,
+                                                decoration: InputDecoration(
+                                                  labelText: 'Bank Pengirim',
+                                                  labelStyle: GoogleFonts.poppins(
+                                                    color: Colors.teal.shade600,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  hintText: 'Pilih bank pengirim',
+                                                  hintStyle: GoogleFonts.poppins(
+                                                    color: Colors.grey.shade400,
+                                                    fontSize: 14,
+                                                  ),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(16),
+                                                    borderSide: BorderSide.none,
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(16),
+                                                    borderSide: BorderSide(color: Colors.teal, width: 2),
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Colors.white,
+                                                  prefixIcon: Container(
+                                                    margin: EdgeInsets.all(12),
+                                                    padding: EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.teal.shade50,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.account_balance_rounded,
+                                                      color: Colors.teal.shade600,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                  contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                                                ),
+                                                isExpanded: true,
+                                                menuMaxHeight: 300,
+                                                dropdownColor: Colors.white,
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.grey.shade800,
+                                                  fontSize: 16,
+                                                ),
+                                                items: _banks.map<DropdownMenuItem<int>>((bank) {
+                                                  return DropdownMenuItem<int>(
+                                                    value: bank.id,
+                                                    child: Text(
+                                                      bank.nama,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: GoogleFonts.poppins(fontSize: 14),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (value) => setState(() => _selectedBank = value),
+                                                validator: (value) {
+                                                  if (_selectedMetode == 'transfer' && (value == null || value == 0)) {
+                                                    return 'Pilih bank pengirim';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            )
+                                          : SizedBox.shrink(),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  _buildModernTextField(
+                                    controller: _atasNamaController,
+                                    labelText: 'Atas Nama',
+                                    icon: Icons.person_outline_rounded,
+                                    validator: (value) => value?.isEmpty == true ? 'Nama wajib diisi' : null,
+                                    hintText: 'Masukkan nama lengkap',
+                                  ),
+                                  SizedBox(height: 16),
+                                  _buildModernTextField(
+                                    controller: _noWaController,
+                                    labelText: 'No WhatsApp',
+                                    icon: Icons.phone_rounded,
+                                    keyboardType: TextInputType.phone,
+                                    validator: (value) {
+                                      if (value?.isEmpty == true) return 'Nomor WhatsApp wajib diisi';
+                                      if (!RegExp(r'^(\+?62|0)[0-9]{9,13}$').hasMatch(value!)) {
+                                        return 'Format nomor tidak valid';
+                                      }
+                                      return null;
+                                    },
+                                    hintText: 'Contoh: 08123456789',
+                                  ),
+                                  SizedBox(height: 16),
+                                  _buildModernTextField(
+                                    controller: _catatanController,
+                                    labelText: 'Catatan (Opsional)',
+                                    icon: Icons.note_rounded,
+                                    maxLines: 3,
+                                    hintText: 'Tambahkan catatan jika diperlukan...',
+                                    validator: null,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-
+                    ),
+                  SizedBox(height: 12),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
