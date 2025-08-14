@@ -100,7 +100,7 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: isHandled ? Colors.green.withOpacity(0.3) : Colors.orange.withOpacity(0.3),
+            color: isHandled ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3),
             width: 1,
           ),
         ),
@@ -108,11 +108,9 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
               colors: [
                 Colors.white,
-                isHandled ? Colors.green.withOpacity(0.05) : Colors.orange.withOpacity(0.05),
+                isHandled ? Colors.green.withOpacity(0.05) : Colors.red,
               ],
             ),
           ),
@@ -122,17 +120,14 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
                         child: Text(
                           item.kategori,
-                          style: const TextStyle(
+                          style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.teal,
@@ -140,74 +135,24 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
                         ),
                       ),
                     ),
-                    
-                  ],
-                ),
-                const SizedBox(height: 6),
-                _buildDetailRow(Icons.category, "Jenis", item.jenis),
-                const SizedBox(height: 6),
-                _buildDetailRow(Icons.feedback, "Masukan", item.masukan),
-                const SizedBox(height: 6),
-                _buildDetailRow(Icons.lightbulb, "Saran", item.saran),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
                     Text(
-                      "Rating: ${item.rating}",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      item.diuploadPada ?? '-',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: Colors.black,
                       ),
                     ),
-                    
                   ],
                 ),
+                const SizedBox(height: 4),
+                _buildDetailItem("Jenis", item.jenis),
+                const SizedBox(height: 6),
+                _buildDetailItem("Masukan", item.masukan),
+                const SizedBox(height: 6),
+                _buildDetailItem("Saran", item.saran),
                 if (isHandled && item.balasan != null) ...[
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.green.withOpacity(0.3)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          children: [
-                            Text(
-                              "Balasan:",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          item.balasan!,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                _buildDetailItem("Balasan", item.balasan ?? '-'),
                 ],
               ],
             ),
@@ -217,49 +162,50 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value) {
+  Widget _buildDetailItem(String label, String value) {
+    final bool isEmpty = value.trim().isEmpty;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4), // jarak atas-bawah lebih rapat
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(6), // padding icon lebih kecil
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              icon,
-              color: Colors.grey[600],
-              size: 18, // icon sedikit lebih kecil
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
             ),
           ),
-          const SizedBox(width: 10),
+          const Text(
+            ': ',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
-                  ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isEmpty ? Colors.grey[100] :  Colors.white,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                isEmpty ? 'Tidak ada catatan' : value,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: isEmpty ? FontWeight.w400 : FontWeight.w600,
+                  fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+                  color: isEmpty ? Colors.grey[500] : Colors.black,
                 ),
-                const SizedBox(height: 1), // jarak label ke value lebih rapat
-                Text(
-                  value,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -295,16 +241,16 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
         backgroundColor: Colors.teal,
         elevation: 0,
         toolbarHeight: 56,
-        automaticallyImplyLeading: false, 
+        automaticallyImplyLeading: false,
         centerTitle: false,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white), 
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
+        title: Text(
           'Daftar Keluhan',
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -329,7 +275,7 @@ class _KeluhanListScreenState extends State<KeluhanListScreen>
               unselectedLabelColor: Colors.white70,
               indicatorColor: Colors.white,
               indicatorWeight: 3,
-              labelStyle: const TextStyle(
+              labelStyle: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),

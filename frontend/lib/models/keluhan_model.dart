@@ -88,6 +88,7 @@ class KeluhanItem {
   final int rating;
   final String? balasan;
   final DateTime createdAt;
+  final String? diuploadPada;
 
   KeluhanItem({
     required this.idKeluhan,
@@ -105,6 +106,7 @@ class KeluhanItem {
     required this.rating,
     this.balasan,
     required this.createdAt,
+    this.diuploadPada
   });
 
   factory KeluhanItem.fromJson(Map<String, dynamic> json) {
@@ -124,6 +126,7 @@ class KeluhanItem {
       rating: json['rating'] ?? 0,
       balasan: json['balasan']?.toString(),
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime(2000),
+      diuploadPada: json['diuploadPada'],
     );
   }
 }

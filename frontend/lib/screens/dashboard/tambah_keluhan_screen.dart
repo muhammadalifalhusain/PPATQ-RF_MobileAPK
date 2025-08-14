@@ -174,13 +174,13 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
         controller: controller,
-        style: GoogleFonts.poppins( // teks yang diketik user
+        style: GoogleFonts.poppins( 
           fontSize: 14,
           color: Colors.black87,
         ),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: GoogleFonts.poppins( // label di atas field
+          labelStyle: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w500,
             color: Colors.grey[700],
@@ -191,7 +191,7 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
             borderRadius: BorderRadius.circular(8),
           ),
           filled: true,
-          fillColor: Colors.grey[100], // abu lembut, biar tidak putih banget
+          fillColor: Colors.grey[100], 
           contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         ),
         keyboardType: keyboardType,
@@ -248,7 +248,7 @@ class _TambahKeluhanScreenState extends State<TambahKeluhanScreen> {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: Colors.black87, // Teks biasa, bukan putih
+            color: Colors.black87, 
           ),
         ),
         const SizedBox(height: 4),
