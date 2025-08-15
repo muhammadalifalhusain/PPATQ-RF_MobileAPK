@@ -31,8 +31,6 @@ class _MainScreenState extends State<MainScreen> {
 
   void _confirmLogout() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    // Show modern confirmation dialog
     final confirm = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -222,13 +220,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
           margin: const EdgeInsets.all(16),
           duration: const Duration(seconds: 3),
-          action: SnackBarAction(
-            label: 'OK',
-            textColor: Colors.white,
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
         ),
       );
     }

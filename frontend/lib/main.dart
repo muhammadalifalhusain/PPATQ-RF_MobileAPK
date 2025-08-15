@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import './screens/dashboard/main.dart';
 import 'screens/landing_page.dart'; 
+import 'screens/splash_screen.dart';
 import 'providers/auth_provider.dart'; 
 
 void main() async {
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
           } else if (authProvider.isLoggedIn) {
             return MainScreen();
           } else {
-            return LandingPage(); 
+            return SplashScreen(); 
           }
         },
       ),
