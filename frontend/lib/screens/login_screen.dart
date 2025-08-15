@@ -9,6 +9,7 @@ import '../services/get-santri_service.dart';
 import '../models/get-santri_model.dart';
 import '../models/kelas_model.dart';
 import '../services/get-kelas_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -302,25 +303,38 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         );
       },
       fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
-        return TextFormField(
-          controller: controller,
-          focusNode: focusNode,
-          onEditingComplete: onEditingComplete,
-          style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            labelText: 'Masukkan Nama Santri',
-            labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
-            prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.8)),
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.1),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+      return TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        onEditingComplete: onEditingComplete,
+        style: GoogleFonts.poppins(
+          color: Colors.white,
+        ),
+        decoration: InputDecoration(
+          labelText: 'Masukkan Nama Santri',
+          labelStyle: GoogleFonts.poppins(
+            color: Colors.white.withOpacity(0.8),
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.white.withOpacity(0.8),
+          ),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.1),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              color: Colors.white.withOpacity(0.3),
             ),
           ),
-          validator: (_) => selectedSantri == null ? 'Pilih nama santri' : null,
-        );
+        ),
+        validator: (_) => selectedSantri == null
+            ? 'Pilih nama santri'
+            : null,
+      );
       },
     );
   }
@@ -332,8 +346,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         decoration: InputDecoration(
           labelText: 'Kode Kelas',
           filled: true,
-          fillColor: Colors.white.withOpacity(0.1), // Field tetap transparan
-          labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
+          fillColor: Colors.white.withOpacity(0.1),
+          labelStyle: GoogleFonts.poppins(
+            color: Colors.white.withOpacity(0.8),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
@@ -344,23 +360,26 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: const BorderSide(color: Colors.white),
           ),
-          prefixIcon: Icon(Icons.class_, color: Colors.white.withOpacity(0.8)),
+          prefixIcon: Icon(
+            Icons.class_,
+            color: Colors.white.withOpacity(0.8),
+          ),
         ),
         items: _kelasList
             .map((kelas) => DropdownMenuItem(
                   value: kelas.kode,
                   child: Text(
                     kelas.kode,
-                    style: TextStyle(color: Colors.black), 
+                    style: GoogleFonts.poppins(color: Colors.black),
                   ),
                 ))
             .toList(),
         selectedItemBuilder: (context) => _kelasList
             .map((kelas) => Text(
                   kelas.kode,
-                  style: TextStyle(color: Colors.white), 
+                  style: GoogleFonts.poppins(color: Colors.white),
                 ))
             .toList(),
         onChanged: (value) {
@@ -368,18 +387,20 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             _selectedKodeKelas = value;
           });
         },
-        validator: (value) => value == null ? 'Pilih kode kelas' : null,
-        dropdownColor: Colors.white, 
-        iconEnabledColor: Colors.white, 
+        validator: (value) =>
+            value == null ? 'Pilih kode kelas' : null,
+        dropdownColor: Colors.white,
+        iconEnabledColor: Colors.white,
       ),
     );
   }
+
   Widget _buildDatePicker() {
     return GestureDetector(
       onTap: _pickDate,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(15),
@@ -388,12 +409,14 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         child: Row(
           children: [
             Icon(Icons.calendar_today, color: Colors.white.withOpacity(0.8)),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Text(
               selectedDate == null
                   ? 'Tanggal Lahir'
                   : DateFormat('yyyy-MM-dd').format(selectedDate!),
-              style: TextStyle(color: Colors.white.withOpacity(0.9)),
+              style: GoogleFonts.poppins(
+                color: Colors.white.withOpacity(0.9),
+              ),
             ),
           ],
         ),
@@ -409,12 +432,14 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         onPressed: auth.isLoading ? null : () => _login(auth),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
-          foregroundColor: Color(0xFF00695C),
+          foregroundColor: const Color(0xFF00695C),
           elevation: 8,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
         child: auth.isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
@@ -422,7 +447,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00695C)),
                 ),
               )
-            : Text('Masuk', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            : Text(
+                'Masuk',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     );
   }
@@ -432,11 +463,22 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Text('PPATQ RAUDLATUL FALAH', 
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.8))),
-          SizedBox(height: 4),
-          Text('Copyright © 2025 All Rights Reserved', 
-              style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.6))),
+          Text(
+            'PPATQ RAUDLATUL FALAH',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white.withOpacity(0.8),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Copyright © 2025 All Rights Reserved',
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              color: Colors.white.withOpacity(0.6),
+            ),
+          ),
         ],
       ),
     );

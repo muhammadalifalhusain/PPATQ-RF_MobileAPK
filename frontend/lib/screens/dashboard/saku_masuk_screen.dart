@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../../services/keuangan_service.dart';
 import '../../models/keuangan_model.dart';
 
@@ -34,7 +33,10 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal memuat data: ${e.toString()}'),
+          content: Text(
+            'Gagal memuat data: ${e.toString()}',
+            style: GoogleFonts.poppins(),
+          ),
           backgroundColor: Colors.red.shade400,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -46,14 +48,12 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
   }
 
   String _formatCurrency(dynamic amount) {
-    // Handle both int and String types
     int number = 0;
     if (amount is int) {
       number = amount;
     } else if (amount is String) {
       number = int.tryParse(amount) ?? 0;
     }
-    
     return number.toString().replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
       (Match m) => '${m[1]}.',
@@ -69,7 +69,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
         toolbarHeight: 56,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: false,
@@ -91,13 +91,14 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green.shade400),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.green.shade400),
                     strokeWidth: 3,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'Memuat data...',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.grey.shade600,
                       fontSize: 16,
                     ),
@@ -105,7 +106,9 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                 ],
               ),
             )
-          : _data == null || _data!.data.dataUangMasuk == null || _data!.data.dataUangMasuk!.isEmpty
+          : _data == null ||
+                  _data!.data.dataUangMasuk == null ||
+                  _data!.data.dataUangMasuk!.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +121,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                       const SizedBox(height: 16),
                       Text(
                         'Belum ada transaksi masuk',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey.shade600,
@@ -127,7 +130,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                       const SizedBox(height: 8),
                       Text(
                         'Transaksi uang masuk akan muncul di sini',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: Colors.grey.shade500,
                         ),
@@ -143,20 +146,23 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Summary Card
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Colors.green.shade400, Colors.teal.shade300],
+                              colors: [
+                                Colors.green.shade400,
+                                Colors.teal.shade300
+                              ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.green.shade200.withOpacity(0.3),
+                                color:
+                                    Colors.green.shade200.withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -165,9 +171,9 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Total Saldo Masuk',
-                                style: TextStyle(
+                              Text(
+                                'Total Saku Masuk',
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -176,7 +182,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                               const SizedBox(height: 8),
                               Text(
                                 'Rp ${_formatCurrency(_calculateTotal())}',
-                                style: const TextStyle(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -185,7 +191,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                               const SizedBox(height: 4),
                               Text(
                                 '${_data!.data.dataUangMasuk!.length} Transaksi',
-                                style: TextStyle(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12,
                                 ),
@@ -193,9 +199,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        
-                        // Transaction List Header
+                        const SizedBox(height: 18),
                         Row(
                           children: [
                             Icon(
@@ -205,8 +209,8 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Riwayat Saldo Masuk',
-                              style: TextStyle(
+                              'Riwayat Saku Masuk',
+                              style: GoogleFonts.poppins(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey.shade800,
@@ -214,19 +218,21 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        
-                        // Transaction List
+                        const SizedBox(height: 14),
                         Expanded(
                           child: ListView.separated(
-                            itemCount: _data!.data.dataUangMasuk!.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: 12),
+                            itemCount:
+                                _data!.data.dataUangMasuk!.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final transaction = _data!.data.dataUangMasuk![index];
+                              final transaction =
+                                  _data!.data.dataUangMasuk![index];
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius:
+                                      BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.grey.shade200,
@@ -236,13 +242,15 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                                   ],
                                 ),
                                 child: ListTile(
-                                  contentPadding: const EdgeInsets.all(16),
+                                  contentPadding:
+                                      const EdgeInsets.all(16),
                                   leading: Container(
                                     width: 48,
                                     height: 48,
                                     decoration: BoxDecoration(
                                       color: Colors.green.shade50,
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius:
+                                          BorderRadius.circular(12),
                                     ),
                                     child: Icon(
                                       Icons.trending_up,
@@ -252,7 +260,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                                   ),
                                   title: Text(
                                     transaction.uangAsal,
-                                    style: const TextStyle(
+                                    style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
                                     ),
@@ -261,19 +269,21 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                                     padding: const EdgeInsets.only(top: 4),
                                     child: Text(
                                       _formatDate(transaction.tanggalTransaksi),
-                                      style: TextStyle(
+                                      style: GoogleFonts.poppins(
                                         color: Colors.grey.shade600,
                                         fontSize: 12,
                                       ),
                                     ),
                                   ),
                                   trailing: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.end,
                                     children: [
                                       Text(
                                         '+Rp ${_formatCurrency(transaction.jumlahMasuk)}',
-                                        style: TextStyle(
+                                        style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           color: Colors.green.shade600,
@@ -295,10 +305,8 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
 
   String _calculateTotal() {
     if (_data?.data.dataUangMasuk == null) return '0';
-    
     int total = 0;
     for (var transaction in _data!.data.dataUangMasuk!) {
-      // Handle both int and String types
       if (transaction.jumlahMasuk is int) {
         total += transaction.jumlahMasuk as int;
       } else if (transaction.jumlahMasuk is String) {

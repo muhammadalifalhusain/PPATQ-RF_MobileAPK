@@ -33,7 +33,10 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal memuat data: ${e.toString()}'),
+          content: Text(
+            'Gagal memuat data: ${e.toString()}',
+            style: GoogleFonts.poppins(),
+          ),
           backgroundColor: Colors.red.shade400,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -51,7 +54,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
     } else if (amount is String) {
       number = int.tryParse(amount) ?? 0;
     }
-    
+
     return number.toString().replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
       (Match m) => '${m[1]}.',
@@ -67,7 +70,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
         toolbarHeight: 56,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: false,
@@ -89,13 +92,14 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red.shade400),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.red.shade400),
                     strokeWidth: 3,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'Memuat data...',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.grey.shade600,
                       fontSize: 16,
                     ),
@@ -103,7 +107,9 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                 ],
               ),
             )
-          : _data == null || _data!.data.dataUangKeluar == null || _data!.data.dataUangKeluar!.isEmpty
+          : _data == null ||
+                  _data!.data.dataUangKeluar == null ||
+                  _data!.data.dataUangKeluar!.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -116,7 +122,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                       const SizedBox(height: 16),
                       Text(
                         'Belum ada transaksi keluar',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey.shade600,
@@ -125,7 +131,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                       const SizedBox(height: 8),
                       Text(
                         'Transaksi uang keluar akan muncul di sini',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: Colors.grey.shade500,
                         ),
@@ -147,14 +153,18 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Colors.red.shade600, Colors.orange.shade400],
+                              colors: [
+                                Colors.red.shade600,
+                                Colors.orange.shade400
+                              ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.red.shade200.withOpacity(0.3),
+                                color:
+                                    Colors.red.shade200.withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -163,9 +173,9 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Total Saldo Keluar',
-                                style: TextStyle(
+                              Text(
+                                'Total Saku Keluar',
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -174,7 +184,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                               const SizedBox(height: 8),
                               Text(
                                 'Rp ${_formatCurrency(_calculateTotal())}',
-                                style: const TextStyle(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -183,7 +193,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                               const SizedBox(height: 4),
                               Text(
                                 '${_data!.data.dataUangKeluar!.length} Transaksi',
-                                style: TextStyle(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12,
                                 ),
@@ -191,9 +201,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        
-                        // Transaction List Header
+                        const SizedBox(height: 18),
                         Row(
                           children: [
                             Icon(
@@ -203,8 +211,8 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Riwayat Saldo Keluar',
-                              style: TextStyle(
+                              'Riwayat Saku Keluar',
+                              style: GoogleFonts.poppins(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey.shade800,
@@ -212,15 +220,16 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        
-                        // Transaction List
+                        const SizedBox(height: 14),
                         Expanded(
                           child: ListView.separated(
-                            itemCount: _data!.data.dataUangKeluar!.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: 12),
+                            itemCount:
+                                _data!.data.dataUangKeluar!.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final transaction = _data!.data.dataUangKeluar![index];
+                              final transaction =
+                                  _data!.data.dataUangKeluar![index];
                               return Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -234,13 +243,15 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                                   ],
                                 ),
                                 child: ListTile(
-                                  contentPadding: const EdgeInsets.all(16),
+                                  contentPadding:
+                                      const EdgeInsets.all(16),
                                   leading: Container(
                                     width: 48,
                                     height: 48,
                                     decoration: BoxDecoration(
                                       color: Colors.red.shade50,
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius:
+                                          BorderRadius.circular(12),
                                     ),
                                     child: Icon(
                                       Icons.trending_down,
@@ -249,29 +260,34 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                                     ),
                                   ),
                                   title: Text(
-                                    transaction.catatan ?? 'Pengeluaran',
-                                    style: const TextStyle(
+                                    transaction.catatan ??
+                                        'Pengeluaran',
+                                    style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
                                     ),
                                   ),
                                   subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.only(
+                                        top: 4),
                                     child: Text(
-                                      _formatDate(transaction.tanggalTransaksi),
-                                      style: TextStyle(
+                                      _formatDate(transaction
+                                          .tanggalTransaksi),
+                                      style: GoogleFonts.poppins(
                                         color: Colors.grey.shade600,
                                         fontSize: 12,
                                       ),
                                     ),
                                   ),
                                   trailing: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.end,
                                     children: [
                                       Text(
                                         '-Rp ${_formatCurrency(transaction.jumlahKeluar)}',
-                                        style: TextStyle(
+                                        style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           color: Colors.red.shade600,
@@ -293,13 +309,14 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
 
   String _calculateTotal() {
     if (_data?.data.dataUangKeluar == null) return '0';
-    
+
     int total = 0;
     for (var transaction in _data!.data.dataUangKeluar!) {
       if (transaction.jumlahKeluar is int) {
         total += transaction.jumlahKeluar as int;
       } else if (transaction.jumlahKeluar is String) {
-        total += int.tryParse(transaction.jumlahKeluar as String) ?? 0;
+        total +=
+            int.tryParse(transaction.jumlahKeluar as String) ?? 0;
       }
     }
     return total.toString();
@@ -309,8 +326,19 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
     try {
       final date = DateTime.parse(dateString);
       const months = [
-        '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-        'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'
+        '',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'Mei',
+        'Jun',
+        'Jul',
+        'Ags',
+        'Sep',
+        'Okt',
+        'Nov',
+        'Des'
       ];
       return '${date.day} ${months[date.month]} ${date.year}';
     } catch (e) {
