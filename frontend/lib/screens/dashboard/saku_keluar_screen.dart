@@ -192,7 +192,7 @@ class _SakuKeluarScreenState extends State<SakuKeluarScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_data!.data.dataUangKeluar!.length} Transaksi',
+                                '${_data!.data.dataUangKeluar!.length} Transaksi Tercatat',
                                 style: GoogleFonts.poppins(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12,

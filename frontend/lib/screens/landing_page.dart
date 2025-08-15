@@ -53,19 +53,6 @@ class _LandingPageState extends State<LandingPage> {
     }
   }
 
-  void _showDevelopmentDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Sedang Dalam Pengembangan'),
-        content: Text('Fitur ini sedang dalam proses pengembangan.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Tutup')),
-        ],
-      ),
-    );
-  }
-
   Future<void> _loadBerita() async {
     if (isLoading || !hasMore) return;
     setState(() => isLoading = true);
@@ -193,7 +180,8 @@ class _LandingPageState extends State<LandingPage> {
                           );
                         },
                       ),
-                      Text('Berita Lainnya', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                      SizedBox(height: 10),
+                      Text('Berita Lainnya', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.black)),
                       SizedBox(height: 10),
                       BeritaScreen(
                         beritaList: beritaList.sublist(1),

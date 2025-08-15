@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/berita_model.dart';
 import '../screens/detail_berita.dart';
 
@@ -17,7 +18,7 @@ class BeritaUtama extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: Text(
             berita.judul,
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: MediaQuery.of(context).size.width * 0.04,
               fontWeight: FontWeight.bold,
               color: Colors.black,

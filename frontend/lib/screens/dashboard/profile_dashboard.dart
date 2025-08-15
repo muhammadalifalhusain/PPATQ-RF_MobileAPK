@@ -194,7 +194,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       SizedBox(height: 8),
                                       Text(
                                         _loginData?.nama ?? 'Nama Tidak Tersedia',
-                                        style: TextStyle(
+                                        style: GoogleFonts.poppins(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w700,
                                           color: Colors.grey.shade800,
@@ -231,15 +231,9 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Icon(
-                                              Icons.class_,
-                                              size: 14,
-                                              color: Colors.grey.shade600,
-                                            ),
-                                            SizedBox(width: 5),
                                             Text(
                                               'Kelas: ${_loginData?.kelas ?? 'Tidak Tersedia'}',
-                                              style: TextStyle(
+                                              style: GoogleFonts.poppins(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.grey.shade700,
@@ -251,15 +245,9 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Icon(
-                                              Icons.badge_outlined,
-                                              size: 14,
-                                              color: Colors.grey.shade600,
-                                            ),
-                                            SizedBox(width: 5),
                                             Text(
                                               'NIS: ${_loginData?.noInduk ?? 'Tidak Tersedia'}',
-                                              style: TextStyle(
+                                              style: GoogleFonts.poppins(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.grey.shade700,
@@ -337,9 +325,9 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
+                                          Text(
                                             'Saldo Uang Saku',
-                                            style: TextStyle(
+                                            style: GoogleFonts.poppins(
                                               color: Colors.white70,
                                               fontSize: 15,
                                               fontWeight: FontWeight.w500,
@@ -349,7 +337,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                           const SizedBox(height: 6),
                                           Text(
                                             'Rp ${_formatRupiah(_loginData?.keuangan.saldo ?? 0)}',
-                                            style: const TextStyle(
+                                            style: GoogleFonts.poppins(
                                               color: Colors.white,
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
@@ -402,7 +390,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                         SizedBox(height: 8), 
                                         Text(
                                           'Saku Masuk',
-                                          style: TextStyle(
+                                          style: GoogleFonts.poppins(
                                             fontSize: 11,
                                             color: Colors.green.shade700,
                                             fontWeight: FontWeight.bold,
@@ -448,7 +436,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                         SizedBox(height: 8),
                                         Text(
                                           'Saku Keluar',
-                                          style: TextStyle(
+                                          style: GoogleFonts.poppins(
                                             fontSize: 11,
                                             color: Colors.red.shade700,
                                             fontWeight: FontWeight.bold,
@@ -494,7 +482,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   SizedBox(width: 10),
                                   Text(
                                     'Riwayat Pembayaran Pondok',
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,

@@ -48,7 +48,6 @@ class AppHeader extends StatelessWidget {
                 ),
             ],
           ),
-          
           SizedBox(height: 4), 
           Text(
           'Pondok Pesantren Anak-anak Tahfidzul Qur\'an Raudlatul Falah - Pati',
@@ -73,8 +72,8 @@ class AppHeader extends StatelessWidget {
                   TextButton.icon(
                     icon: Icon(Icons.login, size: 16, color: Colors.white),
                     label: Text(
-                      'Login',
-                      style: TextStyle(
+                      'Log In',
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

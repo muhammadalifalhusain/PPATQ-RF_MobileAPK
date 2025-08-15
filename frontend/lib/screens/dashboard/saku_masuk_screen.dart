@@ -190,7 +190,7 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_data!.data.dataUangMasuk!.length} Transaksi',
+                                '${_data!.data.dataUangMasuk!.length} Transaksi Tercatat',
                                 style: GoogleFonts.poppins(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 12,

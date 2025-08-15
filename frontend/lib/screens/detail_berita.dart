@@ -44,18 +44,15 @@ class DetailBeritaScreen extends StatelessWidget {
             Center(
               child: Text(
                 berita.judul,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Poppins',
                   color: Colors.black,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 14),
-
-            // Gambar Dalam
             if (gambarDalam != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -73,7 +70,6 @@ class DetailBeritaScreen extends StatelessWidget {
               ),
 
             if (gambarDalam != null) const SizedBox(height: 20),
-
             Html(
               data: berita.isiBerita,
               onLinkTap: (url, _, __) async {

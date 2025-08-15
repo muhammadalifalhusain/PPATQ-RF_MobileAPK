@@ -106,7 +106,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _performLogout(AuthProvider authProvider) async {
-      // Show loading dialog with better design
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -139,12 +138,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       );
-
       try {
-        // Perform logout
         await authProvider.logout();
         
-        // Close loading dialog if still mounted
         if (mounted) {
           Navigator.of(context).pop();
         }
@@ -157,8 +153,6 @@ class _MainScreenState extends State<MainScreen> {
             (route) => false,
           );
         }
-
-        // Show success message after navigation
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _showSnackBar(
@@ -170,12 +164,9 @@ class _MainScreenState extends State<MainScreen> {
         });
 
       } catch (e) {
-        // Close loading dialog
         if (mounted) {
           Navigator.of(context).pop();
         }
-
-        // Show error message
         if (mounted) {
           _showSnackBar(
             'Gagal logout: ${e.toString()}',
@@ -183,8 +174,6 @@ class _MainScreenState extends State<MainScreen> {
             Icons.error,
           );
         }
-
-        // Log error for debugging
         debugPrint('Logout error: $e');
       }
     }
@@ -234,11 +223,11 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: Colors.teal,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: GoogleFonts.poppins(
           fontWeight: FontWeight.bold,
           color: Colors.black87,
         ),
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: GoogleFonts.poppins(
           fontWeight: FontWeight.normal,
         ),
         items: const [
