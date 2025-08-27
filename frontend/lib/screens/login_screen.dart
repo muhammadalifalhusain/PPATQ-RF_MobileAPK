@@ -222,10 +222,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             Image.asset('assets/images/logo.png', height: 80, width: 80),
                             SizedBox(height: 24),
                             Text('Selamat Datang', 
-                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+                                style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
                             SizedBox(height: 8),
                             Text('PPATQ RAUDLATUL FALAH', 
-                                style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.8))),
+                                style: GoogleFonts.poppins(fontSize: 16, color: Colors.white.withOpacity(0.8))),
                             SizedBox(height: 40),
                             Form(
                               key: _formKey,
