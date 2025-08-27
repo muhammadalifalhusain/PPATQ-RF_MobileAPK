@@ -50,7 +50,7 @@ class _AppHeaderState extends State<AppHeader>
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: const BoxDecoration(
-        color: Color(0xFF1A237E), // Deep blue modern
+       color: Color(0xFF003B46), 
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
           bottomRight: Radius.circular(20),

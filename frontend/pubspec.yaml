@@ -78,6 +78,7 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/default-image.png
+    - assets/images/psb.jpg
   #   - images/a_dot_ham.jpeg
 
 flutter_launcher_icons:

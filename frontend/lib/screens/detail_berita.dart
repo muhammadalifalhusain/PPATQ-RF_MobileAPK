@@ -54,21 +54,20 @@ class DetailBeritaScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             if (gambarDalam != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  '$baseImageUrl$gambarDalam',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[200],
-                    height: 200,
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
-                  ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                '$baseImageUrl$gambarDalam',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: Colors.grey[200],
+                  height: 200,
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
                 ),
               ),
-
+            ),
             if (gambarDalam != null) const SizedBox(height: 20),
             Html(
               data: berita.isiBerita,

@@ -10,7 +10,8 @@ import '../widgets/capain_tahfidz.dart';
 import '../widgets/menu_widget.dart';
 import '../models/capaian_tahfidz_model.dart';
 import '../services/capaian_tahfidz_service.dart';
-
+import '../widgets/pendaftaran_santri_widget.dart';
+import '../utils/pendaftaran_url.dart';
 class LandingPage extends StatefulWidget {
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -46,13 +47,6 @@ class _LandingPageState extends State<LandingPage> {
     return result; 
   }
 
-  Future<void> _launchPSBUrl() async {
-    final Uri url = Uri.parse('http://psb.ppatq-rf.id');
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
   Future<void> _loadBerita() async {
     if (isLoading || !hasMore) return;
     setState(() => isLoading = true);
@@ -84,52 +78,8 @@ class _LandingPageState extends State<LandingPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(13),
-                      child: GestureDetector(
-                        onTap: _launchPSBUrl,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.teal, Colors.green],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: EdgeInsets.all(14),
-                          child: Row(
-                            children: [
-                              Icon(Icons.school, color: Colors.white, size: 40),
-                              SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'PENDAFTARAN SANTRI BARU',
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Daftarkan putra/putri Anda sekarang!',
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Icon(Icons.arrow_forward_ios, color: Colors.white),
-                            ],
-                          ),
-                        ),
-                      ),
+                    EnhancedRegistrationCard(
+                      onTap: launchPSBUrl,
                     ),
                     if (beritaList.isEmpty)
                       Padding(
@@ -156,7 +106,17 @@ class _LandingPageState extends State<LandingPage> {
                           } else if (snapshot.hasError) {
                             return Center(child: Text('Error: ${snapshot.error}'));
                           } else if (!snapshot.hasData || snapshot.data == null) {
-                            return const Center(child: Text('Tidak ada data capaian tahfidz'));
+                            return Center(
+                              child: Text(
+                                'Tidak ada data capaian tahfidz',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
                           }
                           final data = snapshot.data!.data;
 
@@ -200,29 +160,28 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
-      // bottomNavigationBar dihilangkan, diganti shadow dari bawah ke atas
       extendBody: true,
       bottomSheet: IgnorePointer(
         child: DecoratedBox(
           decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xFF00897B), // Colors.teal
-            blurRadius: 44,
-            spreadRadius: 0,
-            offset: Offset(0, -24),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF00897B),
+                blurRadius: 44,
+                spreadRadius: 0,
+                offset: Offset(0, -24),
+              ),
+              BoxShadow(
+                color: Color(0xFF388E3C),
+                blurRadius: 44,
+                spreadRadius: 0,
+                offset: Offset(0, -24),
+              ),
+            ],
           ),
-          BoxShadow(
-            color: Color(0xFF388E3C), // Colors.green
-            blurRadius: 44,
-            spreadRadius: 0,
-            offset: Offset(0, -24),
-          ),
-        ],
-          ),
-          child: SizedBox(
-        height: 4,
-        width: double.infinity,
+            child: SizedBox(
+            height: 4,
+            width: double.infinity,
           ),
         ),
       ),
