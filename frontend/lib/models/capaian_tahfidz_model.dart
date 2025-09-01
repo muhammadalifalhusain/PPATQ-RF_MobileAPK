@@ -1,38 +1,38 @@
 class CapaianTahfidzResponse {
   final int status;
   final String message;
-  final CapaianTahfidzData data;
+  final CapaianTahfidzData? data;
 
   CapaianTahfidzResponse({
     required this.status,
     required this.message,
-    required this.data,
+    this.data,
   });
 
   factory CapaianTahfidzResponse.fromJson(Map<String, dynamic> json) {
     return CapaianTahfidzResponse(
-      status: json['status'],
-      message: json['message'],
-      data: CapaianTahfidzData.fromJson(json['data']),
+      status: json['status'] ?? 0,
+      message: json['message'] ?? '',
+      data: json['data'] != null ? CapaianTahfidzData.fromJson(json['data']) : null,
     );
   }
 }
 
 class CapaianTahfidzData {
   final List<CapaianItem> capaianCustom;
-  final CapaianItem terendah;
+  final CapaianItem? terendah;
 
   CapaianTahfidzData({
     required this.capaianCustom,
-    required this.terendah,
+    this.terendah,
   });
 
   factory CapaianTahfidzData.fromJson(Map<String, dynamic> json) {
     return CapaianTahfidzData(
-      capaianCustom: (json['capaianCustom'] as List)
-          .map((e) => CapaianItem.fromJson(e))
+      capaianCustom: (json['capaianCustom'] as List? ?? [])
+          .map((e) => CapaianItem.fromJson(e ?? {}))
           .toList(),
-      terendah: CapaianItem.fromJson(json['terendah']),
+      terendah: json['terendah'] != null ? CapaianItem.fromJson(json['terendah']) : null,
     );
   }
 }
@@ -50,10 +50,10 @@ class CapaianItem {
 
   factory CapaianItem.fromJson(Map<String, dynamic> json) {
     return CapaianItem(
-      capaian: json['capaian'],
-      jumlah: json['jumlah'],
-      santri: (json['santri'] as List)
-          .map((e) => SantriTahfidz.fromJson(e))
+      capaian: json['capaian'] ?? '',
+      jumlah: json['jumlah'] ?? 0,
+      santri: (json['santri'] as List? ?? [])
+          .map((e) => SantriTahfidz.fromJson(e ?? {}))
           .toList(),
     );
   }
@@ -63,24 +63,30 @@ class SantriTahfidz {
   final String nama;
   final String? photo;
   final String kelas;
-  final String guruTahfidz;
+  final String? guruTahfidz;
   final String? photoUstadTahfidz;
 
   SantriTahfidz({
     required this.nama,
     this.photo,
     required this.kelas,
-    required this.guruTahfidz,
+    this.guruTahfidz,
     this.photoUstadTahfidz,
   });
 
   factory SantriTahfidz.fromJson(Map<String, dynamic> json) {
     return SantriTahfidz(
-      nama: json['nama'],
-      photo: json['photo'],
-      kelas: json['kelas'],
-      guruTahfidz: json['guruTahfidz'],
-      photoUstadTahfidz: json['photoUstadTahfidz'],
+      nama: json['nama'] ?? '',
+      photo: (json['photo'] != null && (json['photo'] as String).isNotEmpty)
+          ? json['photo']
+          : null,
+      kelas: json['kelas'] ?? '',
+      guruTahfidz: (json['guruTahfidz'] != null && (json['guruTahfidz'] as String).isNotEmpty)
+          ? json['guruTahfidz']
+          : null,
+      photoUstadTahfidz: (json['photoUstadTahfidz'] != null && (json['photoUstadTahfidz'] as String).isNotEmpty)
+          ? json['photoUstadTahfidz']
+          : null,
     );
   }
 }

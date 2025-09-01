@@ -104,8 +104,18 @@ class _LandingPageState extends State<LandingPage> {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const Center(child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return Center(child: Text('Error: ${snapshot.error}'));
-                          } else if (!snapshot.hasData || snapshot.data == null) {
+                            return Center(
+                              child: Text(
+                                'Error: ${snapshot.error}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.red,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          } else if (!snapshot.hasData || snapshot.data == null || snapshot.data!.data == null) {
                             return Center(
                               child: Text(
                                 'Tidak ada data capaian tahfidz',
@@ -118,28 +128,47 @@ class _LandingPageState extends State<LandingPage> {
                               ),
                             );
                           }
-                          final data = snapshot.data!.data;
+
+                          final data = snapshot.data!.data!;
+                          final capaianList = data.capaianCustom;
+                          final terendah = data.terendah;
+
+                          if (capaianList.isEmpty && terendah == null) {
+                            return Center(
+                              child: Text(
+                                'Data capaian masih kosong',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
 
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              ...List.generate(data.capaianCustom.length, (index) {
-                                final item = data.capaianCustom[index];
+                              ...capaianList.map((item) {
                                 return CapaianCard(
                                   title: 'Capaian',
                                   data: item,
                                 );
-                              }),
+                              }).toList(),
 
-                              const SizedBox(height: 4),
-                              CapaianCard(
-                                title: 'Terendah',
-                                data: data.terendah,
-                              ),
+                              if (terendah != null) ...[
+                                const SizedBox(height: 4),
+                                CapaianCard(
+                                  title: 'Terendah',
+                                  data: terendah,
+                                ),
+                              ],
                             ],
                           );
                         },
                       ),
+
                       SizedBox(height: 10),
                       Text('Berita Lainnya', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.black)),
                       SizedBox(height: 10),
