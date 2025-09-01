@@ -191,7 +191,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -216,12 +216,12 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> with TickerProviderStat
           Icon(
             Icons.keyboard_arrow_down_rounded,
             size: 24,
-            color: Colors.black,
+            color: Colors.white,
           ),
           Text(
             'lainnya',
             style: GoogleFonts.poppins(
-              color: Colors.black,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),

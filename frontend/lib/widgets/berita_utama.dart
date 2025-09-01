@@ -21,7 +21,7 @@ class BeritaUtama extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: MediaQuery.of(context).size.width * 0.04,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
             ),
             textAlign: TextAlign.center,
             maxLines: 2,
