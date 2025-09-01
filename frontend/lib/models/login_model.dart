@@ -58,27 +58,37 @@ class SakuKeluar {
 
 class Keuangan {
   final int saldo;
+  final int totalSakuMasuk;
   final List<SakuMasuk> sakuMasuk;
+  final int totalSakuKeluar;
   final List<SakuKeluar> sakuKeluar;
 
   Keuangan({
     required this.saldo,
+    required this.totalSakuMasuk,
     required this.sakuMasuk,
+    required this.totalSakuKeluar,
     required this.sakuKeluar,
   });
 
   factory Keuangan.fromJson(Map<String, dynamic> json) {
     final saldoValue = _parseInt(json['saldo']);
+    final totalSakuMasuk = _parseInt(json['totalSakuMasuk']);
+    final totalSakuKeluar = _parseInt(json['totalSakuKeluar']);
     return Keuangan(
       saldo: saldoValue,
+      totalSakuMasuk: totalSakuMasuk,
       sakuMasuk: (json['sakuMasuk'] as List?)?.map((e) => SakuMasuk.fromJson(e)).toList() ?? [],
+      totalSakuKeluar: totalSakuKeluar,
       sakuKeluar: (json['sakuKeluar'] as List?)?.map((e) => SakuKeluar.fromJson(e)).toList() ?? [],
     );
   }
 
   Map<String, dynamic> toJson() => {
     'saldo': saldo,
+    'totalSakuMasuk': totalSakuMasuk,
     'sakuMasuk': sakuMasuk.map((e) => e.toJson()).toList(),
+    'totalSakuKeluar': totalSakuKeluar,
     'sakuKeluar': sakuKeluar.map((e) => e.toJson()).toList(),
   };
 }
@@ -164,7 +174,7 @@ class LoginResponse {
       fotoUstadTahfidz: _parseString(json['fotoUstadTahfidz']),
       keuangan: json['keuangan'] is Map<String, dynamic>
           ? Keuangan.fromJson(json['keuangan'])
-          : Keuangan(saldo: 0, sakuMasuk: [], sakuKeluar: []),
+          : Keuangan(saldo: 0, totalSakuMasuk: 0, sakuMasuk: [], totalSakuKeluar: 0, sakuKeluar: []),
       accessToken: _parseString(json['accessToken']),
       expiresIn: (json['expiresIn']),
     );

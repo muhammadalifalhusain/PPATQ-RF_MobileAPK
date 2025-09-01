@@ -389,11 +389,22 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                         ),
                                         SizedBox(height: 8), 
                                         Text(
-                                          'Saku Masuk',
+                                          'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuMasuk ?? 0)}',
                                           style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: Colors.green.shade700,
+                                            color: Colors.black,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold,
+                                            letterSpacing: -0.5,
+                                            height: 1.2,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Saldo Masuk Bulan ini',
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.black,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
                                           ),
                                         ),
                                       ],
@@ -435,11 +446,22 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                         ),
                                         SizedBox(height: 8),
                                         Text(
-                                          'Saku Keluar',
+                                          'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuKeluar ?? 0)}',
                                           style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: Colors.red.shade700,
+                                            color: Colors.black,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold,
+                                            letterSpacing: -0.5,
+                                            height: 1.2,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Saldo Keluar Bulan ini',
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.black,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
                                           ),
                                         ),
                                       ],

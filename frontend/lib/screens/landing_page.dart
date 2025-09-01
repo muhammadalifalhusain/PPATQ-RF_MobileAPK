@@ -12,7 +12,6 @@ import '../models/capaian_tahfidz_model.dart';
 import '../services/capaian_tahfidz_service.dart';
 import '../widgets/pendaftaran_santri_widget.dart';
 import '../utils/pendaftaran_url.dart';
-
 class LandingPage extends StatefulWidget {
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -71,110 +70,94 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // biar background kelihatan, jangan pakai warna putih default
-      backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bg.jpg"),
-            fit: BoxFit.cover, // penuh menyesuaikan layar
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              AppHeader(showAuthButtons: true, showBackButton: false),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      EnhancedRegistrationCard(
-                        onTap: launchPSBUrl,
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppHeader(showAuthButtons: true, showBackButton: false),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    EnhancedRegistrationCard(
+                      onTap: launchPSBUrl,
+                    ),
+                    if (beritaList.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      )
+                    else ...[
+                      BeritaUtama(berita: beritaList.first),
+                      Divider(),
+                      Text(
+                        'Menu',
+                        style: GoogleFonts.poppins(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
                       ),
-                      if (beritaList.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: CircularProgressIndicator(),
-                        )
-                      else ...[
-                        BeritaUtama(berita: beritaList.first),
-                        const Divider(),
-                        Text(
-                          'Menu Cepat',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        MenuIkonWidget(),
-                        FutureBuilder<CapaianTahfidzResponse?>(
-                          future: _capaianFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(child: Text('Error: ${snapshot.error}'));
-                            } else if (!snapshot.hasData || snapshot.data == null) {
-                              return Center(
-                                child: Text(
-                                  'Tidak ada data capaian tahfidz',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey[700],
-                                  ),
-                                  textAlign: TextAlign.center,
+                      MenuIkonWidget(),
+                      FutureBuilder<CapaianTahfidzResponse?>(
+                        future: _capaianFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData || snapshot.data == null) {
+                            return Center(
+                              child: Text(
+                                'Tidak ada data capaian tahfidz',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
                                 ),
-                              );
-                            }
-                            final data = snapshot.data!.data;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                ...List.generate(data.capaianCustom.length, (index) {
-                                  final item = data.capaianCustom[index];
-                                  return CapaianCard(
-                                    title: 'Capaian',
-                                    data: item,
-                                  );
-                                }),
-
-                                const SizedBox(height: 4),
-                                CapaianCard(
-                                  title: 'Terendah',
-                                  data: data.terendah,
-                                ),
-                              ],
+                                textAlign: TextAlign.center,
+                              ),
                             );
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Berita Lainnya',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        BeritaScreen(
-                          beritaList: beritaList.sublist(1),
-                          onReachEnd: _loadBerita,
-                        ),
-                      ],
-                      if (isLoading)
-                        const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: CircularProgressIndicator(),
-                        ),
+                          }
+                          final data = snapshot.data!.data;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ...List.generate(data.capaianCustom.length, (index) {
+                                final item = data.capaianCustom[index];
+                                return CapaianCard(
+                                  title: 'Capaian',
+                                  data: item,
+                                );
+                              }),
+
+                              const SizedBox(height: 4),
+                              CapaianCard(
+                                title: 'Terendah',
+                                data: data.terendah,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      Text('Berita Lainnya', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.black)),
+                      SizedBox(height: 10),
+                      BeritaScreen(
+                        beritaList: beritaList.sublist(1),
+                        onReachEnd: _loadBerita,
+                      ),
                     ],
-                  ),
+                    if (isLoading)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       extendBody: true,
@@ -196,7 +179,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
             ],
           ),
-          child: const SizedBox(
+            child: SizedBox(
             height: 4,
             width: double.infinity,
           ),
