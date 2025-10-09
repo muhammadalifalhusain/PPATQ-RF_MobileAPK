@@ -69,7 +69,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
         _loginData = authProvider.loginResponse;
       });
     } catch (e) {
-      print('Error loading login data: $e');
+      print('Pesan error: $e');
     }
   }
 
@@ -77,7 +77,6 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
     final cleaned = value?.replaceAll(',', '').trim() ?? '';
     return cleaned.isNotEmpty ? value!.trim() : '-';
   }
-
 
   @override
   
@@ -361,108 +360,184 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (_) => SakuMasukScreen()));
                                   },
-                                  borderRadius: BorderRadius.circular(12), 
+                                  borderRadius: BorderRadius.circular(16),
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 12), 
+                                    padding: EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: Colors.green.shade50,
-                                      borderRadius: BorderRadius.circular(12), 
-                                      border: Border.all(color: Colors.green.shade200, width: 1.2),
+                                      gradient: LinearGradient(
+                                        colors: [Colors.green.shade400, Colors.green.shade600],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.green.withOpacity(0.05),
-                                          blurRadius: 4, 
-                                          offset: Offset(0, 2),
+                                          color: Colors.green.withOpacity(0.3),
+                                          blurRadius: 12,
+                                          offset: Offset(0, 6),
                                         ),
                                       ],
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          padding: EdgeInsets.all(10), 
-                                          decoration: BoxDecoration(
-                                            color: Colors.green.shade100,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(Icons.trending_up, color: Colors.green.shade600, size: 20), 
-                                        ),
-                                        SizedBox(height: 8), 
                                         Text(
-                                          'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuMasuk ?? 0)}',
+                                          'Saldo Masuk',
                                           style: GoogleFonts.poppins(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: -0.5,
-                                            height: 1.2,
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.3,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 6),
+                                        Flexible(
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuMasuk ?? 0)}',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: -0.5,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        Text(
-                                          'Saldo Masuk Bulan ini',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.5,
-                                          ),
+                                        SizedBox(height: 8),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Bulan ini',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white.withOpacity(0.8),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'Lihat Detail',
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white.withOpacity(0.9),
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                                Icon(
+                                                  Icons.arrow_forward_rounded,
+                                                  color: Colors.white.withOpacity(0.9),
+                                                  size: 12,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 12), 
+                              SizedBox(width: 12),
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (_) => SakuKeluarScreen()));
                                   },
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(16),
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                    padding: EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.red.shade200, width: 1.2),
+                                      gradient: LinearGradient(
+                                        colors: [Colors.red.shade400, Colors.red.shade600],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.red.withOpacity(0.05),
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2),
+                                          color: Colors.red.withOpacity(0.3),
+                                          blurRadius: 12,
+                                          offset: Offset(0, 6),
                                         ),
                                       ],
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red.shade100,
-                                            shape: BoxShape.circle,
+                                        Text(
+                                          'Saldo Keluar',
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.white.withOpacity(0.9),
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.3,
                                           ),
-                                          child: Icon(Icons.trending_down, color: Colors.red.shade600, size: 20),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 6),
+                                        Flexible(
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuKeluar ?? 0)}',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: -0.5,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                         SizedBox(height: 8),
-                                        Text(
-                                          'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuKeluar ?? 0)}',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: -0.5,
-                                            height: 1.2,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Saldo Keluar Bulan ini',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.5,
-                                          ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Bulan ini',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white.withOpacity(0.8),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'Lihat Detail',
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white.withOpacity(0.9),
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                                Icon(
+                                                  Icons.arrow_forward_rounded,
+                                                  color: Colors.white.withOpacity(0.9),
+                                                  size: 12,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -471,7 +546,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 5),
                           InkWell(
                             onTap: () {
                               Navigator.push(
