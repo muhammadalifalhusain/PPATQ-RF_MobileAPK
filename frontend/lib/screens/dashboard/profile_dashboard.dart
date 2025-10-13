@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-import '../../models/login_model.dart';
+import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 
+import '../../models/login_model.dart';
+
 import '../../widgets/menu_dashboard_widget.dart';
+
 import 'saku_keluar_screen.dart';
 import 'saku_masuk_screen.dart';
 import 'riwayat_bayar_screen.dart';
@@ -105,7 +106,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: Text(
-              'V1.1.18',
+              'V1.1.19',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -427,7 +428,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
-                                                  'Lihat Detail',
+                                                  'Detail',
                                                   style: GoogleFonts.poppins(
                                                     color: Colors.white.withOpacity(0.9),
                                                     fontSize: 10,
@@ -522,7 +523,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
-                                                  'Lihat Detail',
+                                                  'Detail',
                                                   style: GoogleFonts.poppins(
                                                     color: Colors.white.withOpacity(0.9),
                                                     fontSize: 10,

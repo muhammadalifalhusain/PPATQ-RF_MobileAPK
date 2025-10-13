@@ -12,8 +12,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.ppatq.walsan"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35
+    ndkVersion = "26.1.10909125"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId = "com.ppatq.walsan"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -41,7 +41,6 @@ android {
         }
     }
 
-
     buildTypes {
         release {
             signingConfig signingConfigs.release
@@ -51,6 +50,7 @@ android {
         }
     }
 }
+
 
 flutter {
     source = "../.."

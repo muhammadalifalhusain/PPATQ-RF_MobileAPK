@@ -69,7 +69,7 @@ class _AppHeaderState extends State<AppHeader>
             children: [
               const Spacer(),
               Text(
-                'V1.1.18',
+                'V1.1.19',
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   color: Colors.white.withOpacity(0.9),
