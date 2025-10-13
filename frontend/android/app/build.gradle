@@ -49,8 +49,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+    splits {
+        abi {
+            enable false
+        }
+    }
 }
-
 
 flutter {
     source = "../.."
