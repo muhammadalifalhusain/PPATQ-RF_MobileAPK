@@ -35,6 +35,8 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
   String _selectedMetode = 'transfer';
   int _totalJumlah = 0;
   String? tanggalBayar;
+  
+  final ImagePicker _picker = ImagePicker();
   final TextEditingController _noIndukController = TextEditingController();
   final TextEditingController _periodeController = TextEditingController();
   final TextEditingController _tahunController = TextEditingController();
@@ -151,17 +153,18 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
 
     _cekKecocokanNominal();
   }
-
-  Future<void> _pickBuktiBayar() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: source,
+      imageQuality: 80,
+    );
     if (pickedFile != null) {
       setState(() {
         _buktiBayar = File(pickedFile.path);
       });
     }
   }
-
   Future<void> _selectDate(TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -778,11 +781,15 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                           SizedBox(height: 8),
                           TextFormField(
                             controller: _nominalTransferController,
-                            decoration: InputDecoration(
-                              labelText: 'Masukkan nominal transfer',
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.payment),
-                              prefixText: 'Rp ',
+                              style: GoogleFonts.poppins(), 
+                              decoration: InputDecoration(
+                                labelText: 'Masukkan nominal transfer',
+                                labelStyle: GoogleFonts.poppins(fontSize: 14),
+                                hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                                prefixText: 'Rp ',
+                                prefixStyle: GoogleFonts.poppins(),
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.payment),
                             ),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
@@ -816,7 +823,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                         children: [
                           Text(
                             'Rincian Jenis Pembayaran',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.teal,
@@ -826,21 +833,25 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                           ..._jenisPembayaran.asMap().entries.map((entry) {
                             int index = entry.key;
                             JenisPembayaran jenis = entry.value;
-                            
+
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: TextFormField(
                                 controller: _controllers[index],
+                                style: GoogleFonts.poppins(), 
                                 decoration: InputDecoration(
                                   labelText: jenis.jenis,
+                                  labelStyle: GoogleFonts.poppins(fontSize: 14),
                                   hintText: jenis.harga > 0
                                       ? (jenis.id == 5
                                           ? '${currencyFormatter.format(jenis.harga)} (Kecuali kelas 6)'
                                           : currencyFormatter.format(jenis.harga))
                                       : 'Masukkan nominal',
+                                  hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey),
                                   border: OutlineInputBorder(),
                                   prefixIcon: Icon(Icons.payments),
                                   prefixText: 'Rp ',
+                                  prefixStyle: GoogleFonts.poppins(),
                                 ),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
@@ -866,14 +877,14 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               children: [
                                 Text(
                                   'Total Pembayaran:',
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
                                   'Rp ${currencyFormatter.format(_totalJumlah)}',
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: _isNominalSesuai ? Colors.green : Colors.red,
@@ -882,23 +893,22 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               ],
                             ),
                             if (_nominalTransferController.text.isNotEmpty && !_isNominalSesuai)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                'Total rincian tidak sama dengan total lapor bayar / transfer(Rp ${currencyFormatter.format(int.tryParse(_nominalTransferController.text.replaceAll('.', '')) ?? 0)})',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 14,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  'Total rincian tidak sama dengan total lapor bayar / transfer '
+                                  '(Rp ${currencyFormatter.format(int.tryParse(_nominalTransferController.text.replaceAll('.', '')) ?? 0)})',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         ],
                       ),
                     ),
                   ),
-                  
-                  SizedBox(height: 10),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -910,67 +920,42 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal,
+                              color: Colors.black,
                             ),
                           ),
                           SizedBox(height: 8),
-                          GestureDetector(
-                            onTap: _pickBuktiBayar,
-                            child: Container(
-                              width: double.infinity,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  style: BorderStyle.solid,
-                                  width: 2,
+                          if (_buktiBayar != null)
+                            Column(
+                              children: [
+                                Image.file(_buktiBayar!, height: 150, fit: BoxFit.cover),
+                                TextButton.icon(
+                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  label: const Text('Hapus Gambar'),
+                                  onPressed: () => setState(() => _buktiBayar = null),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: _buktiBayar != null
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Image.file(
-                                        _buktiBayar!,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  : Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.cloud_upload,
-                                          size: 64,
-                                          color: Colors.grey,
-                                        ),
-                                        SizedBox(height: 16),
-                                        Text(
-                                          'Tekan untuk pilih bukti bayar',
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              ],
+                            )
+                          else
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () => _pickImage(ImageSource.gallery),
+                                  icon: const Icon(Icons.photo_library),
+                                  label: const Text('Galeri'),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () => _pickImage(ImageSource.camera),
+                                  icon: const Icon(Icons.camera_alt),
+                                  label: const Text('Kamera'),
+                                ),
+                              ],
                             ),
-                          ),
-                          if (_buktiBayar != null) ...[
-                            SizedBox(height: 8),
-                            Text(
-                              'Tap gambar untuk mengubah',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
                         ],
                       ),
                     ),
                   ),
-                  
-                  SizedBox(height: 24),
+                  SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     height: 50,
