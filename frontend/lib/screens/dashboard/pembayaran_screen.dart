@@ -455,11 +455,10 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                   TanggalPembayaranDropdown(
                     onDateChanged: (value) {
                       setState(() {
-                        tanggalBayar = value; // contoh hasil: 2025-08-11
+                        tanggalBayar = value;
                       });
                     },
                   ),
-                  SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -746,7 +745,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                                     },
                                     hintText: 'Contoh: 08123456789',
                                   ),
-                                  SizedBox(height: 16),
+                                  SizedBox(height: 10),
                                   _buildModernTextField(
                                     controller: _catatanController,
                                     labelText: 'Catatan (Opsional)',
@@ -763,7 +762,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                       ),
                     ),
                     ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 10),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -772,7 +771,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                         children: [
                           Text(
                             'Total Transfer',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.teal,
@@ -814,7 +813,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                       ),
                     ),
                   ),          
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -829,7 +828,7 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                               color: Colors.teal,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 10),
                           ..._jenisPembayaran.asMap().entries.map((entry) {
                             int index = entry.key;
                             JenisPembayaran jenis = entry.value;
@@ -917,10 +916,10 @@ class _InputPembayaranScreenState extends State<InputPembayaranScreen> {
                         children: [
                           Text(
                             'Bukti Pembayaran',
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: Colors.teal,
                             ),
                           ),
                           SizedBox(height: 8),
