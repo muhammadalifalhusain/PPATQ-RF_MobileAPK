@@ -48,16 +48,9 @@ class _MainScreenState extends State<MainScreen> {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,
+            color: Colors.red
           ),
           textAlign: TextAlign.center,
-        ),
-        content: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(
-            'Apakah Anda yakin ingin keluar dari akun?',
-            style: GoogleFonts.poppins(fontSize: 14),
-            textAlign: TextAlign.center,
-          ),
         ),
         actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
