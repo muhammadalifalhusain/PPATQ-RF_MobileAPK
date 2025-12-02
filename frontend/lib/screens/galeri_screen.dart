@@ -31,19 +31,24 @@ class _GaleriScreenState extends State<GaleriScreen>
       final galeri = await GaleriService.fetchGaleri();
       final fasilitas = await GaleriService.fetchFasilitas();
 
+      if (!mounted) return; 
+
       setState(() {
         _galeriList = galeri;
         _fasilitasList = fasilitas;
         isLoading = false;
       });
     } catch (e) {
+
+      if (!mounted) return;
+
       setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Gagal memuat data: $e")),
       );
     }
   }
-
+  
   String getImageUrl(GaleriItem item, bool isFasilitas) {
     final baseUrl = isFasilitas
         ? 'https://manajemen.ppatq-rf.id/assets/img/upload/foto_fasilitas/'
