@@ -57,7 +57,7 @@ class _InformasiScreenState extends State<InformasiScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white, // Gunakan background putih
+        color: Colors.white, 
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(

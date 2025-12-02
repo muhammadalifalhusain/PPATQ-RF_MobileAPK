@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../models/dakwah_model.dart';
-import '../services/dakwah_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_html/flutter_html.dart';
+
+import '../models/dakwah_model.dart';
+
+import '../services/dakwah_service.dart';
 class DakwahScreen extends StatefulWidget {
   const DakwahScreen({Key? key}) : super(key: key);
 
@@ -125,6 +128,18 @@ class _DakwahScreenState extends State<DakwahScreen>
     }
   }
 
+  String cleanHtml(String html) {
+    return html
+        .replaceAll(RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false), '')
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .trim();
+  }
+
+
   Widget _buildShimmerLoading() {
     return ListView.builder(
       itemCount: 5,
@@ -158,7 +173,7 @@ class _DakwahScreenState extends State<DakwahScreen>
               const SizedBox(height: 16),
               Container(
                 width: double.infinity,
-                height: 24,
+                height: 20,
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8),
@@ -222,7 +237,6 @@ class _DakwahScreenState extends State<DakwahScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header dengan foto
                         if (item.foto != null && item.foto!.isNotEmpty)
                           Container(
                             width: double.infinity,
@@ -264,7 +278,6 @@ class _DakwahScreenState extends State<DakwahScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Judul
                               Text(
                                 item.judul,
                                 style: const TextStyle(
@@ -277,21 +290,18 @@ class _DakwahScreenState extends State<DakwahScreen>
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 12),
-
-                              // Isi dakwah preview
                               Text(
-                                item.isiDakwah,
-                                style: TextStyle(
+                                cleanHtml(item.isiDakwah),
+                                style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.grey[700],
                                   height: 1.5,
+                                  fontWeight: FontWeight.w400,
                                 ),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 16),
-
-                              // Footer
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -372,7 +382,6 @@ class _DakwahScreenState extends State<DakwahScreen>
             ),
             child: Column(
               children: [
-                // Handle bar
                 Container(
                   margin: const EdgeInsets.only(top: 12),
                   width: 40,
@@ -386,11 +395,10 @@ class _DakwahScreenState extends State<DakwahScreen>
                 Expanded(
                   child: SingleChildScrollView(
                     controller: scrollController,
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Foto jika ada
                         if (item.foto != null && item.foto!.isNotEmpty) ...[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(15),
@@ -403,20 +411,16 @@ class _DakwahScreenState extends State<DakwahScreen>
                           ),
                           const SizedBox(height: 20),
                         ],
-
-                        // Judul
                         Text(
                           item.judul,
                           style: const TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                             height: 1.3,
                           ),
                         ),
                         const SizedBox(height: 16),
-
-                        // Tanggal
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -446,17 +450,24 @@ class _DakwahScreenState extends State<DakwahScreen>
                             ],
                           ),
                         ),
-                        const SizedBox(height: 24),
-
-                        // Isi dakwah
-                        Text(
-                          item.isiDakwah,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            height: 1.6,
-                          ),
-                        ),
+                        const SizedBox(height: 20),
+                        Html(
+                          data: item.isiDakwah,
+                          style: {
+                            "body": Style(
+                              fontSize: FontSize(16),
+                              lineHeight: LineHeight(1.6),
+                              color: Colors.black87,
+                              padding: HtmlPaddings.zero,
+                              margin: Margins.zero,
+                              fontFamily: GoogleFonts.poppins().fontFamily, 
+                            ),
+                            "p": Style(
+                              margin: Margins.only(bottom: 12),
+                              fontFamily: GoogleFonts.poppins().fontFamily, 
+                            ),
+                          },
+                        )
                       ],
                     ),
                   ),
