@@ -10,10 +10,13 @@ class GaleriScreen extends StatefulWidget {
   State<GaleriScreen> createState() => _GaleriScreenState();
 }
 
-class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderStateMixin {
+class _GaleriScreenState extends State<GaleriScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
   List<GaleriItem> _galeriList = [];
   List<GaleriItem> _fasilitasList = [];
+
   bool isLoading = true;
 
   @override
@@ -27,6 +30,7 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
     try {
       final galeri = await GaleriService.fetchGaleri();
       final fasilitas = await GaleriService.fetchFasilitas();
+
       setState(() {
         _galeriList = galeri;
         _fasilitasList = fasilitas;
@@ -35,7 +39,7 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
     } catch (e) {
       setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memuat data: $e')),
+        SnackBar(content: Text("Gagal memuat data: $e")),
       );
     }
   }
@@ -49,6 +53,7 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
 
   void _showImageFull(GaleriItem item, bool isFasilitas) {
     final imageUrl = getImageUrl(item, isFasilitas);
+
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -67,7 +72,11 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
                   child: Image.network(
                     imageUrl,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, color: Colors.white, size: 80),
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.broken_image,
+                      size: 80,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -79,15 +88,27 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
   }
 
   Widget _buildGrid(List<GaleriItem> items, bool isFasilitas) {
+    if (items.isEmpty) {
+      return const Center(
+        child: Text(
+          "Tidak ada data",
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return GridView.builder(
       padding: const EdgeInsets.all(12),
       itemCount: items.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12,
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
       itemBuilder: (context, index) {
         final item = items[index];
         final imageUrl = getImageUrl(item, isFasilitas);
+
         return GestureDetector(
           onTap: () => _showImageFull(item, isFasilitas),
           child: Hero(
@@ -102,20 +123,32 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
                       color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                      child: const Icon(
+                        Icons.broken_image,
+                        color: Colors.grey,
+                        size: 42,
+                      ),
                     ),
                   ),
-                  if (item.nama.isNotEmpty)
+
+                  // Overlay teks hanya muncul jika nama != null & tidak kosong
+                  if (item.nama != null && item.nama!.trim().isNotEmpty)
                     Positioned(
                       bottom: 0,
                       left: 0,
                       right: 0,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
                         color: Colors.black54,
                         child: Text(
-                          item.nama,
-                          style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
+                          item.nama!,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -136,25 +169,20 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 2,
-        toolbarHeight: 56,
-        automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32,color: Colors.white),
+          icon: const Icon(Icons.chevron_left, size: 32, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: false,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Text(
-            'Galeri',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-            ),
+        title: Text(
+          'Galeri',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
+
       body: Column(
         children: [
           Container(
@@ -170,6 +198,7 @@ class _GaleriScreenState extends State<GaleriScreen> with SingleTickerProviderSt
               ],
             ),
           ),
+
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())

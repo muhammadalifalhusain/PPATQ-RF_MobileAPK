@@ -29,17 +29,21 @@ class GaleriData {
 
   factory GaleriData.fromJson(Map<String, dynamic> json) {
     return GaleriData(
-      galeri: List<GaleriItem>.from(json['galeri'].map((x) => GaleriItem.fromJson(x))),
-      fasilitas: List<GaleriItem>.from(json['fasilitas'].map((x) => GaleriItem.fromJson(x))),
+      galeri: List<GaleriItem>.from(
+        json['galeri'].map((x) => GaleriItem.fromJson(x)),
+      ),
+      fasilitas: List<GaleriItem>.from(
+        json['fasilitas'].map((x) => GaleriItem.fromJson(x)),
+      ),
     );
   }
 }
 
 class GaleriItem {
-  final String nama;
+  final String? nama;
   final String? deskripsi;
   final String foto;
-  final int published;
+  final int? published;
 
   GaleriItem({
     required this.nama,
@@ -50,10 +54,10 @@ class GaleriItem {
 
   factory GaleriItem.fromJson(Map<String, dynamic> json) {
     return GaleriItem(
-      nama: json['nama'],
-      deskripsi: json['deskripsi'],
-      foto: json['foto'],
-      published: json['published'],
+      nama: json['nama'],                // nullable
+      deskripsi: json['deskripsi'],      // nullable
+      foto: json['foto'] ?? '',          // aman
+      published: json['published'],      // nullable
     );
   }
 }
