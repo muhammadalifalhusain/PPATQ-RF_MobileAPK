@@ -547,7 +547,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 5),
+                          SizedBox(height: 10),
                           InkWell(
                             onTap: () {
                               Navigator.push(
