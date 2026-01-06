@@ -2,7 +2,12 @@ class DakwahResponse {
   final int status;
   final String message;
   final DakwahData data;
-
+// dakwaResponse{
+// required this.status,
+//     required this.message,
+//     required this.data, jika data response mereturn list array tampilkan converter arrray
+// message dan model dijadikan menjadi satu kesatuan dalam dakwahResponse
+//}
   DakwahResponse({
     required this.status,
     required this.message,
