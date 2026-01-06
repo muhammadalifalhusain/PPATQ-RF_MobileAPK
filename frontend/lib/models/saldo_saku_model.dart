@@ -1,7 +1,7 @@
 class SaldoSakuModel {
   final int value;
 
-  const SaldoSakuModel({required this.value});
+  SaldoSakuModel({required this.value});
 
   factory SaldoSakuModel.fromJson(Map<String, dynamic> json) {
     return SaldoSakuModel(
@@ -19,7 +19,6 @@ class SaldoSakuModel {
           ) ??
           0;
     }
-
     return 0;
   }
 }

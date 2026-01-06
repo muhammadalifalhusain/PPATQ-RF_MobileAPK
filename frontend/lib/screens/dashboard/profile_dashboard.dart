@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/transaksi_saku_service.dart';
+import '../../services/saldo_saku_service.dart';
+
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 
@@ -19,6 +22,12 @@ class ProfileDashboard extends StatefulWidget {
 
 class _ProfileDashboardState extends State<ProfileDashboard> {
   LoginResponse? _loginData;
+  
+  late Future<void> _futureDashboard;
+
+  int _saldoSaku = 0;
+  int _totalMasuk = 0;
+  int _totalKeluar = 0;
 
   String _formatRupiah(int amount) {
     return amount.toString().replaceAllMapped(
@@ -62,6 +71,8 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
   void initState() {
     super.initState();
     _loadLoginData();
+
+     _futureDashboard = _loadDashboardData();
   }
   Future<void> _loadLoginData() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -73,6 +84,29 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
       print('Pesan error: $e');
     }
   }
+
+  Future<void> _loadDashboardData() async {
+    try {
+      final saldoService = SaldoSakuService();
+      final transaksiService = TransaksiSakuService();
+
+      final saldo = await saldoService.fetchSaldoSaku();
+      setState(() => _saldoSaku = saldo.value);
+    } catch (e) {
+      debugPrint('Saldo gagal: $e');
+    }
+
+    try {
+      final transaksi = await TransaksiSakuService().fetchTransaksiSaku();
+      setState(() {
+        _totalMasuk = transaksi.totalMasuk;
+        _totalKeluar = transaksi.totalKeluar;
+      });
+    } catch (e) {
+      debugPrint('Transaksi gagal: $e');
+    }
+  }
+
 
   String formatKosong(String? value) {
     final cleaned = value?.replaceAll(',', '').trim() ?? '';
@@ -335,15 +369,25 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                             ),
                                           ),
                                           const SizedBox(height: 6),
-                                          Text(
-                                            'Rp ${_formatRupiah(_loginData?.keuangan.saldo ?? 0)}',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: -0.5,
-                                              height: 1.2,
-                                            ),
+                                          FutureBuilder(
+                                            future: _futureDashboard,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return const Text(
+                                                  'Rp 0',
+                                                  style: TextStyle(color: Colors.white),
+                                                );
+                                              }
+
+                                              return Text(
+                                                'Rp ${_formatRupiah(_saldoSaku)}',
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              );
+                                            },
                                           ),
                                         ],
                                       ),
@@ -399,14 +443,23 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuMasuk ?? 0)}',
-                                              style: GoogleFonts.poppins(
-                                                color: Colors.white,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: -0.5,
-                                              ),
+                                            child: 
+                                            FutureBuilder(
+                                              future: _futureDashboard,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const Text('Rp 0');
+                                                }
+
+                                                return Text(
+                                                  'Rp ${_formatRupiah(_totalMasuk)}',
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
@@ -494,14 +547,23 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
                                           child: FittedBox(
                                             fit: BoxFit.scaleDown,
                                             alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Rp ${_formatRupiah(_loginData?.keuangan.totalSakuKeluar ?? 0)}',
-                                              style: GoogleFonts.poppins(
-                                                color: Colors.white,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: -0.5,
-                                              ),
+                                            child: 
+                                            FutureBuilder(
+                                              future: _futureDashboard,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const Text('Rp 0');
+                                                }
+
+                                                return Text(
+                                                  'Rp ${_formatRupiah(_totalKeluar)}',
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
