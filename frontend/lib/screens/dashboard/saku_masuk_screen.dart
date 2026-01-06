@@ -47,9 +47,9 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
   void _initExpandedMonths() {
     if (_data?.data?.dataUangMasuk == null) return;
 
-    final tahunKeys = _data!.data!.dataUangMasuk!.keys.toList()..sort();
+    final tahunKeys = _data!.data!.dataUangMasuk!.keys.toList();
     if (tahunKeys.isNotEmpty) {
-      _expandedYear = tahunKeys.last;
+      _expandedYear = tahunKeys.first;
     }
     _expandedMonth = null;
   }
@@ -204,11 +204,11 @@ class _SakuMasukScreenState extends State<SakuMasukScreen> {
       );
 
   List<Widget> _buildExpandableData() {
-    final tahunList = _data!.data!.dataUangMasuk!.keys.toList()..sort();
+    final tahunList = _data!.data!.dataUangMasuk!.keys.toList();
     
     return tahunList.map((tahun) {
       final bulanMap = _data!.data!.dataUangMasuk![tahun]!;
-      final bulanList = bulanMap.keys.toList()..sort();
+      final bulanList = bulanMap.keys.toList();
       final isYearExpanded = _expandedYear == tahun;
 
       return Padding(
