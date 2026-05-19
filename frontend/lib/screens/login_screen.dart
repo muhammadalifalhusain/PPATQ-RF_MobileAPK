@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     final picked = await showDatePicker(
       context: context,
       initialDate: DateTime(now.year - 10),
-      firstDate: DateTime(1970),
+      firstDate: DateTime(1945),
       lastDate: now,
     );
     if (picked != null) {
