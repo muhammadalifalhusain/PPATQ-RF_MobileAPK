@@ -66,42 +66,6 @@ class ValidasiPembayaranScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
-            Text(
-              'Apakah Anda sudah melakukan pembayaran?',
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: FaIcon(FontAwesomeIcons.check, size: 20),
-                label: Text(
-                  'Sudah Bayar',
-                  style: GoogleFonts.poppins(fontSize: 16),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InputPembayaranScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.withOpacity(0.1),
-                  foregroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.green, width: 1.5),
-                  ),
-                  elevation: 0,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
             FutureBuilder<Map<String, String>>(
               future: _getData(),
               builder: (context, snapshot) {
@@ -378,40 +342,6 @@ class ValidasiPembayaranScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildConfirmationButton(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        icon: FaIcon(icon, size: 20),
-        label: Text(
-          title,
-          style: GoogleFonts.poppins(fontSize: 16),
-        ),
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color.withOpacity(0.1),
-          foregroundColor: color,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: color, width: 1.5),
-          ),
-          elevation: 0,
-        ),
-      ),
-    );
-  }
-
-
-
-
 
   void _showHelpDialog(BuildContext context) {
     showDialog(
