@@ -27,24 +27,14 @@ class _MenuGridState extends State<MenuGrid> {
 
   final List<Map<String, dynamic>> _menuItems = const [
     {
-      'icon': FontAwesomeIcons.dollarSign,
-      'label': 'Pembayaran',
-      'color': Color(0xFF10B981),
-    },
-    {
-      'icon': FontAwesomeIcons.hospital,
-      'label': 'Kesehatan',
-      'color': Color(0xFF10B981),
-    },
-    {
       'icon': FontAwesomeIcons.book,
       'label': 'Tahfidz',
       'color': Color(0xFF8B5CF6),
     },
     {
-      'icon': FontAwesomeIcons.comments,
-      'label': 'Saran',
-      'color': Color(0xFF3B82F6),
+      'icon': FontAwesomeIcons.hospital,
+      'label': 'Kesehatan',
+      'color': Color(0xFF10B981),
     },
     {
       'icon': FontAwesomeIcons.userCheck,
@@ -77,6 +67,11 @@ class _MenuGridState extends State<MenuGrid> {
       'color': Color(0xFFEF4444),
     },
     {
+      'icon': FontAwesomeIcons.comments,
+      'label': 'Saran',
+      'color': Color(0xFF3B82F6),
+    },
+    {
       'icon': FontAwesomeIcons.quran,
       'label': 'Al-Qur\'an',
       'color': Color(0xFF6366F1),
@@ -89,6 +84,11 @@ class _MenuGridState extends State<MenuGrid> {
     {
       'icon': FontAwesomeIcons.circleInfo,
       'label': 'Informasi',
+      'color': Color(0xFF10B981),
+    },
+    {
+      'icon': FontAwesomeIcons.dollarSign,
+      'label': 'Pembayaran',
       'color': Color(0xFF10B981),
     },
   ];
