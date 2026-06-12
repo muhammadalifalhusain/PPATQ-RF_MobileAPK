@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../services/transaksi_saku_service.dart';
-import '../../services/saldo_saku_service.dart';
 
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
@@ -10,8 +8,6 @@ import '../../providers/auth_provider.dart';
 import '../../models/login_model.dart';
 
 import '../../widgets/menu_dashboard_widget.dart';
-
-import 'riwayat_bayar_screen.dart';
 import '../../widgets/psp_info.dart';
 class ProfileDashboard extends StatefulWidget {
   @override
@@ -20,8 +16,6 @@ class ProfileDashboard extends StatefulWidget {
 
 class _ProfileDashboardState extends State<ProfileDashboard> {
   LoginResponse? _loginData;
-  
-  late Future<void> _futureDashboard;
 
   Widget _buildTextRow(String label, String value) {
     return Padding(
@@ -106,7 +100,7 @@ class _ProfileDashboardState extends State<ProfileDashboard> {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: Text(
-              'V1.1.20',
+              'V1.1.21',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
